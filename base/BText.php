@@ -1,30 +1,34 @@
 <?php
 /**
+ * BText is a part of Base Phalcon.
  * @author tran.duc.thang
- * BText - Base Text - extends the Text class of Phalcon, with various of features included.
  */
+
 use Phalcon\Text;
 
-class BText extends Text
+/**
+ * BText provides some more functions to work with string.
+ */
+
+class BText
 {
     /**
      * Convert from snake_case to Words
      * For example it_is_an_example => It is an example or It Is An Example
-     * @param $str string the inputed word
-     * @param $ucword boolean the option to uppercase all the first character of each word or not
+     * @param $str string the inputted word
+     * @param $ucwords boolean the option to uppercase all the first character of each word or not
      * @return string the Words
      */
-    public static function snakeToWords($str, $ucword=true)
+    public static function snakeToWords($str, $ucwords=true)
     {
         $str = str_replace('_', ' ', $str);
-        return $ucword ? ucwords($str) : ucfirst($str);
+        return $ucwords ? ucwords($str) : ucfirst($str);
     }
 
     /**
      * Convert from CamelCase to Words
      * For example ItIsAnExample => It is an example or It Is An Example
-     * @param $str string the inputed word
-     * @param $uc_all boolean the option to uppercase all the first character of each word or not
+     * @param $str string the inputted word
      * @return string the Words
      */
     public static function camelToWords($str)
@@ -39,7 +43,7 @@ class BText extends Text
      */
     public static function snakeToCamel($str)
     {
-        return parent::camelize($str);
+        return Text::camelize($str);
     }
 
     /**
@@ -49,7 +53,7 @@ class BText extends Text
      */
     public static function camelToSnake($str)
     {
-        return parent::uncamelize($str);
+        return Text::uncamelize($str);
     }
 
     /**

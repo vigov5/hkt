@@ -78,3 +78,12 @@ $di->set('session', function () {
 
     return $session;
 });
+
+$di->set('flash', function(){
+    $flash = new \Phalcon\Flash\Direct(array(
+        'error' => 'alert alert-dismissable alert-danger',
+        'success' => 'alert alert-dismissable alert-success',
+        'notice' => 'alert alert-dismissable alert-info',
+    ));
+    return $flash;
+});
