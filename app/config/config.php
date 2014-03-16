@@ -9,6 +9,7 @@ return new \Phalcon\Config(array(
         'dbname'      => 'hyakkaten',
     ),
     'application' => array(
+        'baseDir'        => __DIR__ . '/../../base/',
         'controllersDir' => __DIR__ . '/../../app/controllers/',
         'modelsDir'      => __DIR__ . '/../../app/models/',
         'viewsDir'       => __DIR__ . '/../../app/views/',
