@@ -108,7 +108,7 @@ class ItemController extends ControllerBase
             }
         }
         $this->setDefault($item);
-        $this->view->id = $item->id;
+        $this->view->item = $item;
         $this->view->form = new BForm($item);
     }
 

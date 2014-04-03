@@ -1,0 +1,18 @@
+.container-main {
+    margin-top: 70px;
+    margin-bottom: 20px;
+    min-height: 600px;
+}
+
+.container-footer {
+    padding-bottom: 20px;
+    color: #e6e6e6;
+}
+
+footer {
+    background-color: black;
+}
+
+.item-form {
+    width: 70%;
+}

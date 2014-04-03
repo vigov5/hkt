@@ -1,14 +1,14 @@
 <?php
 
-return new \Phalcon\Config(array(
-    'database' => array(
+return new \Phalcon\Config([
+    'database' => [
         'adapter'     => 'Mysql',
         'host'        => 'localhost',
         'username'    => 'hkt',
         'password'    => 'hkt',
         'dbname'      => 'hyakkaten',
-    ),
-    'application' => array(
+    ],
+    'application' => [
         'baseDir'        => __DIR__ . '/../../base/',
         'controllersDir' => __DIR__ . '/../../app/controllers/',
         'modelsDir'      => __DIR__ . '/../../app/models/',
@@ -17,5 +17,7 @@ return new \Phalcon\Config(array(
         'libraryDir'     => __DIR__ . '/../../app/library/',
         'cacheDir'       => __DIR__ . '/../../app/cache/',
         'baseUri'        => '/',
-    )
-));
+        'homeUrl'        => '/',
+        'defaultController' => 'index',
+    ]
+]);

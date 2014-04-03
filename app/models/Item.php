@@ -86,6 +86,9 @@ class Item extends BModel
      */
     public $deleted_at;
 
+    /**
+     * Status available and unavailable
+     */
     const STATUS_UNAVAILABLE = 0;
     const STATUS_AVAILABLE = 1;
 
@@ -93,17 +96,52 @@ class Item extends BModel
     * 
     * @var array $item_status 
     */
-    public static $item_status = [self::STATUS_UNAVAILABLE => 'Unavailable', self::STATUS_AVAILABLE => 'Available'];
+    public static $item_status = [
+        self::STATUS_UNAVAILABLE => 'Unavailable',
+        self::STATUS_AVAILABLE => 'Available'
+    ];
 
+    /**
+     * Get item status in string. If it does not exist in list item types, then return the status itself.
+     * Can be accessed via magic method by using $this->status_value
+     * @return str|int
+     */
+    public function getStatusValue()
+    {
+        if (isset(static::$item_status[$this->status])) {
+            return static::$item_status[$this->status];
+        }
+        return $this->status;
+    }
+
+    /**
+     * Item type
+     */
     const TYPE_DEPOSIT = 1;
     const TYPE_WITHDRAW = 2;
     const TYPE_NORMAL = 3;
 
+    /**
+     * @var array $item_type
+     */
     public static $item_types = [
         self::TYPE_DEPOSIT => 'Deposit',
         self::TYPE_WITHDRAW => 'Withdraw',
         self::TYPE_NORMAL => 'Normal',        
     ];
+
+    /**
+     * Get item type in string. If it does not exist in list item types, then return the type itself
+     * Can be accessed via magic method by using $this->type_value
+     * @return str|int
+     */
+    public function getTypeValue()
+    {
+        if (isset(static::$item_types[$this->type])) {
+            return static::$item_types[$this->type];
+        }
+        return $this->type;
+    }
 
     public function getSaveAttributesName()
     {

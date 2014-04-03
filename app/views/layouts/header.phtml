@@ -1,0 +1,37 @@
+<?php
+$url = new Phalcon\Mvc\Url();
+$url->setBaseUri('/');
+?>
+
+<div class="navbar navbar-default navbar-fixed-top bs-docs-nav" role="banner">
+    <div class="container">
+        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="<?= $url->get('') ?>" class="navbar-brand">
+                        <span class="glyphicon glyphicon-home"></span>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= $url->get('shop') ?>">
+                        <span class="glyphicon glyphicon-shopping-cart"></span>
+                        Shops
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= $url->get('item') ?>">
+                        <span class="glyphicon glyphicon-th-large"></span>
+                        Goods
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= $url->get('contact') ?>">
+                        <span class="glyphicon glyphicon-envelope"></span>
+                        Contact
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

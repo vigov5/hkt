@@ -12,10 +12,13 @@
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     </head>
     <body>
-        <div class="container">
+        <?php $this->partial('layouts/header') ?>
+        <div class="container container-main">
             <?= $this->getContent() ?>
         </div>
         <?= Tag::javascriptInclude('js/jquery.min.js'); ?>
         <?= Tag::javascriptInclude('js/bootstrap.min.js'); ?>            
     </body>
+    <?php $this->partial('layouts/footer') ?>
 </html>
+

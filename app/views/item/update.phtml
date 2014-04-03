@@ -1,10 +1,7 @@
 <?php use Phalcon\Tag; ?>
 <div class="row">
-    <table width="100%">
-        <tr>
-            <td align="left"><?= Tag::linkTo('item', 'Go Back') ?></td>
-        <tr>
-    </table>
-    <?= $this->getContent(); ?>    
-    <?php $this->partial('item/_form', ['link' => "item/update/$id", 'button' => 'Save']) ?>    
+    <?= $this->getContent(); ?>
+    <h2>Update item <?= $item->name ?></h2>
+    <hr>
+    <?php $this->partial('item/_form', ['link' => "item/update/$item->id", 'button' => 'Save']) ?>
 </div>
