@@ -9,10 +9,13 @@ Requirements
 
 * PHP 5.4 or higher (5.5 recommended)
 * PhalconPHP 1.2.6 or higher
-* Mysql 5.5 or higher
+* Mysql 5.1 or higher (5.5 recommended)
 
 Config
 -----------
+
+### Deploy
+Deploy the website under the address localhost, or hkt.localhost instead of localhost/hkt.
 
 ### Cache folder
 Change mode the folder `app/cache`
