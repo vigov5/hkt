@@ -81,13 +81,12 @@ class ItemController extends ControllerBase
             if ($item->save()) {
                 $this->flash->success('item was created successfully');
                 return $this->forward('item/view', ['id' => $item->id]);
-            } else {
-                $this->errors = $item->getMessages();
+            } else {    
                 $this->setDefault($item);
             }
         }
         $this->view->item = $item;
-        $this->view->form = new BForm($item, $this->errors);
+        $this->view->form = new BForm($item);
     }
 
     /**
@@ -108,13 +107,11 @@ class ItemController extends ControllerBase
             if ($item->save()) {
                 $this->flash->success('item was updated successfully');
                 return $this->forward('item/view', ['id' => $item->id]);
-            } else {
-                $this->errors = $item->getMessages();
             }
         }
         $this->setDefault($item);
         $this->view->id = $item->id;
-        $this->view->form = new BForm($item, $this->errors);
+        $this->view->form = new BForm($item);
     }
 
     /**

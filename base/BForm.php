@@ -64,10 +64,12 @@ class BForm
     public function __construct($model, $errors = [])
     {
         $this->model = $model;
-        foreach ($errors as $error) {
-            if (is_array($error)) {
-                $this->errors[] = $error;
-            } else {
+        if (!$errors) {
+            $errors = $model->getMessages();
+        }
+        
+        if ($errors) {
+            foreach ($errors as $error) {
                 $this->errors[$error->getField()] = $error->getMessage();
             }
         }
