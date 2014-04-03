@@ -1,3 +1,4 @@
+<?php use Phalcon\Tag; ?>
 <table class="table table-hover">
     <thead>
         <tr>
@@ -17,22 +18,22 @@
         </tr>
     </thead>
     <tbody>
-        {% for item in items %}
+        <?php foreach ($items as $item): ?>
             <tr>
-                <td>{{ link_to(item.getViewLink(), item.id) }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.type }}</td>
-                <td>{{ item.status }}</td>
-                <td>{{ item.description }}</td>
-                <td>{{ item.img }}</td>
-                <td>{{ item.public_range }}</td>
-                <td>{{ item.created_by }}</td>
-                <td>{{ item.approved_by }}</td>
-                <td>{{ item.approved_at }}</td>
-                <td>{{ item.created_at }}</td>
-                <td>{{ item.updated_at }}</td>
+                <td><?= Tag::linkTo($item->getViewLink(), $item->id) ?></td>
+                <td><?= $item->name ?></td>
+                <td><?= $item->price ?></td>
+                <td><?= $item->type ?></td>
+                <td><?= $item->status ?></td>
+                <td><?= $item->description ?></td>
+                <td><?= $item->img ?></td>
+                <td><?= $item->public_range ?></td>
+                <td><?= $item->created_by ?></td>
+                <td><?= $item->approved_by ?></td>
+                <td><?= $item->approved_at ?></td>
+                <td><?= $item->created_at ?></td>
+                <td><?= $item->updated_at ?></td>
             </tr>
-        {% endfor %}
+        <?php endforeach; ?>
     </tbody>
 </table>

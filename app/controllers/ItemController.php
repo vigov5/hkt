@@ -74,9 +74,7 @@ class ItemController extends ControllerBase
 
         if ($this->request->isPost()) {
             $item->save_attributes = $_POST;
-            //$item->load($_POST);
-            $item->status = 0;
-            $item->created_by = 1;
+            //$item->load($_POST);                        
 
             if ($item->save()) {
                 $this->flash->success('item was created successfully');

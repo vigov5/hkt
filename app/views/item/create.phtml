@@ -1,0 +1,10 @@
+<?php use Phalcon\Tag; ?>
+<div class="row">
+    <table width="100%">
+        <tr>
+            <td align="left"><?= Tag::linkTo('item', 'Go Back') ?></td>
+        <tr>
+    </table>
+    <?= $this->getContent(); ?>
+    <?= $this->partial('item/_form', ['link' => 'item/create', 'button' => 'Create']) ?>
+</div>

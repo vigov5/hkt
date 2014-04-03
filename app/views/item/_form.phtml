@@ -1,0 +1,9 @@
+<?php
+echo $form->start($link);
+echo $form->textField('name');
+echo $form->numericField('price');
+echo $form->selectStatic('type',  Item::$item_types);
+echo $form->textField('img');
+echo $form->textArea('description', ['rows' => 5]);
+echo $form->submitButton($button);
+echo $form->end();

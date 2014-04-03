@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`invoice` (
   `to_user_id` INT NULL,
   `to_shop_id` INT NULL,
   `item_id` INT NOT NULL,
+  `item_count` INT NOT NULL DEFAULT 1,
   `status` TINYINT(4) NOT NULL COMMENT '1: SENT, 2: REJECTED, 3: ACCEPTED',
   `set_items_id` VARCHAR(127) NULL COMMENT 'If user buy a set of items (for example: lunch), so all the items id will be stored here. The item_id field will store the price of the set.',
   `comment` TEXT NULL,

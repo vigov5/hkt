@@ -86,6 +86,25 @@ class Item extends BModel
      */
     public $deleted_at;
 
+    const STATUS_UNAVAILABLE = 0;
+    const STATUS_AVAILABLE = 1;
+
+    /**
+    * 
+    * @var array $item_status 
+    */
+    public static $item_status = [self::STATUS_UNAVAILABLE => 'Unavailable', self::STATUS_AVAILABLE => 'Available'];
+
+    const TYPE_DEPOSIT = 1;
+    const TYPE_WITHDRAW = 2;
+    const TYPE_NORMAL = 3;
+
+    public static $item_types = [
+        self::TYPE_DEPOSIT => 'Deposit',
+        self::TYPE_WITHDRAW => 'Withdraw',
+        self::TYPE_NORMAL => 'Normal',        
+    ];
+
     public function getSaveAttributesName()
     {
         return ['name', 'price', 'type', 'description', 'img', 'public_range'];
