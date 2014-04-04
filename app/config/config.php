@@ -19,5 +19,6 @@ return new \Phalcon\Config([
         'baseUri'        => '/',
         'homeUrl'        => '/',
         'defaultController' => 'index',
+        'product'        => false,
     ]
 ]);

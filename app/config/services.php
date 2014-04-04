@@ -87,3 +87,20 @@ $di->set('flash', function(){
     ));
     return $flash;
 });
+
+$di->set('dispatcher', function() {
+
+    //Create an EventsManager
+    $eventsManager = new Phalcon\Events\Manager();
+
+    //Attach a listener
+    $eventsManager->attach("dispatch:beforeException", new NotFoundException());
+
+    $dispatcher = new \Phalcon\Mvc\Dispatcher();
+
+    //Bind the EventsManager to the dispatcher
+    $dispatcher->setEventsManager($eventsManager);
+
+    return $dispatcher;
+
+}, true);
