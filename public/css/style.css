@@ -4,6 +4,18 @@
     min-height: 600px;
 }
 
+@media (min-height: 800px) {
+    .container-main {
+        min-height: 800px;
+    }
+}
+
+@media (min-height: 1000px) {
+    .container-main {
+        min-height: 1000px;
+    }
+}
+
 .container-footer {
     padding-bottom: 20px;
     color: #e6e6e6;

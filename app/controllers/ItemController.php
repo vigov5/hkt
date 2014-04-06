@@ -73,13 +73,19 @@ class ItemController extends ControllerBase
         $item = new Item();
 
         if ($this->request->isPost()) {
-            $item->save_attributes = $_POST;
-            //$item->load($_POST);                        
-
+            $item->load($_POST);
+            if (isset($_FILES['img_upload'])) {
+                $file = $_FILES['img_upload'];
+                $path = Config::getFullImageUploadDir() . $file['name'];
+                $fh = new FileHelper($path);
+                if ($fh->uploadImage($file)) {
+                    $item->img = Config::IMG_UPLOAD_DIR . $fh->getBasename();
+                }
+            }
             if ($item->save()) {
                 $this->flash->success('item was created successfully');
                 return $this->forward('item/view', ['id' => $item->id]);
-            } else {    
+            } else {
                 $this->setDefault($item);
             }
         }
@@ -102,6 +108,14 @@ class ItemController extends ControllerBase
         $this->setDefault($item);
         if ($this->request->isPost()) {
             $item->load($_POST);
+            if (isset($_FILES['img_upload'])) {
+                $file = $_FILES['img_upload'];
+                $path = Config::getFullImageUploadDir() . $file['name'];
+                $fh = new FileHelper($path);
+                if ($fh->uploadImage($file)) {
+                    $item->img = Config::IMG_UPLOAD_DIR . $fh->getBasename();
+                }
+            }
             if ($item->save()) {
                 $this->flash->success('item was updated successfully');
                 return $this->forward('item/view', ['id' => $item->id]);

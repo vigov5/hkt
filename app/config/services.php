@@ -88,6 +88,10 @@ $di->set('flash', function(){
     return $flash;
 });
 
+$di->set('config', function() use ($config) {
+    return $config;
+}, true);
+
 $di->set('dispatcher', function() {
 
     //Create an EventsManager

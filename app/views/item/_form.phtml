@@ -1,12 +1,50 @@
 <div class="item-form center-block">
 <?php
-echo $form->start($link);
-echo $form->textField('name');
-echo $form->numericField('price');
-echo $form->selectStatic('type',  Item::$item_types);
-echo $form->textField('img');
-echo $form->textArea('description', ['rows' => 5]);
-echo $form->submitButton($button);
-echo $form->end();
+    echo $form->start($link, ['enctype' => 'multipart/form-data']);
+    echo $form->textField('name');
+    echo $form->numericField('price');
+    echo $form->selectStatic('type',  Item::$item_types);
+?>
+
+
+<?php $img_error = $form->hasError('img'); ?>
+<div class="form-group <?= $img_error ? 'has-error' : '' ?>">
+    <label class="control-label">Image</label>
+    <ul class="nav nav-tabs" id="file-input-tab">
+        <li class="active">
+            <a href="#fileinput" data-toggle="tab">Input Link</a>
+        </li>
+        <li>
+            <a href="#fileupload" data-toggle="tab">Upload Image</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="fileinput">
+            <?= Phalcon\Tag::textField(['img', 'class' => 'form-control']); ?>
+        </div>
+        <div class="tab-pane fade" id="fileupload">
+            <?= Phalcon\Tag::fileField(['img_upload']); ?>
+        </div>
+    </div>
+
+    <?php if($img_error) {
+        echo $form->createError('img');
+    }
+    ?>
+</div>
+
+
+<?php
+    echo $form->textArea('description', ['rows' => 5]);
+    echo $form->submitButton($button);
+    echo $form->end();
 ?>
 </div>
+
+<script>
+    $('#file-input-tab a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    })
+</script>

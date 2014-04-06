@@ -1,4 +1,6 @@
 <?php
+use Phalcon\Mvc\Model\Validator\Uniqueness;
+
 class Item extends BModel
 {
 
@@ -7,79 +9,79 @@ class Item extends BModel
      * @var integer
      */
     public $id;
-     
+
     /**
      *
      * @var string
      */
     public $name;
-     
+
     /**
      *
      * @var integer
      */
     public $price;
-     
+
     /**
      *
      * @var integer
      */
     public $type;
-     
+
     /**
      *
      * @var integer
      */
     public $status;
-     
+
     /**
      *
      * @var string
      */
     public $description;
-     
+
     /**
      *
      * @var string
      */
     public $img;
-     
+
     /**
      *
      * @var integer
      */
     public $public_range;
-     
+
     /**
      *
      * @var integer
      */
     public $created_by;
-     
+
     /**
      *
      * @var integer
      */
     public $approved_by;
-     
+
     /**
      *
      * @var string
      */
     public $approved_at;
-     
+
     /**
      *
      * @var string
      */
     public $created_at;
-     
+
     /**
      *
      * @var string
      */
     public $updated_at;
-     
+
     /**
      *
      * @var string
@@ -93,8 +95,8 @@ class Item extends BModel
     const STATUS_AVAILABLE = 1;
 
     /**
-    * 
-    * @var array $item_status 
+    *
+    * @var array $item_status
     */
     public static $item_status = [
         self::STATUS_UNAVAILABLE => 'Unavailable',
@@ -127,8 +129,10 @@ class Item extends BModel
     public static $item_types = [
         self::TYPE_DEPOSIT => 'Deposit',
         self::TYPE_WITHDRAW => 'Withdraw',
-        self::TYPE_NORMAL => 'Normal',        
+        self::TYPE_NORMAL => 'Normal',
     ];
+
+    use ImageTrait;
 
     /**
      * Get item type in string. If it does not exist in list item types, then return the type itself
@@ -153,5 +157,14 @@ class Item extends BModel
         return [
             'img' => 'Image Path',
         ];
+    }
+
+    public function validation()
+    {
+        $this->validate(new Uniqueness(['field' => 'name']));
+        $this->validate(new ImageValidator(['field' => 'img']));
+        if ($this->validationHasFailed() == true) {
+            return false;
+        }
     }
 }
