@@ -6,13 +6,21 @@ use Phalcon\Paginator\Adapter\Model as Paginator;
 class ItemController extends ControllerBase
 {
 
+    const ITEM_PER_PAGE = 5;
     /**
      * Index action
      */
-    public function indexAction()
+    public function indexAction($page=1)
     {
-        $this->persistent->parameters = null;
-        $this->view->items = Item::find();
+        $paginator = new \Phalcon\Paginator\Adapter\Model([
+                'data'  => Item::find(),
+                'limit' => self::ITEM_PER_PAGE,
+                'page'  => $page,
+            ]
+        );
+        $page = $paginator->getPaginate();
+        $this->view->pagination = new Pagination($page, '/item/index');
+        $this->view->page = $page;
     }
 
     /**
