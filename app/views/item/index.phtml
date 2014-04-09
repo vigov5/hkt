@@ -1,39 +1,19 @@
-<?php use Phalcon\Tag; ?>
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th><?= Item::getAttributeLabel('id') ?></th>
-            <th><?= Item::getAttributeLabel('name') ?></th>
-            <th><?= Item::getAttributeLabel('price') ?></th>
-            <th><?= Item::getAttributeLabel('type') ?></th>
-            <th><?= Item::getAttributeLabel('status') ?></th>
-            <th><?= Item::getAttributeLabel('description') ?></th>
-            <th><?= Item::getAttributeLabel('img') ?></th>
-            <th><?= Item::getAttributeLabel('public_range') ?></th>
-            <th><?= Item::getAttributeLabel('created_by') ?></th>
-            <th><?= Item::getAttributeLabel('approved_by') ?></th>
-            <th><?= Item::getAttributeLabel('approved_at') ?></th>
-            <th><?= Item::getAttributeLabel('created_at') ?></th>
-            <th><?= Item::getAttributeLabel('updated_at') ?></th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($items as $item): ?>
-            <tr>
-                <td><?= Tag::linkTo($item->getViewLink(), $item->id) ?></td>
-                <td><?= $item->name ?></td>
-                <td><?= $item->price ?></td>
-                <td><?= $item->type_value ?></td>
-                <td><?= $item->status_value ?></td>
-                <td><?= $item->description ?></td>
-                <td><?= $item->img ?></td>
-                <td><?= $item->public_range ?></td>
-                <td><?= $item->created_by ?></td>
-                <td><?= $item->approved_by ?></td>
-                <td><?= $item->approved_at ?></td>
-                <td><?= $item->created_at ?></td>
-                <td><?= $item->updated_at ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+<?php
+use Phalcon\Tag;
+$count = 1;
+foreach ($page->items as $item) {
+    if ($count % 2 === 1) {
+        echo Tag::tagHtml('div', ['class' => 'row item-row']);
+    }
+    echo $this->partial('item/_an_item', ['item' => $item]);
+    if ($count % 2 === 0) {
+        echo Tag::tagHtmlClose('div');
+    }
+    $count++;
+}
+
+if ($count % 2 === 0) {
+    echo Tag::tagHtmlClose('div');
+}
+
+echo $pagination->generatePagination();

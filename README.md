@@ -1,8 +1,8 @@
 Framgia Hyakkaten - フランジア百貨店
 =================
 
-Framgia Hyakkaten is a web service made for Framgia's Members, created by HKT Team. 
-It is powered by the [PhalconPHP framework](http://phalconphp.com). 
+Framgia Hyakkaten is a web service made for Framgia's Members, created by HKT Team.
+It is powered by the [PhalconPHP framework](http://phalconphp.com).
 
 Requirements
 -----------
@@ -21,6 +21,12 @@ Deploy the website under the address localhost, or hkt.localhost instead of loca
 Change mode the folder `app/cache`
 ```bash
 chmod 777 app/cache
+```
+
+### Image Upload folder
+Change mode the folder `public/img/upload` for uploading images
+```bash
+chmod 777 public/img/upload
 ```
 
 ### Database
