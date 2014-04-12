@@ -1,6 +1,6 @@
 <?php
 /**
- * A part of BPhalcon. 
+ * A part of BPhalcon.
  * @author tran.duc.thang
  */
 
@@ -15,23 +15,30 @@ use \Phalcon\Mvc\Model;
 
 class BModel extends Model
 {
+    private $created_at_field = 'created_at';
+    private $updated_at_field = 'updated_at';
+
     /**
      * Attach timestamp behaviour to all model instance
      */
     public function initialize()
     {
-        $this->addBehavior(new Timestampable(
-            [
-                'beforeCreate' => [
-                    'field' => 'created_at',
-                    'format' => 'Y-m-d H:i:s',
-                ],
-                'beforeUpdate' => [
-                    'field' => 'updated_at',
-                    'format' => 'Y-m-d H:i:s',
-                ],
-            ]
-        ));
+        $time_stampable = [];
+        if (property_exists($this, $this->created_at_field)) {
+            $time_stampable['beforeCreate'] = [
+                'field' => $this->created_at_field,
+                'format' => 'Y-m-d H:i:s',
+            ];
+        }
+        if (property_exists($this, $this->updated_at_field)) {
+            $time_stampable['beforeUpdate'] = [
+                'field' => $this->updated_at_field,
+                'format' => 'Y-m-d H:i:s',
+            ];
+        }
+        if ($time_stampable) {
+            $this->addBehavior(new Timestampable($time_stampable));
+        }
     }
 
     /**
@@ -161,10 +168,10 @@ class BModel extends Model
     }
 
     /**
-    * Get a view link of an instance of BModel. 
-    * @param string $controller_name The controller which contains action view. 
-    * By default, the controller name will be the same as Model name with the first character is in lowercase 
-    * @return string The view link 
+    * Get a view link of an instance of BModel.
+    * @param string $controller_name The controller which contains action view.
+    * By default, the controller name will be the same as Model name with the first character is in lowercase
+    * @return string The view link
     */
     public function getViewLink($controller_name='')
     {

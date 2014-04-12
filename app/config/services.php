@@ -92,6 +92,13 @@ $di->set('config', function() use ($config) {
     return $config;
 }, true);
 
+/**
+ * Custom authentication component
+ */
+$di->set('auth', function () {
+    return new Auth();
+});
+
 $di->set('dispatcher', function() {
 
     //Create an EventsManager

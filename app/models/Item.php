@@ -110,8 +110,8 @@ class Item extends BModel
      */
     public function getStatusValue()
     {
-        if (isset(static::$item_status[$this->status])) {
-            return static::$item_status[$this->status];
+        if (isset(self::$item_status[$this->status])) {
+            return self::$item_status[$this->status];
         }
         return $this->status;
     }
@@ -141,8 +141,8 @@ class Item extends BModel
      */
     public function getTypeValue()
     {
-        if (isset(static::$item_types[$this->type])) {
-            return static::$item_types[$this->type];
+        if (isset(self::$item_types[$this->type])) {
+            return self::$item_types[$this->type];
         }
         return $this->type;
     }

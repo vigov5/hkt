@@ -4,28 +4,57 @@
             <ul class="nav navbar-nav">
                 <li>
                     <a href="<?= $this->url->get('') ?>" class="navbar-brand">
-                        <span class="glyphicon glyphicon-home"></span>
+                        <span class="fa fa-home"></span>
                         HKT
                     </a>
                 </li>
                 <li>
                     <a href="<?= $this->url->get('shop') ?>">
-                        <span class="glyphicon glyphicon-shopping-cart"></span>
+                        <span class="fa fa-shopping-cart"></span>
                         Shops
                     </a>
                 </li>
                 <li>
                     <a href="<?= $this->url->get('item') ?>">
-                        <span class="glyphicon glyphicon-th-large"></span>
+                        <span class="fa fa-coffee"></span>
                         Goods
                     </a>
                 </li>
                 <li>
                     <a href="<?= $this->url->get('contact') ?>">
-                        <span class="glyphicon glyphicon-envelope"></span>
+                        <span class="fa fa-envelope"></span>
                         Contact
                     </a>
                 </li>
+                <?php if(isset($current_user)): ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-user"></span>
+                        Hello, <?= $current_user->username ?> ! <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?= $this->url->get('user/changePassword') ?>"><span class="fa fa-edit"></span>Change Password</a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('user/logout') ?>"><span class="fa fa-sign-out"></span>Log out</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="fa fa-dollar"></span>:
+                        <?= $current_user->wallet ?> hkt
+                    </a>
+                </li>
+                <?php else: ?>
+                    <li>
+                        <a href="<?= $this->url->get('user/login') ?>">
+                            <span class="fa fa-sign-in"></span>
+                            Login
+                        </a>
+                    </li>
+                <?php endif; ?>
             </ul>
         </nav>
     </div>

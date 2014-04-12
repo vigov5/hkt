@@ -90,6 +90,7 @@ class ItemController extends ControllerBase
                     $item->img = Config::IMG_UPLOAD_DIR . $fh->getBasename();
                 }
             }
+
             if ($item->save()) {
                 $this->flash->success('item was created successfully');
                 return $this->forward('item/view', ['id' => $item->id]);

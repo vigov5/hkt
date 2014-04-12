@@ -12,6 +12,7 @@ return new \Phalcon\Config([
         'baseDir'           => __DIR__ . '/../../base/',
         'controllersDir'    => __DIR__ . '/../../app/controllers/',
         'modelsDir'         => __DIR__ . '/../../app/models/',
+        'formsDir'          => __DIR__ . '/../../app/forms/',
         'viewsDir'          => __DIR__ . '/../../app/views/',
         'pluginsDir'        => __DIR__ . '/../../app/plugins/',
         'componentsDir'     => __DIR__ . '/../../app/components/',
