@@ -11,6 +11,7 @@ USE `hyakkaten` ;
 CREATE TABLE IF NOT EXISTS `hyakkaten`.`user` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(256) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `wallet` INT NOT NULL DEFAULT 0,
   `role` TINYINT(4) NULL COMMENT '0: UNAUTHORIZED - Can not login, 1: USER - Can login and buy items, 2: MODERATOR - Can buy, can create and sell items , 3: ADMIN - Can accept requests, authorize users, change role of user ..., 4: SUPER ADMIN - Most powerful user',
@@ -145,6 +146,42 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_user` (
   `deleted_at` DATETIME NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `hyakkaten`.`wallet_log`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`wallet_log` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `wallet_before` INT NULL,
+  `wallet_after` INT NULL,
+  `created_at` DATETIME NULL,
+  PRIMARY KEY (`id`))
+  ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `hyakkaten`.`success_logins`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`success_login` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `ip_address` VARCHAR(20) NULL,
+  `user_agent` VARCHAR(128) NULL,
+  `created_at` DATETIME NULL,
+  PRIMARY KEY (`id`))
+  ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `hyakkaten`.`success_logins`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`failed_login` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `ip_address` VARCHAR(20) NULL,
+  `user_agent` VARCHAR(128) NULL,
+  `created_at` DATETIME NULL,
+  PRIMARY KEY (`id`))
+  ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
