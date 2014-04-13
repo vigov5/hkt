@@ -41,6 +41,17 @@ class BModel extends Model
         }
     }
 
+    public function save($data=null, $whiteList=null)
+    {
+        try {
+            return parent::save($data, $whiteList);
+        } catch (\Phalcon\Exception $e) {
+            $p = new \Phalcon\Utils\PrettyExceptions();
+            $p->handle($e);
+            exit;
+        }
+    }
+
     /**
      * Get all attributes
      * @return array attributes

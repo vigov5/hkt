@@ -54,17 +54,17 @@ class UserController extends ControllerBase
 
                 $user = new User();
 
-                $user->assign(array(
+                $user->assign([
                         'username' => $this->request->getPost('username', 'striptags'),
                         'email' => $this->request->getPost('email'),
                         'password' => $this->security->hash($this->request->getPost('password')),
-                    ));
-
+                    ]);
                 if ($user->save()) {
-                    return $this->dispatcher->forward(array(
+                    $this->auth->authUserById($user->id);
+                    return $this->dispatcher->forward([
                         'controller' => 'index',
                         'action' => 'index'
-                    ));
+                    ]);
                 }
                 $this->flash->error($user->getMessages());
             }
@@ -86,8 +86,16 @@ class UserController extends ControllerBase
                 if (!$user) {
                     $this->flash->success('There is no account associated to this email/username');
                 } else {
+                    $reset_url = 'http://' . $_SERVER['SERVER_NAME'] . "/user/resetpassword/{$user->email}/{$user->secret_key}";
+                    $this->mail->send(
+                        [$user->email => $user->username],
+                        'HKT Password Recovery',
+                        'reset',
+                        ['reset_url' => $reset_url]
+                    );
+                    $this->forward('index');
                     $this->flash->success('Success! Please check your messages for an email reset password');
-                    $user->updateSecretKey();
+                    return;
                 }
             }
         }
@@ -109,9 +117,10 @@ class UserController extends ControllerBase
                 }
             } else {
                 $user->updatePassword($this->request->getPost('new_password'));
+                $user->updateSecretKey();
                 $this->flash->success('Your password was successfully changed');
                 $this->auth->authUserById($user->id);
-                $this->forward('');
+                return $this->forward('index/index');
             }
         }
         $this->view->email = $email;

@@ -21,5 +21,16 @@ return new \Phalcon\Config([
         'baseUri'           => '/',
         'homeUrl'           => '/',
         'defaultController' => 'index',
-    ]
+    ],
+    'mail' => [
+        'from_name' => 'HKT TEAM',
+        'from_email' => 'admin@hkt.thangtd.com',
+        'smtp' => [
+            'server' => 'smtp.gmail.com',
+            'port' => 587,
+            'security' => 'tls',
+            'username' => 'framgia.email.tester@gmail.com',
+            'password' => 'framgia345',
+        ],
+    ],
 ]);

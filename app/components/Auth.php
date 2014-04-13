@@ -42,11 +42,11 @@ class Auth extends Component
             $this->createRememberEnviroment($user);
         }
 
-        $this->session->set('auth-identity', array(
+        $this->session->set('auth-identity', [
             'id' => $user->id,
             'username' => $user->username,
             'email' => $user->email,
-        ));
+        ]);
     }
 
     /**
@@ -81,13 +81,13 @@ class Auth extends Component
         $failed_login->user_agent = $this->request->getUserAgent();
         $failed_login->save();
 
-        $attempts = FailedLogin::count(array(
+        $attempts = FailedLogin::count([
             'ip_address = ?0 AND created_at > ?1',
-            'bind' => array(
+            'bind' => [
                 $this->request->getClientAddress(),
                 time() - 3600 * 6
-            )
-        ));
+            ]
+        ]);
 
         switch ($attempts) {
             case 1:
@@ -154,24 +154,24 @@ class Auth extends Component
 
             if ($cookie_token == $token) {
 
-                $remember = RememberToken::findFirst(array(
+                $remember = RememberToken::findFirst([
                     'user_id = ?0 AND token = ?1',
-                    'bind' => array(
+                    'bind' => [
                         $user->id,
-                        $token
-                    )
-                ));
+                        $token,
+                    ]
+                ]);
                 if ($remember) {
 
                     // Check if the cookie has not expired
                     if ((time() - (86400 * 8)) < $remember->created_at) {
 
                         // Register identity
-                        $this->session->set('auth-identity', array(
+                        $this->session->set('auth-identity', [
                             'id' => $user->id,
                             'username' => $user->username,
                             'email' => $user->email,
-                        ));
+                        ]);
 
                         // Register the successful login
                         $this->saveSuccessLogin($user);
@@ -227,6 +227,21 @@ class Auth extends Component
     /**
      * Auths the user by his/her id
      *
+     * @param $user
+     * @internal param \User $id
+     */
+    public function authUser($user)
+    {
+        $this->session->set('auth-identity', [
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user->email,
+        ]);
+    }
+
+    /**
+     * Auths the user by his/her id
+     *
      * @param int $id
      * @throws Phalcon\Exception
      */
@@ -237,11 +252,11 @@ class Auth extends Component
             throw new Exception('The user does not exist');
         }
 
-        $this->session->set('auth-identity', array(
+        $this->session->set('auth-identity', [
             'id' => $user->id,
             'username' => $user->username,
-            'email' => $user->username,
-        ));
+            'email' => $user->email,
+        ]);
     }
 
     /**
@@ -262,10 +277,5 @@ class Auth extends Component
         }
 
         return null;
-    }
-
-    public function getUserIdentity()
-    {
-        return $this->session->get('auth-identity');
     }
 }

@@ -53,7 +53,7 @@ class ItemController extends ControllerBase
 
         $parameters = $this->persistent->parameters;
         if (!is_array($parameters)) {
-            $parameters = array();
+            $parameters = [];
         }
         $parameters['order'] = 'id';
 
@@ -64,11 +64,11 @@ class ItemController extends ControllerBase
             return $this->forward('item');
         }
 
-        $paginator = new Paginator(array(
+        $paginator = new Paginator([
             'data' => $item,
             'limit' => 10,
-            'page' => $numberPage
-        ));
+            'page' => $numberPage,
+        ]);
 
         $this->view->page = $paginator->getPaginate();
     }

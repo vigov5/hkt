@@ -127,7 +127,7 @@ class User extends BModel
      */
     public function initialize()
     {
-		$this->setSource('User');
+		$this->setSource('user');
         parent::initialize();
     }
 
@@ -161,7 +161,6 @@ class User extends BModel
         $this->role = self::ROLE_UNAUTHORIZED;
         $this->wallet = 0;
         $this->secret_key = Keygen::generateKey();
-        parent::beforeCreate();
     }
 
     public static function findByKey($key)
