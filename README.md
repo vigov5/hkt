@@ -8,7 +8,7 @@ Requirements
 -----------
 
 * PHP 5.4 or higher (5.5 recommended)
-* PhalconPHP 1.2.6 or higher
+* PhalconPHP 1.3.1 or higher
 * Mysql 5.1 or higher (5.5 recommended)
 
 Config

@@ -3,8 +3,9 @@
 
 use Phalcon\Mvc\Model\Validator\Email as Email;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Security;
 
-class User extends \Phalcon\Mvc\Model
+class User extends BModel
 {
 
     /**
@@ -127,7 +128,7 @@ class User extends \Phalcon\Mvc\Model
     public function initialize()
     {
 		$this->setSource('User');
-
+        parent::initialize();
     }
 
     /**
@@ -153,5 +154,47 @@ class User extends \Phalcon\Mvc\Model
     public function getSaveAttributesName()
     {
         return ['username', 'email'];
+    }
+
+    public function beforeCreate()
+    {
+        $this->role = self::ROLE_UNAUTHORIZED;
+        $this->wallet = 0;
+        $this->secret_key = Keygen::generateKey();
+        parent::beforeCreate();
+    }
+
+    public static function findByKey($key)
+    {
+        $user = self::findFirstByEmail($key);
+        if (!$user) {
+            $user = self::findFirstByUsername($key);
+        }
+        return $user;
+    }
+
+    public function updateSecretKey($save=true)
+    {
+        $this->secret_key = Keygen::generateKey();
+        if ($save) {
+            return $this->save();
+        }
+        return true;
+    }
+
+    public function validatePassword($raw_pass)
+    {
+        $security = new Security();
+        return $security->checkHash($raw_pass, $this->password);
+    }
+
+    public function updatePassword($raw_pass, $save=true)
+    {
+        $security = new Security();
+        $this->password = $security->hash($raw_pass);
+        if ($save) {
+            return $this->save();
+        }
+        return true;
     }
 }

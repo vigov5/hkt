@@ -6,7 +6,6 @@ use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Check;
 use Phalcon\Forms\Element\Hidden;
 use Phalcon\Validation\Validator\PresenceOf;
-use Phalcon\Validation\Validator\Email;
 use Phalcon\Validation\Validator\Identical;
 
 class LoginForm extends Form
@@ -16,16 +15,13 @@ class LoginForm extends Form
     {
         // Email or username
         $email = new Text('email', array(
-            'placeholder' => 'Email'
+            'placeholder' => 'Email or Username'
         ));
-        $email->setLabel('Email');
+        $email->setLabel('Email/Username');
         $email->addValidators(array(
             new PresenceOf(array(
                 'message' => 'The e-mail/username is required'
             )),
-            new Email(array(
-                'message' => 'The e-mail/username is not valid'
-            ))
         ));
         $this->add($email);
 

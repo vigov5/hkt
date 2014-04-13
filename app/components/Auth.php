@@ -22,19 +22,16 @@ class Auth extends Component
     {
 
         // Check if the user exist
-        $user = User::findFirstByEmail($credentials['email']);
+        $user = User::findByKey($credentials['email']);
         if ($user == false) {
-            $user = User::findFirstByUsername($credentials['email']);
-            if ($user == false) {
-                $this->registerUserThrottling(0);
-                throw new Exception('Wrong email/password combination');
-            }
+            $this->registerUserThrottling(0);
+            throw new Exception('Wrong email/username and password combination');
         }
 
         // Check the password
         if (!$this->security->checkHash($credentials['password'], $user->password)) {
             $this->registerUserThrottling($user->id);
-            throw new Exception('Wrong email/password combination');
+            throw new Exception('Wrong email/username and password combination');
         }
 
         // Register the successful login
@@ -85,7 +82,7 @@ class Auth extends Component
         $failed_login->save();
 
         $attempts = FailedLogin::count(array(
-            'ip_address = ?0, created_at > ?1',
+            'ip_address = ?0 AND created_at > ?1',
             'bind' => array(
                 $this->request->getClientAddress(),
                 time() - 3600 * 6
