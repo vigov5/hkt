@@ -167,4 +167,13 @@ class Item extends BModel
             return false;
         }
     }
+
+    /**
+     * Initialize method for model.
+     */
+    public function initialize()
+    {
+        parent::initialize();
+        $this->belongsTo('created_by', 'User', 'id');
+    }
 }

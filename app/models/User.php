@@ -127,8 +127,9 @@ class User extends BModel
      */
     public function initialize()
     {
-		$this->setSource('user');
         parent::initialize();
+		$this->setSource('user');
+        $this->hasMany('id', 'Item', 'created_by', ['alias' => 'items']);
     }
 
     /**

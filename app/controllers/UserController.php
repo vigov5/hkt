@@ -3,6 +3,12 @@
 class UserController extends ControllerBase
 {
 
+    public function initialize()
+    {
+        parent::initialize();
+        $this->view->current_page = 'user';
+    }
+
     public function indexAction()
     {
 
@@ -69,7 +75,7 @@ class UserController extends ControllerBase
                 $this->flash->error($user->getMessages());
             }
         }
-
+        $this->view->current_page = 'register';
         $this->view->form = $form;
     }
 
@@ -99,6 +105,7 @@ class UserController extends ControllerBase
                 }
             }
         }
+        $this->view->current_page = 'forgotpassword';
         $this->view->form = $form;
     }
 

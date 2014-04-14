@@ -13,6 +13,10 @@ class ControllerBase extends BController
     {
         $this->tag->setTitle('Framgia Hyakkaten');
         $this->getCurrentUser();
+        $this->view->current_page = '';
+        if (!$this->current_user) {
+            $this->view->login_form = new LoginForm();
+        }
     }
 
     protected function getCurrentUser()

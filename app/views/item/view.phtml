@@ -14,11 +14,11 @@
     </tr>
     <tr>
         <th class="success"><?= $item->getAttributeLabel('type') ?></th>
-        <td><?= $item->type_value ?></td>
+        <td><?= $item->getTypeValue() ?></td>
     </tr>
     <tr>
         <th class="success"><?= $item->getAttributeLabel('status') ?></th>
-        <td><?= $item->status_value ?></td>
+        <td><?= $item->getStatusValue() ?></td>
     </tr>
     <tr>
         <th class="success"><?= $item->getAttributeLabel('description') ?></th>
@@ -34,7 +34,7 @@
     </tr>
     <tr>
         <th class="success"><?= $item->getAttributeLabel('created_by') ?></th>
-        <td><?= $item->created_by ?></td>
+        <td><?= $item->user->username ?></td>
     </tr>
     <tr>
         <th class="success"><?= $item->getAttributeLabel('approved_by') ?></th>

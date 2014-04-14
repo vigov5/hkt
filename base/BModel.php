@@ -111,10 +111,7 @@ class BModel extends Model
     public function __get($property)
     {
         $method = 'get' . Phalcon\Text::camelize($property);
-        if (method_exists($this, $method)) {
-            return $this->$method();
-        }
-        parent::__get($property);
+        return $this->$method();
     }
 
     /**
@@ -127,10 +124,7 @@ class BModel extends Model
     public function __set($property, $params)
     {
         $method = 'set' . Phalcon\Text::camelize($property);
-        if (method_exists($this, $method)) {
-            return $this->$method($params);
-        }
-        parent::__set($property, $params);
+        return $this->$method($params);
     }
 
     /**

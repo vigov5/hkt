@@ -7,6 +7,12 @@ class ItemController extends ControllerBase
 {
 
     const ITEM_PER_PAGE = 5;
+
+    public function initialize()
+    {
+        parent::initialize();
+        $this->view->current_page = 'item';
+    }
     /**
      * Index action
      */
@@ -78,10 +84,14 @@ class ItemController extends ControllerBase
      */
     public function createAction()
     {
+        if (!$this->current_user) {
+            $this->response->redirect();
+        }
         $item = new Item();
-
+        $errors = [];
         if ($this->request->isPost()) {
             $item->load($_POST);
+            $item->created_by = $this->current_user->id;
             if (isset($_FILES['img_upload'])) {
                 $file = $_FILES['img_upload'];
                 $path = Config::getFullImageUploadDir() . $file['name'];
@@ -99,7 +109,7 @@ class ItemController extends ControllerBase
             }
         }
         $this->view->item = $item;
-        $this->view->form = new BForm($item);
+        $this->view->form = new BForm($item, $errors);
     }
 
     /**

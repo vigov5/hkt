@@ -25,15 +25,19 @@
                 </tr>
                 <tr>
                     <th class="success"><?= $item->getAttributeLabel('type') ?></th>
-                    <td><?= $item->type_value ?></td>
+                    <td><?= $item->getTypeValue() ?></td>
                 </tr>
                 <tr>
                     <th class="success"><?= $item->getAttributeLabel('status') ?></th>
-                    <td><?= $item->status_value ?></td>
+                    <td><?= $item->getStatusValue() ?></td>
                 </tr>
                 <tr>
                     <th class="success"><?= $item->getAttributeLabel('description') ?></th>
                     <td><?= $item->description ?></td>
+                </tr>
+                <tr>
+                    <th class="success"><?= $item->getAttributeLabel('created_by') ?></th>
+                    <td><?= $item->user ? $item->user->username : 'N/A' ?></td>
                 </tr>
             </table>
         </div>
