@@ -22,7 +22,7 @@ class Auth extends Component
     {
 
         // Check if the user exist
-        $user = User::findByKey($credentials['email']);
+        $user = Users::findByKey($credentials['email']);
         if ($user == false) {
             $this->registerUserThrottling(0);
             throw new Exception('Wrong email/username and password combination');
@@ -52,12 +52,12 @@ class Auth extends Component
     /**
      * Creates the remember me environment settings the related cookies and generating tokens
      *
-     * @param User $user
+     * @param Users $user
      * @throws Phalcon\Exception
      */
     public function saveSuccessLogin($user)
     {
-        $success_login = new SuccessLogin();
+        $success_login = new SuccessLogins();
         $success_login->user_id = $user->id;
         $success_login->ip_address = $this->request->getClientAddress();
         $success_login->user_agent = $this->request->getUserAgent();
@@ -75,13 +75,13 @@ class Auth extends Component
      */
     public function registerUserThrottling($userId)
     {
-        $failed_login = new FailedLogin();
+        $failed_login = new FailedLogins();
         $failed_login->user_id = $userId;
         $failed_login->ip_address = $this->request->getClientAddress();
         $failed_login->user_agent = $this->request->getUserAgent();
         $failed_login->save();
 
-        $attempts = FailedLogin::count([
+        $attempts = FailedLogins::count([
             'ip_address = ?0 AND created_at > ?1',
             'bind' => [
                 $this->request->getClientAddress(),
@@ -107,14 +107,14 @@ class Auth extends Component
     /**
      * Creates the remember me environment settings the related cookies and generating tokens
      *
-     * @param User $user
+     * @param Users $user
      */
     public function createRememberEnviroment($user)
     {
         $userAgent = $this->request->getUserAgent();
         $token = md5($user->email . $user->password . $userAgent);
 
-        $remember = new RememberToken();
+        $remember = new RememberTokens();
         $remember->user_id = $user->id;
         $remember->token = $token;
         $remember->user_agent = $userAgent;
@@ -146,7 +146,7 @@ class Auth extends Component
         $user_id = $this->cookies->get('RMU')->getValue();
         $cookie_token = $this->cookies->get('RMT')->getValue();
 
-        $user = User::findFirstById($user_id);
+        $user = Users::findFirstById($user_id);
         if ($user) {
 
             $userAgent = $this->request->getUserAgent();
@@ -154,7 +154,7 @@ class Auth extends Component
 
             if ($cookie_token == $token) {
 
-                $remember = RememberToken::findFirst([
+                $remember = RememberTokens::findFirst([
                     'user_id = ?0 AND token = ?1',
                     'bind' => [
                         $user->id,
@@ -228,7 +228,7 @@ class Auth extends Component
      * Auths the user by his/her id
      *
      * @param $user
-     * @internal param \User $id
+     * @internal param \Users $id
      */
     public function authUser($user)
     {
@@ -247,7 +247,7 @@ class Auth extends Component
      */
     public function authUserById($id)
     {
-        $user = User::findFirstById($id);
+        $user = Users::findFirstById($id);
         if ($user == false) {
             throw new Exception('The user does not exist');
         }
@@ -263,13 +263,13 @@ class Auth extends Component
      * Get the entity related to user in the active identity
      *
      * @throws Phalcon\Exception
-     * @return User
+     * @return Users
      */
     public function getUser()
     {
         $identity = $this->session->get('auth-identity');
         if (isset($identity['id'])) {
-            $user = User::findFirstById($identity['id']);
+            $user = Users::findFirstById($identity['id']);
             if ($user == false) {
                 throw new Exception('The user does not exist');
             }

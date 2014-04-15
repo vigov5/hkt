@@ -3,7 +3,7 @@
 
 
 
-class FailedLogin extends BModel
+class RememberTokens extends BModel
 {
 
     /**
@@ -22,7 +22,7 @@ class FailedLogin extends BModel
      *
      * @var string
      */
-    public $ip_address;
+    public $token;
 
     /**
      *
@@ -32,7 +32,7 @@ class FailedLogin extends BModel
 
     /**
      *
-     * @var string
+     * @var integer
      */
     public $created_at;
 
@@ -44,7 +44,7 @@ class FailedLogin extends BModel
         return array(
             'id' => 'id',
             'user_id' => 'user_id',
-            'ip_address' => 'ip_address',
+            'token' => 'token',
             'user_agent' => 'user_agent',
             'created_at' => 'created_at'
         );

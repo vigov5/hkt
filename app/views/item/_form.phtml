@@ -3,7 +3,7 @@
     echo $form->start($link, ['enctype' => 'multipart/form-data']);
     echo $form->textField('name');
     echo $form->numericField('price');
-    echo $form->selectStatic('type',  Item::$item_types);
+    echo $form->selectStatic('type',  Items::$item_types);
 ?>
 
 

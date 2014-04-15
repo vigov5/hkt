@@ -3,7 +3,7 @@
 
 
 
-class SuccessLogin extends BModel
+class FailedLogins extends BModel
 {
 
     /**

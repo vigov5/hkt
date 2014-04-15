@@ -1,5 +1,11 @@
 <?php
 use Phalcon\Tag;
+?>
+
+<a href="<?= $this->url->get("item/create")?>" class="btn btn-success"><i class="fa fa-edit"></i> Create New Item </a>
+<hr/>
+
+<?php
 $count = 1;
 foreach ($page->items as $item) {
     if ($count % 2 === 1) {

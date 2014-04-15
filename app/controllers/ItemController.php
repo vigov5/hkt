@@ -19,7 +19,7 @@ class ItemController extends ControllerBase
     public function indexAction($page=1)
     {
         $paginator = new \Phalcon\Paginator\Adapter\Model([
-                'data'  => Item::find(),
+                'data'  => Items::find(),
                 'limit' => self::ITEM_PER_PAGE,
                 'page'  => $page,
             ]
@@ -36,7 +36,7 @@ class ItemController extends ControllerBase
      */
     public function viewAction($id)
     {
-        $item = Item::findFirstByid($id);
+        $item = Items::findFirstByid($id);
         if (!$item) {
             $this->flash->error('item was not found');
             return $this->forward('item');
@@ -63,7 +63,7 @@ class ItemController extends ControllerBase
         }
         $parameters['order'] = 'id';
 
-        $item = Item::find($parameters);
+        $item = Items::find($parameters);
         if (count($item) == 0) {
             $this->flash->notice('The search did not find any item');
 
@@ -87,7 +87,7 @@ class ItemController extends ControllerBase
         if (!$this->current_user) {
             $this->response->redirect();
         }
-        $item = new Item();
+        $item = new Items();
         $errors = [];
         if ($this->request->isPost()) {
             $item->load($_POST);
@@ -118,7 +118,7 @@ class ItemController extends ControllerBase
      */
     public function updateAction($id)
     {
-        $item = Item::findFirstByid($id);
+        $item = Items::findFirstByid($id);
         if (!$item) {
             $this->flash->error('item was not found');
             return $this->forward('item');
@@ -153,7 +153,7 @@ class ItemController extends ControllerBase
      */
     public function deleteAction($id)
     {
-        $item = Item::findFirstByid($id);
+        $item = Items::findFirstByid($id);
         if (!$item) {
             $this->flash->error('item was not found');
 

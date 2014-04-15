@@ -58,7 +58,7 @@ class UserController extends ControllerBase
 
             if ($form->isValid($this->request->getPost()) != false) {
 
-                $user = new User();
+                $user = new Users();
 
                 $user->assign([
                         'username' => $this->request->getPost('username', 'striptags'),
@@ -88,7 +88,7 @@ class UserController extends ControllerBase
                     $this->flash->error($message);
                 }
             } else {
-                $user = User::findByKey($this->request->getPost('email'));
+                $user = Users::findByKey($this->request->getPost('email'));
                 if (!$user) {
                     $this->flash->success('There is no account associated to this email/username');
                 } else {
@@ -111,7 +111,7 @@ class UserController extends ControllerBase
 
     public function resetPasswordAction($email='', $secret_key='')
     {
-        $user = User::findFirst(['email' => $email]);
+        $user = Users::findFirst(['email' => $email]);
         if (!$user || $user->secret_key != $secret_key) {
             $this->response->redirect('');
         }

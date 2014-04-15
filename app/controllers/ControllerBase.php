@@ -5,7 +5,7 @@ use Phalcon\Mvc\Controller;
 class ControllerBase extends BController
 {
     /**
-     * @var User $current_user
+     * @var Users $current_user
      */
     public $current_user = null;
 

@@ -1,7 +1,7 @@
 <?php
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
-class Item extends BModel
+class Items extends BModel
 {
 
     /**
@@ -174,6 +174,6 @@ class Item extends BModel
     public function initialize()
     {
         parent::initialize();
-        $this->belongsTo('created_by', 'User', 'id');
+        $this->belongsTo('created_by', 'Users', 'id', ['alias' => 'user']);
     }
 }

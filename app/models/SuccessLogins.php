@@ -3,7 +3,7 @@
 
 
 
-class RememberToken extends BModel
+class SuccessLogins extends BModel
 {
 
     /**
@@ -22,7 +22,7 @@ class RememberToken extends BModel
      *
      * @var string
      */
-    public $token;
+    public $ip_address;
 
     /**
      *
@@ -32,7 +32,7 @@ class RememberToken extends BModel
 
     /**
      *
-     * @var integer
+     * @var string
      */
     public $created_at;
 
@@ -44,7 +44,7 @@ class RememberToken extends BModel
         return array(
             'id' => 'id',
             'user_id' => 'user_id',
-            'token' => 'token',
+            'ip_address' => 'ip_address',
             'user_agent' => 'user_agent',
             'created_at' => 'created_at'
         );

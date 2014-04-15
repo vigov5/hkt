@@ -8,7 +8,7 @@ USE `hyakkaten` ;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`user` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
   `password` VARCHAR(256) NOT NULL,
@@ -29,7 +29,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`item`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`item` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`items` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `price` INT(11) NOT NULL DEFAULT 0,
@@ -52,7 +52,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`shop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`shop` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`shops` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `status` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '0: UNAUTHORIZED, 1: CLOSED, 2: OPEN',
@@ -69,7 +69,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`user_shop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`user_shop` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`user_shops` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `shop_id` INT NOT NULL,
@@ -85,7 +85,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`item_shop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_shop` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_shops` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `item_id` INT NOT NULL,
   `shop_id` INT NOT NULL,
@@ -101,7 +101,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`invoice`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`invoice` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`invoices` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `from_user_id` INT NOT NULL,
   `to_user_id` INT NULL,
@@ -120,7 +120,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`request`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`request` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`requests` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `from_user_id` INT NULL,
   `to_user_id` INT NULL COMMENT 'If the value is 0, this request is sent to all admins.',
@@ -135,7 +135,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`item_user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_user` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `item_id` INT NOT NULL,
   `user_id` INT NOT NULL,
@@ -150,7 +150,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`wallet_log`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`wallet_log` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`wallet_logs` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `wallet_before` INT NULL,
@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`wallet_log` (
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`success_logins`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`success_login` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`success_logins` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `ip_address` VARCHAR(20) NULL,
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`success_login` (
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`failed_login`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`failed_login` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`failed_logins` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `ip_address` VARCHAR(20) NULL,
@@ -186,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`failed_login` (
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`remember_token`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`remember_token` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`remember_tokens` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
   `token` char(32) NOT NULL,

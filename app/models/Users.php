@@ -5,7 +5,7 @@ use Phalcon\Mvc\Model\Validator\Email as Email;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 use Phalcon\Security;
 
-class User extends BModel
+class Users extends BModel
 {
 
     /**
@@ -96,6 +96,30 @@ class User extends BModel
         return $this->role;
     }
 
+    public function isUnauthorized()
+    {
+        return $this->role === self::ROLE_UNAUTHORIZED;
+    }
+
+    public function isUser()
+    {
+        return $this->role === self::ROLE_USER;
+    }
+
+    public function isModerator()
+    {
+        return $this->role === self::ROLE_MODERATOR;
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
     /**
      * Validations and business logic
      */
@@ -128,8 +152,8 @@ class User extends BModel
     public function initialize()
     {
         parent::initialize();
-		$this->setSource('user');
-        $this->hasMany('id', 'Item', 'created_by', ['alias' => 'items']);
+		$this->setSource('users');
+        $this->hasMany('id', 'Items', 'created_by');
     }
 
     /**
@@ -196,5 +220,18 @@ class User extends BModel
             return $this->save();
         }
         return true;
+    }
+
+    public function canEditItem($item)
+    {
+        if ($this->isAdmin() || $this->isSuperAdmin()) {
+            return true;
+        }
+        if ($item instanceof Items) {
+            return $this->id === $item->created_by;
+        } else {
+            $item_object = Items::findFirst(['id' => $item]);
+            return $this->id === $item_object->created_by;
+        }
     }
 }

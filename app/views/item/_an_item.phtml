@@ -39,6 +39,11 @@
                     <th class="success"><?= $item->getAttributeLabel('created_by') ?></th>
                     <td><?= $item->user ? $item->user->username : 'N/A' ?></td>
                 </tr>
+                <?php if($current_user->canEditItem($item)): ?>
+                    <tr>
+                        <a href="<?= $this->url->get("item/update/{$item->id}")?>" class="btn btn-warning"><i class="fa fa-edit"></i> Edit </a>
+                    </tr>
+                <?php endif; ?>
             </table>
         </div>
     </div>

@@ -171,18 +171,4 @@ class BModel extends Model
             }
         }
     }
-
-    /**
-    * Get a view link of an instance of BModel.
-    * @param string $controller_name The controller which contains action view.
-    * By default, the controller name will be the same as Model name with the first character is in lowercase
-    * @return string The view link
-    */
-    public function getViewLink($controller_name='')
-    {
-        if (!$controller_name) {
-            $controller_name = lcfirst(get_class($this));
-        }
-        return "$controller_name/view/$this->id";
-    }
 }

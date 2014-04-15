@@ -25,10 +25,6 @@ echo $this->getContent();
         <?= $form->render('remember', ['class' => 'pull-left']) ?>
         <label class="pull-left control-label"><?= $form->label('remember', ['class' => 'pull-left control-label']) ?></label>
     </div>
-
-    <div class="row form-group">
-        <?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
-    </div>
     <div class="row">
         <input type="submit" value="Login" class="btn btn-primary">
     </div>
