@@ -1,5 +1,5 @@
 <?php use Phalcon\Tag; ?>
-<div class="col-md-5 col-md-offset-1 an-item">
+<div class="col-sm-6 col-md-4 col-lg-3 an-item">
     <ul class="nav nav-tabs an-item-tab">
         <li class="active">
             <a href="#item-tab-image-<?= $item->id ?>" data-toggle="tab"><?= $item->name ?></a>
@@ -11,26 +11,14 @@
 
     <div class="tab-content">
         <div class="tab-pane fade in active" id="item-tab-image-<?= $item->id ?>">
-            <?= $item->imageView() ?>
+            <div class="thumbnail">
+                <div class="thumbnail-detail"><?= $item->name ?> (<?= $item->price ?>)</div>
+                <?= $item->imageView() ?>
+            </div>
+
         </div>
         <div class="tab-pane fade" id="item-tab-info-<?= $item->id ?>">
             <table class="table table-hover">
-                <tr>
-                    <th class="success"><?= $item->getAttributeLabel('name') ?></th>
-                    <td><?= $item->name ?></td>
-                </tr>
-                <tr>
-                    <th class="success"><?= $item->getAttributeLabel('price') ?></th>
-                    <td><?= $item->price ?></td>
-                </tr>
-                <tr>
-                    <th class="success"><?= $item->getAttributeLabel('type') ?></th>
-                    <td><?= $item->getTypeValue() ?></td>
-                </tr>
-                <tr>
-                    <th class="success"><?= $item->getAttributeLabel('status') ?></th>
-                    <td><?= $item->getStatusValue() ?></td>
-                </tr>
                 <tr>
                     <th class="success"><?= $item->getAttributeLabel('description') ?></th>
                     <td><?= $item->description ?></td>

@@ -37,7 +37,7 @@ GRANT ALL ON hyakkaten.* to hkt@localhost;
 FLUSH PRIVILEGES;
 ```
 Change the username, password, and database name with the information configed in `app/config/config.php`
-Then, run the sql files in `app/schemas` folder.
+Then, run the sql files in `schemas` folder.
 
 External Links
 --------------

@@ -4,22 +4,13 @@ use Phalcon\Tag;
 
 <a href="<?= $this->url->get("item/create")?>" class="btn btn-success"><i class="fa fa-edit"></i> Create New Item </a>
 <hr/>
-
+<div class="row">
 <?php
-$count = 1;
 foreach ($page->items as $item) {
-    if ($count % 2 === 1) {
-        echo Tag::tagHtml('div', ['class' => 'row item-row']);
-    }
     echo $this->partial('item/_an_item', ['item' => $item]);
-    if ($count % 2 === 0) {
-        echo Tag::tagHtmlClose('div');
-    }
-    $count++;
 }
-
-if ($count % 2 === 0) {
-    echo Tag::tagHtmlClose('div');
-}
-
+?>
+</div>
+<?php
 echo $pagination->generatePagination();
+?>
