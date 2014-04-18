@@ -1,0 +1,33 @@
+<?php
+use Phalcon\Tag;
+
+echo $this->getContent();
+?>
+
+<div align="left">
+    <h2>Login</h2>
+</div>
+<hr>
+<div class="center-block register-form">
+	<?= Tag::form(['user/login', 'method' => 'post']) ?>
+
+    <div class="form-group">
+        <label class="pull-left control-label"><?= $form->label('email', ['class' => 'pull-left control-label']) ?></label>
+        <?= $form->render('email', ['class' => 'form-control']) ?>
+    </div>
+
+    <div class="form-group">
+        <label class="pull-left control-label"><?= $form->label('password', ['class' => 'pull-left control-label']) ?></label>
+        <?= $form->render('password', ['class' => 'form-control']) ?>
+    </div>
+
+    <div class="row form-group">
+        <?= $form->render('remember', ['class' => 'pull-left']) ?>
+        <label class="pull-left control-label"><?= $form->label('remember', ['class' => 'pull-left control-label']) ?></label>
+    </div>
+    <div class="row">
+        <input type="submit" value="Login" class="btn btn-primary">
+    </div>
+	</form>
+
+</div>

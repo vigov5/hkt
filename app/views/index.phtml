@@ -1,0 +1,26 @@
+<?php use Phalcon\Tag; ?>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <?= Tag::getTitle(); ?>
+        <?= Tag::stylesheetLink('css/bootstrap.min.css'); ?>
+        <?= Tag::stylesheetLink('css/font-awesome.min.css'); ?>
+        <?= Tag::stylesheetLink('css/style.css'); ?>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Your invoices">
+        <meta name="author" content="Framgia HKT Team">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+    </head>
+    <body>
+        <?php $this->partial('layouts/header') ?>
+        <div class="container container-main">
+            <?= $this->getContent() ?>
+        </div>
+        <?= Tag::javascriptInclude('js/jquery.min.js'); ?>
+        <?= Tag::javascriptInclude('js/bootstrap.min.js'); ?>
+        <?= Tag::javascriptInclude('js/main.js'); ?>
+    </body>
+    <?php $this->partial('layouts/footer') ?>
+</html>
+

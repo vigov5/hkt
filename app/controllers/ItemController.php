@@ -6,13 +6,27 @@ use Phalcon\Paginator\Adapter\Model as Paginator;
 class ItemController extends ControllerBase
 {
 
+    const ITEM_PER_PAGE = 5;
+
+    public function initialize()
+    {
+        parent::initialize();
+        $this->view->current_page = 'item';
+    }
     /**
      * Index action
      */
-    public function indexAction()
+    public function indexAction($page=1)
     {
-        $this->persistent->parameters = null;
-        $this->view->items = Item::find();
+        $paginator = new \Phalcon\Paginator\Adapter\Model([
+                'data'  => Items::find(),
+                'limit' => self::ITEM_PER_PAGE,
+                'page'  => $page,
+            ]
+        );
+        $page = $paginator->getPaginate();
+        $this->view->pagination = new Pagination($page, '/item/index');
+        $this->view->page = $page;
     }
 
     /**
@@ -22,7 +36,7 @@ class ItemController extends ControllerBase
      */
     public function viewAction($id)
     {
-        $item = Item::findFirstByid($id);
+        $item = Items::findFirstByid($id);
         if (!$item) {
             $this->flash->error('item was not found');
             return $this->forward('item');
@@ -45,22 +59,22 @@ class ItemController extends ControllerBase
 
         $parameters = $this->persistent->parameters;
         if (!is_array($parameters)) {
-            $parameters = array();
+            $parameters = [];
         }
         $parameters['order'] = 'id';
 
-        $item = Item::find($parameters);
+        $item = Items::find($parameters);
         if (count($item) == 0) {
             $this->flash->notice('The search did not find any item');
 
             return $this->forward('item');
         }
 
-        $paginator = new Paginator(array(
+        $paginator = new Paginator([
             'data' => $item,
             'limit' => 10,
-            'page' => $numberPage
-        ));
+            'page' => $numberPage,
+        ]);
 
         $this->view->page = $paginator->getPaginate();
     }
@@ -70,24 +84,32 @@ class ItemController extends ControllerBase
      */
     public function createAction()
     {
-        $item = new Item();
-
+        if (!$this->current_user) {
+            $this->response->redirect();
+        }
+        $item = new Items();
+        $errors = [];
         if ($this->request->isPost()) {
-            $item->save_attributes = $_POST;
-            //$item->load($_POST);
-            $item->status = 0;
-            $item->created_by = 1;
+            $item->load($_POST);
+            $item->created_by = $this->current_user->id;
+            if (isset($_FILES['img_upload'])) {
+                $file = $_FILES['img_upload'];
+                $path = Config::getFullImageUploadDir() . $file['name'];
+                $fh = new FileHelper($path);
+                if ($fh->uploadImage($file)) {
+                    $item->img = Config::IMG_UPLOAD_DIR . $fh->getBasename();
+                }
+            }
 
             if ($item->save()) {
                 $this->flash->success('item was created successfully');
                 return $this->forward('item/view', ['id' => $item->id]);
             } else {
-                $this->errors = $item->getMessages();
                 $this->setDefault($item);
             }
         }
         $this->view->item = $item;
-        $this->view->form = new BForm($item, $this->errors);
+        $this->view->form = new BForm($item, $errors);
     }
 
     /**
@@ -96,7 +118,7 @@ class ItemController extends ControllerBase
      */
     public function updateAction($id)
     {
-        $item = Item::findFirstByid($id);
+        $item = Items::findFirstByid($id);
         if (!$item) {
             $this->flash->error('item was not found');
             return $this->forward('item');
@@ -105,16 +127,22 @@ class ItemController extends ControllerBase
         $this->setDefault($item);
         if ($this->request->isPost()) {
             $item->load($_POST);
+            if (isset($_FILES['img_upload'])) {
+                $file = $_FILES['img_upload'];
+                $path = Config::getFullImageUploadDir() . $file['name'];
+                $fh = new FileHelper($path);
+                if ($fh->uploadImage($file)) {
+                    $item->img = Config::IMG_UPLOAD_DIR . $fh->getBasename();
+                }
+            }
             if ($item->save()) {
                 $this->flash->success('item was updated successfully');
                 return $this->forward('item/view', ['id' => $item->id]);
-            } else {
-                $this->errors = $item->getMessages();
             }
         }
         $this->setDefault($item);
-        $this->view->id = $item->id;
-        $this->view->form = new BForm($item, $this->errors);
+        $this->view->item = $item;
+        $this->view->form = new BForm($item);
     }
 
     /**
@@ -125,7 +153,7 @@ class ItemController extends ControllerBase
      */
     public function deleteAction($id)
     {
-        $item = Item::findFirstByid($id);
+        $item = Items::findFirstByid($id);
         if (!$item) {
             $this->flash->error('item was not found');
 

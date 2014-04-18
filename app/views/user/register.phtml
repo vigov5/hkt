@@ -1,0 +1,53 @@
+<?php
+use Phalcon\Tag;
+
+echo $this->getContent();
+?>
+
+<div align="left">
+    <h2>Sign Up</h2>
+</div>
+<hr>
+<div class="center-block register-form">
+	<?= Tag::form(['user/register', 'method' => 'post']) ?>
+
+    <div class="form-group">
+        <label class="pull-left control-label"><?= $form->label('username', ['class' => 'pull-left control-label']) ?></label>
+        <?= $form->render('username', ['class' => 'form-control']) ?>
+        <?= $form->messages('username', ['class' => 'help-block']) ?>
+    </div>
+
+    <div class="form-group">
+        <label class="pull-left control-label"><?= $form->label('email', ['class' => 'pull-left control-label']) ?></label>
+        <?= $form->render('email', ['class' => 'form-control']) ?>
+        <?= $form->messages('email', ['class' => 'help-block']) ?>
+    </div>
+
+    <div class="form-group">
+        <label class="pull-left control-label"><?= $form->label('password', ['class' => 'pull-left control-label']) ?></label>
+        <?= $form->render('password', ['class' => 'form-control']) ?>
+        <?= $form->messages('password', ['class' => 'help-block']) ?>
+    </div>
+
+    <div class="form-group">
+        <label class="pull-left control-label"><?= $form->label('confirm_password', ['class' => 'pull-left control-label']) ?></label>
+        <?= $form->render('confirm_password', ['class' => 'form-control']) ?>
+        <?= $form->messages('confirm_password', ['class' => 'help-block']) ?>
+    </div>
+
+    <div class="row form-group">
+        <?= $form->render('terms', ['class' => 'pull-left']) ?>
+        <label class="pull-left control-label"><?= $form->label('terms', ['class' => 'pull-left control-label']) ?></label>
+        <?= $form->messages('terms', ['class' => 'help-block']) ?>
+    </div>
+
+    <div class="row form-group">
+        <?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
+        <?= $form->messages('csrf', ['class' => 'help-block']) ?>
+    </div>
+    <div class="row">
+        <input type="submit" value="Register" class="btn btn-primary">
+    </div>
+	</form>
+
+</div>

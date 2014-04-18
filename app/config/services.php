@@ -5,8 +5,8 @@ use Phalcon\Mvc\View;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
-use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
+use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -32,20 +32,20 @@ $di->set('view', function () use ($config) {
 
     $view->setViewsDir($config->application->viewsDir);
 
-    $view->registerEngines(array(
+    $view->registerEngines([
         '.volt' => function ($view, $di) use ($config) {
 
             $volt = new VoltEngine($view, $di);
 
-            $volt->setOptions(array(
+            $volt->setOptions([
                 'compiledPath' => $config->application->cacheDir,
-                'compiledSeparator' => '_'
-            ));
+                'compiledSeparator' => '_',
+            ]);
 
             return $volt;
         },
         '.phtml' => 'Phalcon\Mvc\View\Engine\Php'
-    ));
+    ]);
 
     return $view;
 }, true);
@@ -54,12 +54,12 @@ $di->set('view', function () use ($config) {
  * Database connection is created based in the parameters defined in the configuration file
  */
 $di->set('db', function () use ($config) {
-    return new DbAdapter(array(
+    return new DbAdapter([
         'host' => $config->database->host,
         'username' => $config->database->username,
         'password' => $config->database->password,
-        'dbname' => $config->database->dbname
-    ));
+        'dbname' => $config->database->dbname,
+    ]);
 });
 
 /**
@@ -80,10 +80,42 @@ $di->set('session', function () {
 });
 
 $di->set('flash', function(){
-    $flash = new \Phalcon\Flash\Direct(array(
+    $flash = new \Phalcon\Flash\Direct([
         'error' => 'alert alert-dismissable alert-danger',
         'success' => 'alert alert-dismissable alert-success',
         'notice' => 'alert alert-dismissable alert-info',
-    ));
+    ]);
     return $flash;
+});
+
+$di->set('config', function() use ($config) {
+    return $config;
+}, true);
+
+/**
+ * Custom authentication component
+ */
+$di->set('auth', function () {
+    return new Auth();
+});
+
+$di->set('dispatcher', function() {
+
+    //Create an EventsManager
+    $eventsManager = new Phalcon\Events\Manager();
+
+    //Attach a listener
+    $eventsManager->attach("dispatch:beforeException", new NotFoundException());
+
+    $dispatcher = new \Phalcon\Mvc\Dispatcher();
+
+    //Bind the EventsManager to the dispatcher
+    $dispatcher->setEventsManager($eventsManager);
+
+    return $dispatcher;
+
+}, true);
+
+$di->set('mail', function () {
+    return new Mail();
 });

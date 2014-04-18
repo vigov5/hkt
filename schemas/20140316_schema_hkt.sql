@@ -8,11 +8,12 @@ USE `hyakkaten` ;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`user` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(256) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `wallet` INT NOT NULL DEFAULT 0,
+  `wallet` INT DEFAULT 0,
   `role` TINYINT(4) NULL COMMENT '0: UNAUTHORIZED - Can not login, 1: USER - Can login and buy items, 2: MODERATOR - Can buy, can create and sell items , 3: ADMIN - Can accept requests, authorize users, change role of user ..., 4: SUPER ADMIN - Most powerful user',
   `secret_key` VARCHAR(127) NULL,
   `created_at` DATETIME NULL,
@@ -28,14 +29,14 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`item`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`item` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`items` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `price` INT(11) NOT NULL DEFAULT 0,
   `type` INT(11) NOT NULL COMMENT '1: DEPOSIT - The wallet of users will be increased after users buy these items, 2: WITHDRAW - The wallet of users will be decreased after users buy these items, 3: NORMAL - The normal items. If an user buy these item, the money will be transfered to the seller, 4: SET - For special purpose. The price will be ignored. (For example: dishes for lunch), 5: SET_TICKET - Items to buy set of items.',
   `status` TINYINT(4) NULL COMMENT '0: UNAVAILABLE, 1: AVAILABLE',
   `description` TEXT NULL,
-  `img` VARCHAR(45) NULL,
+  `img` VARCHAR(256) NULL,
   `public_range` TINYINT(4) NULL COMMENT '1: ONY_CREATED_USER: Only the user who created this item can sell it, 2: PUBLIC: All users can sell it',
   `created_by` INT NULL,
   `approved_by` INT NULL COMMENT 'The admin who allow this item to be able to sell',
@@ -51,12 +52,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`shop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`shop` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`shops` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `status` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '0: UNAUTHORIZED, 1: CLOSED, 2: OPEN',
   `description` TEXT NULL,
-  `img` VARCHAR(45) NULL,
+  `img` VARCHAR(256) NULL,
   `created_at` DATETIME NULL,
   `updated_at` DATETIME NULL,
   `deleted_at` DATETIME NULL,
@@ -68,7 +69,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`user_shop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`user_shop` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`user_shops` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `shop_id` INT NOT NULL,
@@ -84,7 +85,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`item_shop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_shop` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_shops` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `item_id` INT NOT NULL,
   `shop_id` INT NOT NULL,
@@ -100,12 +101,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`invoice`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`invoice` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`invoices` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `from_user_id` INT NOT NULL,
   `to_user_id` INT NULL,
   `to_shop_id` INT NULL,
   `item_id` INT NOT NULL,
+  `item_count` INT NOT NULL DEFAULT 1,
   `status` TINYINT(4) NOT NULL COMMENT '1: SENT, 2: REJECTED, 3: ACCEPTED',
   `set_items_id` VARCHAR(127) NULL COMMENT 'If user buy a set of items (for example: lunch), so all the items id will be stored here. The item_id field will store the price of the set.',
   `comment` TEXT NULL,
@@ -118,7 +120,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`request`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`request` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`requests` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `from_user_id` INT NULL,
   `to_user_id` INT NULL COMMENT 'If the value is 0, this request is sent to all admins.',
@@ -133,7 +135,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `hyakkaten`.`item_user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_user` (
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `item_id` INT NOT NULL,
   `user_id` INT NOT NULL,
@@ -145,6 +147,54 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_user` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `hyakkaten`.`wallet_log`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`wallet_logs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `wallet_before` INT NULL,
+  `wallet_after` INT NULL,
+  `created_at` DATETIME NULL,
+  PRIMARY KEY (`id`))
+  ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `hyakkaten`.`success_logins`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`success_logins` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `ip_address` VARCHAR(20) NULL,
+  `user_agent` VARCHAR(128) NULL,
+  `created_at` DATETIME NULL,
+  PRIMARY KEY (`id`))
+  ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `hyakkaten`.`failed_login`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`failed_logins` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `ip_address` VARCHAR(20) NULL,
+  `user_agent` VARCHAR(128) NULL,
+  `created_at` DATETIME NULL,
+  PRIMARY KEY (`id`))
+  ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `hyakkaten`.`remember_token`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`remember_tokens` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL,
+  `token` char(32) NOT NULL,
+  `user_agent` varchar(120) NOT NULL,
+  `created_at` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `token` (`token`))
+  ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

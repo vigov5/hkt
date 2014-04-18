@@ -1,0 +1,93 @@
+<?php use Phalcon\Tag; ?>
+<div class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+    <div class="container">
+        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+            <ul class="nav navbar-nav">
+                <li class="<?= $current_page === 'index' ? 'active' : '' ?>">
+                    <a href="<?= $this->url->get('') ?>" class="navbar-brand">
+                        <span class="fa fa-home"></span>
+                        HKT
+                    </a>
+                </li>
+            <?php if(isset($current_user)): ?>
+                <li class="<?= $current_page === 'shop' ? 'active' : '' ?>">
+                    <a href="<?= $this->url->get('shop') ?>">
+                        <span class="fa fa-shopping-cart"></span>
+                        Shops
+                    </a>
+                </li>
+                <li class="dropdown <?= $current_page === 'item' ? 'active' : '' ?>">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-coffee"></span>
+                        Goods <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?= $this->url->get('item') ?>"><span class="fa fa-edit"></span>List</a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('item/create') ?>"><span class="fa fa-edit"></span>Create New</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="<?= $current_page === 'contact' ? 'active' : '' ?>">
+                    <a href="<?= $this->url->get('contact') ?>">
+                        <span class="fa fa-envelope"></span>
+                        Contact
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown <?= $current_page === 'user' ? 'active' : '' ?>">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-user"></span>
+                        Hello, <?= $current_user->username ?> ! <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?= $this->url->get('user/changepassword') ?>"><span class="fa fa-edit"></span>Your items <span class="badge"><?= $current_user->items->count() ?></span></a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('user/changepassword') ?>"><span class="fa fa-edit"></span>Change Password</a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('user/logout') ?>"><span class="fa fa-power-off"></span>Log out</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="">
+                    <a href="#">
+                        <span class="fa fa-dollar"></span>:
+                        <?= $current_user->wallet ?> hkt
+                    </a>
+                </li>
+            </ul>
+            <?php else: ?>
+                <form class="navbar-form navbar-left" role="login" action="/user/login" method="post">
+                    <div class="form-group">
+                        <?= $login_form->render('email', ['class' => 'form-control', 'placeholder' => 'email/username']) ?>
+                    </div>
+                    <div class="form-group">
+                        <?= $login_form->render('password', ['class' => 'form-control', 'placeholder' => 'password']) ?>
+                    </div>
+                    <button type="submit" class="btn btn-success"><span class="fa fa-sign-in"></span>Submit</button>
+                </form>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="<?= $current_page === 'register' ? 'active' : '' ?>">
+                    <a href="<?= $this->url->get('user/register') ?>">
+                        <span class="fa fa-plus-circle"></span>
+                        Register
+                    </a>
+                </li>
+                <li class="<?= $current_page === 'forgotpassword' ? 'active' : '' ?>">
+                    <a href="<?= $this->url->get('user/forgotpassword') ?>">
+                        <span class="fa fa-meh-o"></span>
+                        Password Recovery
+                    </a>
+                </li>
+            </ul>
+            <?php endif; ?>
+        </nav>
+    </div>
+</div>

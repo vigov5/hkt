@@ -1,14 +1,14 @@
 Framgia Hyakkaten - フランジア百貨店
 =================
 
-Framgia Hyakkaten is a web service made for Framgia's Members, created by HKT Team. 
-It is powered by the [PhalconPHP framework](http://phalconphp.com). 
+Framgia Hyakkaten is a web service made for Framgia's Members, created by HKT Team.
+It is powered by the [PhalconPHP framework](http://phalconphp.com).
 
 Requirements
 -----------
 
 * PHP 5.4 or higher (5.5 recommended)
-* PhalconPHP 1.2.6 or higher
+* PhalconPHP 1.3.1 or higher
 * Mysql 5.1 or higher (5.5 recommended)
 
 Config
@@ -23,6 +23,12 @@ Change mode the folder `app/cache`
 chmod 777 app/cache
 ```
 
+### Image Upload folder
+Change mode the folder `public/img/upload` for uploading images
+```bash
+chmod 777 public/img/upload
+```
+
 ### Database
 ```bash
 CREATE USER 'hkt'@'localhost' IDENTIFIED BY 'hkt';
@@ -31,7 +37,7 @@ GRANT ALL ON hyakkaten.* to hkt@localhost;
 FLUSH PRIVILEGES;
 ```
 Change the username, password, and database name with the information configed in `app/config/config.php`
-Then, run the sql files in `app/schemas` folder.
+Then, run the sql files in `schemas` folder.
 
 External Links
 --------------

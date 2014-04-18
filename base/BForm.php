@@ -10,7 +10,7 @@ use Phalcon\Tag;
  * BForm helps you to create form tags base on Model and Attributes.
  * Each Base Form Tag will contains Label, Input and Error Messages.
  *
- * @property array $errors 
+ * @property array $errors
  * @property array $magic_methods
  * @property BModel $model
  */
@@ -29,10 +29,10 @@ class BForm
      * @var array $magic_methods
      */
     public static $magic_methods = [
-        'textField', 
-        'numericField', 
+        'textField',
+        'numericField',
         'emailField',
-        'passwordField', 
+        'passwordField',
         'hiddenField',
         'textArea',
         'colorField',
@@ -47,7 +47,6 @@ class BForm
         'searchField',
         'telField',
         'urlField',
-        'fileField',
     ];
 
     /**
@@ -64,10 +63,12 @@ class BForm
     public function __construct($model, $errors = [])
     {
         $this->model = $model;
-        foreach ($errors as $error) {
-            if (is_array($error)) {
-                $this->errors[] = $error;
-            } else {
+        if (!$errors) {
+            $errors = $model->getMessages();
+        }
+
+        if ($errors) {
+            foreach ($errors as $error) {
                 $this->errors[$error->getField()] = $error->getMessage();
             }
         }
@@ -136,7 +137,7 @@ class BForm
      */
     public function hasError($attribute)
     {
-        
+
         if (isset($this->errors[$attribute])) {
             return true;
         }
@@ -150,7 +151,7 @@ class BForm
      */
     public function getError($attribute)
     {
-        return isset($this->errors[$attribute]) ? $this->errors[$attribute] : null;
+        return isset($this->errors[$attribute]) ? $this->errors[$attribute] : '';
     }
 
     /**
@@ -158,7 +159,7 @@ class BForm
      * @param string $attribute
      * @return string
      */
-    public function createErorr($attribute)
+    public function createError($attribute)
     {
         return '<span class="help-block">' . $this->getError($attribute) . '</span>';
     }
@@ -185,7 +186,7 @@ class BForm
             $input = Tag::$name($params);
             if ($this->hasError($attribute)) {
                 $div_class = 'form-group has-error';
-                $error = $this->createErorr($attribute);
+                $error = $this->createError($attribute);
             } else {
                 $div_class = 'form-group';
                 $error = '';
@@ -204,7 +205,7 @@ class BForm
      * @return string
      */
     public function checkField($attribute, $params=[], $text='')
-    {            
+    {
         array_unshift($params, $attribute);
         $input = Tag::checkField($params);
         return $this->startDefault('checkbox') . "<label class='pull-left control-label'> $input  $text </label>" . $this->endDefault();
@@ -298,5 +299,26 @@ class BForm
     {
         array_unshift($params, $attribute);
         return Tag::hiddenField($params);
+    }
+
+    /**
+     * Create file field with bootstrap style
+     * @param string $attribute
+     * @param array $params
+     * @return string
+     */
+    public function fileField($attribute, $params=[])
+    {
+        array_unshift($params, $attribute);
+        $input = Tag::fileField($params);
+        if ($this->hasError($attribute)) {
+            $div_class = 'form-group has-error';
+            $error = $this->createErorr($attribute);
+        } else {
+            $div_class = 'form-group';
+            $error = '';
+        }
+        $label = Tag::tagHtml('label', ['class' => 'control-label']) . $this->model->getAttributeLabel($attribute) . Tag::tagHtmlClose('label', true);
+        return $this->startDefault($div_class) . $label . $input . $error . $this->endDefault();
     }
 }
