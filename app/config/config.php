@@ -18,7 +18,7 @@ return new \Phalcon\Config([
         'componentsDir'     => __DIR__ . '/../../app/components/',
         'libraryDir'        => __DIR__ . '/../../app/library/',
         'cacheDir'          => __DIR__ . '/../../app/cache/',
-        'baseUri'           => '/',
+        'baseUri'           => 'http://'.$_SERVER['SERVER_NAME'].'/',
         'homeUrl'           => '/',
         'defaultController' => 'index',
     ],
@@ -32,5 +32,10 @@ return new \Phalcon\Config([
             'username' => 'framgia.email.tester@gmail.com',
             'password' => 'framgia345',
         ],
+    ],
+    'facebook' => [
+        'appId' => '653649021339450',
+        'secret' => '255a594fea0f194f932b3f21c21f3e2a',
+        'scope' => 'basic_info,email'
     ],
 ]);

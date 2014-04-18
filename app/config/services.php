@@ -119,3 +119,10 @@ $di->set('dispatcher', function() {
 $di->set('mail', function () {
     return new Mail();
 });
+
+$di->setShared('facebook', function() use ($config) {
+    return new \Facebook([
+        'appId'     => $config->facebook->appId,
+        'secret'    => $config->facebook->secret
+    ]);
+});
