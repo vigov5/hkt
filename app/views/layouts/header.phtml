@@ -74,6 +74,12 @@
                 </form>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li class="<?= $current_page === 'facebook' ? 'active' : '' ?>">
+                    <a href="<?= $this->facebook->getLoginUrl(['scope' => $this->config->facebook->scope, 'redirect_uri' => $this->url->get('user/facebook')]) ?>">
+                        <span class="fa"></span>
+                        Facebook Login
+                    </a>
+                </li>
                 <li class="<?= $current_page === 'register' ? 'active' : '' ?>">
                     <a href="<?= $this->url->get('user/register') ?>">
                         <span class="fa fa-plus-circle"></span>

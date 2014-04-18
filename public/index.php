@@ -15,6 +15,11 @@ try {
     include __DIR__ . "/../app/config/loader.php";
 
     /**
+     * Include composer autoloader
+     */
+    require __DIR__ . "/../vendor/autoload.php";
+
+    /**
      * Read services
      */
     include __DIR__ . "/../app/config/services.php";

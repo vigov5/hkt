@@ -14,6 +14,39 @@ class UserController extends ControllerBase
 
     }
 
+    public function facebookAction(){
+        $facebook_id = $this->facebook->getUser();
+        if (!$facebook_id)
+        {
+            $this->flash->error("Invalid Facebook Call.");
+            return $this->response->redirect('login');
+        }
+        try{
+            $facebook_user = $this->facebook->api('/me');
+        } catch (\FacebookApiException $e) {
+            $this->flash->error("Could not fetch your facebook user.");
+            //return $this->response->redirect('login');
+        }
+        $user = Users::findByKey($facebook_user['email']);
+        if (!$user) {
+            $user = new Users();
+            $user->assign([
+                'username' => $facebook_user['username'],
+                'email' => $facebook_user['email'],
+                'password' => $this->security->hash(Phalcon\Text::random(Phalcon\Text::RANDOM_ALNUM,8)),
+            ]);
+            if ($user->save()) {
+                $this->auth->authUserById($user->id);
+                return $this->response->redirect('index');
+            }else{
+                $this->flash->error('There was an error connecting your facebook user.');
+            }
+        }else{
+            $this->auth->authUserById($user->id);
+            return $this->response->redirect('index');
+        }
+    }
+
     public function loginAction()
     {
         $form = new LoginForm();
@@ -47,6 +80,12 @@ class UserController extends ControllerBase
     {
         $this->auth->remove();
         $this->getCurrentUser();
+        if($this->facebook->getUser()){
+            $logout_url =  $this->facebook->getLogoutUrl(['next' => $this->url->get('index')]);
+            $this->facebook->destroySession();
+            $this->facebook->setAccessToken('');
+            return $this->response->redirect($logout_url, true);
+        }
         return $this->response->redirect('index');
     }
 
