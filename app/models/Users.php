@@ -75,15 +75,15 @@ class Users extends BModel
     public $wallet_updated_at;
 
     const ROLE_UNAUTHORIZED = 0;
-    const ROLE_USER = 1;
-    const ROLE_MODERATOR = 2;
-    const ROLE_ADMIN = 3;
-    const ROLE_SUPER_ADMIN = 4;
+    const ROLE_USER = 10;
+    const ROLE_MODERATOR = 20;
+    const ROLE_ADMIN = 30;
+    const ROLE_SUPER_ADMIN = 40;
 
     public static $user_roles = [
         self::ROLE_UNAUTHORIZED => 'Unauthorized User',
         self::ROLE_USER => 'Normal User',
-        self::ROLE_MODERATOR => 'MODERATOR',
+        self::ROLE_MODERATOR => 'Moderator',
         self::ROLE_ADMIN => 'Administrator',
         self::ROLE_SUPER_ADMIN => 'Super Administrator',
     ];
@@ -94,6 +94,17 @@ class Users extends BModel
             return self::$user_roles[$this->role];
         }
         return $this->role;
+    }
+
+    public static function getUpperRoles($base_role)
+    {
+        $upper_roles = [];
+        foreach (self::$user_roles as $role => $role_name) {
+            if ($role >= $base_role) {
+                $upper_roles[$role] = $role_name;
+            }
+        }
+        return $upper_roles;
     }
 
     public function isUnauthorized()

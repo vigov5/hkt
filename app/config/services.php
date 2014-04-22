@@ -126,3 +126,11 @@ $di->setShared('facebook', function() use ($config) {
         'secret'    => $config->facebook->secret
     ]);
 });
+
+
+/**
+ * Access Control List
+ */
+$di->set('acl', function () {
+    return new Acl();
+});

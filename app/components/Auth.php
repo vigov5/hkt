@@ -46,6 +46,7 @@ class Auth extends Component
             'id' => $user->id,
             'username' => $user->username,
             'email' => $user->email,
+            'role' => $user->getRoleValue(),
         ]);
     }
 
@@ -171,6 +172,7 @@ class Auth extends Component
                             'id' => $user->id,
                             'username' => $user->username,
                             'email' => $user->email,
+                            'role' => $user->getRoleValue(),
                         ]);
 
                         // Register the successful login
@@ -236,6 +238,7 @@ class Auth extends Component
             'id' => $user->id,
             'username' => $user->username,
             'email' => $user->email,
+            'role' => $user->getRoleValue(),
         ]);
     }
 
@@ -256,6 +259,7 @@ class Auth extends Component
             'id' => $user->id,
             'username' => $user->username,
             'email' => $user->email,
+            'role' => $user->getRoleValue(),
         ]);
     }
 
