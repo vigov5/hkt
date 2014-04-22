@@ -19,12 +19,19 @@
                 <li class="dropdown <?= $current_page === 'item' ? 'active' : '' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="fa fa-coffee"></span>
-                        Goods <b class="caret"></b>
+                        Items <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= $this->url->get('item') ?>"><span class="fa fa-edit"></span>List</a>
+                            <a href="<?= $this->url->get('item/index/1') ?>"><span class="fa fa-edit"></span>Deposit</a>
                         </li>
+                        <li>
+                            <a href="<?= $this->url->get('item/index/2') ?>"><span class="fa fa-edit"></span>Withdraw</a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('item/index/3') ?>"><span class="fa fa-edit"></span>Items</a>
+                        </li>
+                        <li class="divider"></li>
                         <li>
                             <a href="<?= $this->url->get('item/create') ?>"><span class="fa fa-edit"></span>Create New</a>
                         </li>

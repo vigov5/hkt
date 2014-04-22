@@ -16,17 +16,39 @@ class ItemController extends ControllerBase
     /**
      * Index action
      */
-    public function indexAction($page=1)
+    public function indexAction($type=1)
     {
-        $paginator = new \Phalcon\Paginator\Adapter\Model([
-                'data'  => Items::find(),
-                'limit' => self::ITEM_PER_PAGE,
-                'page'  => $page,
-            ]
-        );
-        $page = $paginator->getPaginate();
-        $this->view->pagination = new Pagination($page, '/item/index');
-        $this->view->page = $page;
+        //var_dump($this->security->getSessionToken());die();
+        switch ($type) {
+            case Items::TYPE_DEPOSIT:
+            case Items::TYPE_WITHDRAW:
+            case Items::TYPE_NORMAL:
+                $items = Items::find(["type = $type"]);
+                break;
+            default:
+                $items = Items::find(["type = 1"]);
+        }
+        $this->view->items = $items;
+        $this->view->form = new BuyForm();
+    }
+
+    /**
+     * Index action
+     */
+    public function listAction($type=1)
+    {
+        //var_dump($this->security->getSessionToken());die();
+        switch ($type) {
+            case Items::TYPE_DEPOSIT:
+            case Items::TYPE_WITHDRAW:
+            case Items::TYPE_NORMAL:
+                $items = Items::find(["type = $type"]);
+                break;
+            default:
+                $items = Items::find(["type = 1"]);
+        }
+        $this->view->items = $items;
+        $this->view->form = new BuyForm();
     }
 
     /**
@@ -174,4 +196,19 @@ class ItemController extends ControllerBase
         return $this->forward('item');
     }
 
+    public function buyAction()
+    {
+        if (!$this->request->isPost()) {
+            return $this->response->redirect('item');
+        }
+        $form = new BuyForm();
+        if ($form->isValid($this->request->getPost()) == false) {
+            foreach ($form->getMessages() as $message) {
+                $this->flash->error($message);
+                return $this->forward('item/list');
+            }
+        }
+        $item_id = $this->request->get('items');
+        $this->forward('item/view', ['id' => $item_id]);
+    }
 }

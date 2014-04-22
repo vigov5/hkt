@@ -18,7 +18,7 @@ trait ImageTrait
         if (!isset($params['class'])) {
             $params['class'] = '';
         }
-        $params['class'] .= 'img-responsive';
+        $params['class'] .= ' img-thumbnail img-responsive';
         $local = true;
         if ($fh->isValidUrl()) {
             $local = false;

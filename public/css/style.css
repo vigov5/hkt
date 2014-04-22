@@ -45,6 +45,10 @@ footer {
     position:relative;
 }
 
+.thumbnail.img-selected {
+    background-color: #0088cc;
+}
+
 .thumbnail-detail{
     position:absolute;
     bottom:0%;
@@ -73,4 +77,5 @@ footer {
     /* Good browsers */
     opacity: 1;
 }
+
 

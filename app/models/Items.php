@@ -159,6 +159,9 @@ class Items extends BModel
         ];
     }
 
+    /**
+     * @return bool
+     */
     public function validation()
     {
         $this->validate(new Uniqueness(['field' => 'name']));

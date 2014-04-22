@@ -1,39 +1,8 @@
 <?php use Phalcon\Tag; ?>
-<div class="col-sm-6 col-md-4 col-lg-3 an-item">
-    <ul class="nav nav-tabs an-item-tab">
-        <li class="active">
-            <a href="#item-tab-image-<?= $item->id ?>" data-toggle="tab"><?= $item->name ?></a>
-        </li>
-        <li>
-            <a href="#item-tab-info-<?= $item->id ?>" data-toggle="tab">Information</a>
-        </li>
-    </ul>
-
-    <div class="tab-content">
-        <div class="tab-pane fade in active" id="item-tab-image-<?= $item->id ?>">
-            <div class="thumbnail">
-                <div class="thumbnail-detail"><?= $item->name ?> (<?= $item->price ?>)</div>
-                <?= $item->imageView() ?>
-            </div>
-
-        </div>
-        <div class="tab-pane fade" id="item-tab-info-<?= $item->id ?>">
-            <table class="table table-hover">
-                <tr>
-                    <th class="success"><?= $item->getAttributeLabel('description') ?></th>
-                    <td><?= $item->description ?></td>
-                </tr>
-                <tr>
-                    <th class="success"><?= $item->getAttributeLabel('created_by') ?></th>
-                    <td><?= $item->user ? $item->user->username : 'N/A' ?></td>
-                </tr>
-                <?php if($current_user->canEditItem($item)): ?>
-                    <tr>
-                        <a href="<?= $this->url->get("item/update/{$item->id}")?>" class="btn btn-warning"><i class="fa fa-edit"></i> Edit </a>
-                    </tr>
-                <?php endif; ?>
-            </table>
-        </div>
+<div class="col-sm-6 col-md-4 col-lg-3">
+    <div class="thumbnail">
+        <div class="thumbnail-detail"><?= $item->name ?> (<?= $item->price ?>)</div>
+        <?= $item->imageView() ?>
     </div>
 </div>
 
