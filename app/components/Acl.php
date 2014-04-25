@@ -52,6 +52,10 @@ class Acl extends Component
             'create' => Users::ROLE_USER,
             'delete' => Users::ROLE_USER,
         ],
+        'setting' => [
+            'index' => Users::ROLE_ADMIN,
+            'acl' => Users::ROLE_ADMIN,
+        ],
     ];
 
 
@@ -96,9 +100,9 @@ class Acl extends Component
     public function getAcl()
     {
         // Check if the ACL is already created
-        if (is_object($this->_acl)) {
-            return $this->_acl;
-        }
+//        if (is_object($this->_acl)) {
+//            return $this->_acl;
+//        }
 
         // Check if the ACL is in APC
         if (function_exists('apc_fetch')) {

@@ -4,50 +4,54 @@ use Phalcon\Tag;
 echo $this->getContent();
 ?>
 
-<div align="left">
-    <h2>Sign Up</h2>
-</div>
-<hr>
-<div class="center-block register-form">
-	<?= Tag::form(['user/register', 'method' => 'post']) ?>
 
-    <div class="form-group">
-        <label class="pull-left control-label"><?= $form->label('username', ['class' => 'pull-left control-label']) ?></label>
-        <?= $form->render('username', ['class' => 'form-control']) ?>
-        <?= $form->messages('username', ['class' => 'help-block']) ?>
-    </div>
+<div class="center-block">
+    <?= Tag::form(['user/register', 'method' => 'post', 'class' => 'form-register']) ?>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h2 class="form-signin-heading">Register</h2>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="pull-left control-label"><?= $form->label('username', ['class' => 'pull-left control-label']) ?></label>
+                <?= $form->render('username', ['class' => 'form-control']) ?>
+                <?= $form->messages('username', ['class' => 'help-block']) ?>
+            </div>
 
-    <div class="form-group">
-        <label class="pull-left control-label"><?= $form->label('email', ['class' => 'pull-left control-label']) ?></label>
-        <?= $form->render('email', ['class' => 'form-control']) ?>
-        <?= $form->messages('email', ['class' => 'help-block']) ?>
-    </div>
+            <div class="form-group">
+                <label class="pull-left control-label"><?= $form->label('email', ['class' => 'pull-left control-label']) ?></label>
+                <?= $form->render('email', ['class' => 'form-control']) ?>
+                <?= $form->messages('email', ['class' => 'help-block']) ?>
+            </div>
 
-    <div class="form-group">
-        <label class="pull-left control-label"><?= $form->label('password', ['class' => 'pull-left control-label']) ?></label>
-        <?= $form->render('password', ['class' => 'form-control']) ?>
-        <?= $form->messages('password', ['class' => 'help-block']) ?>
-    </div>
+            <div class="form-group">
+                <label class="pull-left control-label"><?= $form->label('password', ['class' => 'pull-left control-label']) ?></label>
+                <?= $form->render('password', ['class' => 'form-control']) ?>
+                <?= $form->messages('password', ['class' => 'help-block']) ?>
+            </div>
 
-    <div class="form-group">
-        <label class="pull-left control-label"><?= $form->label('confirm_password', ['class' => 'pull-left control-label']) ?></label>
-        <?= $form->render('confirm_password', ['class' => 'form-control']) ?>
-        <?= $form->messages('confirm_password', ['class' => 'help-block']) ?>
-    </div>
+            <div class="form-group">
+                <label class="pull-left control-label"><?= $form->label('confirm_password', ['class' => 'pull-left control-label']) ?></label>
+                <?= $form->render('confirm_password', ['class' => 'form-control']) ?>
+                <?= $form->messages('confirm_password', ['class' => 'help-block']) ?>
+            </div>
 
-    <div class="row form-group">
-        <?= $form->render('terms', ['class' => 'pull-left']) ?>
-        <label class="pull-left control-label"><?= $form->label('terms', ['class' => 'pull-left control-label']) ?></label>
-        <?= $form->messages('terms', ['class' => 'help-block']) ?>
-    </div>
+            <div class="row form-group">
+                <label class="checkbox">
+                    <?= $form->render('terms', ['class' => 'pull-left']) ?>
+                    <?= $form->label('terms', ['class' => 'control-label']) ?>
+                </label>
+                <?= $form->messages('terms', ['class' => 'help-block']) ?>
+            </div>
 
-    <div class="row form-group">
-        <?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
-        <?= $form->messages('csrf', ['class' => 'help-block']) ?>
+            <div class="row form-group">
+                <?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
+                <?= $form->messages('csrf', ['class' => 'help-block']) ?>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+        </div>
     </div>
-    <div class="row">
-        <input type="submit" value="Register" class="btn btn-primary">
-    </div>
-	</form>
-
+    </form>
 </div>

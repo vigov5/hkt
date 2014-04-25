@@ -19,15 +19,7 @@ class ItemController extends ControllerBase
     public function indexAction($type=1)
     {
         //var_dump($this->security->getSessionToken());die();
-        switch ($type) {
-            case Items::TYPE_DEPOSIT:
-            case Items::TYPE_WITHDRAW:
-            case Items::TYPE_NORMAL:
-                $items = Items::find(["type = $type"]);
-                break;
-            default:
-                $items = Items::find(["type = 1"]);
-        }
+        $items = Items::find(["type = 1"]);
         $this->view->items = $items;
         $this->view->form = new BuyForm();
     }

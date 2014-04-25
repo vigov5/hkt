@@ -1,0 +1,19 @@
+<?php
+use Phalcon\Tag;
+
+echo $this->getContent();
+?>
+
+<h1>Setting</h1>
+<hr>
+<div class="row">
+<h3>Reload ACL</h3>
+<hr>
+<div class="register-form">
+    <?= Tag::form(['setting/acl', 'method' => 'post']) ?>
+        <div class="pull-left">
+            <input type="submit" value="Reload ACL" class="btn btn-primary">
+        </div>
+    </form>
+</div>
+</div>
