@@ -50,12 +50,38 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown <?= $current_page === 'setting' ? 'active' : '' ?>">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-cog"></span>
+                        Setting (<?= $current_user->getRoleValue() ?>) <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <?php if ($current_user->role >= Users::ROLE_ADMIN): ?>
+                        <li>
+                            <a href="<?= $this->url->get('setting') ?>">
+                                Admin Setting
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('setting') ?>">
+                                Users
+                            </a>
+                        </li>
+                        <?php endif; ?>
+                    </ul>
+                </li>
                 <li class="dropdown <?= $current_page === 'user' ? 'active' : '' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="fa fa-user"></span>
-                        <?= $current_user->username ?> (<?= $current_user->getRoleValue() ?>) ! <b class="caret"></b>
+                        <?= $current_user->username ?> ! <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?= $this->url->get('invoice') ?>"><span class="fa fa-edit"></span>Sent Invoices</a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('invoice/index/2') ?>"><span class="fa fa-edit"></span>Received Invoices</a>
+                        </li>
                         <li>
                             <a href="<?= $this->url->get('user/changepassword') ?>"><span class="fa fa-edit"></span>Your items <span class="badge"><?= $current_user->items->count() ?></span></a>
                         </li>
@@ -73,14 +99,6 @@
                         <?= $current_user->wallet ?> hkt
                     </a>
                 </li>
-                <?php if ($current_user->role >= Users::ROLE_ADMIN): ?>
-                <li class="<?= $current_page === 'setting' ? 'active' : '' ?>">
-                    <a href="<?= $this->url->get('setting') ?>">
-                        <span class="fa fa-cog"></span>
-                        Setting
-                    </a>
-                </li>
-                <?php endif; ?>
             </ul>
             <?php else: ?>
                 <form class="navbar-form navbar-left" role="login" action="/user/login" method="post">

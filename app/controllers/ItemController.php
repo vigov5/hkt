@@ -193,14 +193,19 @@ class ItemController extends ControllerBase
         if (!$this->request->isPost()) {
             return $this->response->redirect('item');
         }
-        $form = new BuyForm();
-        if ($form->isValid($this->request->getPost()) == false) {
-            foreach ($form->getMessages() as $message) {
-                $this->flash->error($message);
-                return $this->forward('item/list');
-            }
-        }
         $item_id = $this->request->get('items');
-        $this->forward('item/view', ['id' => $item_id]);
+        $item = Items::findFirstByid($item_id);
+        if (!$item || !$item->isOnSale()) {
+            $this->flash->error('You cannot buy that item !!!');
+        }
+        if (!$this->current_user->checkWallet($item->price)) {
+            $this->flash->error('Sorry !!! You do not have enough money !!!');
+        }
+        if ($this->current_user->createInvoice($item, 1)) {
+            $this->flash->success('Invoice created successfully !!!');
+        } else {
+            $this->flash->error('An error occured when trying to create invoice! Please contact the administrator !!!');
+        };
+        $this->forward('item');
     }
 }

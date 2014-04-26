@@ -165,6 +165,10 @@ class Users extends BModel
         parent::initialize();
 		$this->setSource('users');
         $this->hasMany('id', 'Items', 'created_by');
+        $this->hasMany('id', 'Invoices', 'to_user_id', ['alias' => 'receivedInvoices']);
+        $this->hasMany('id', 'Invoices', 'from_user_id', ['alias' => 'sentInvoices']);
+        $this->hasMany('id', 'Requests', 'to_user_id', ['alias' => 'receivedRequests']);
+        $this->hasMany('id', 'Requests', 'from_user_id', ['alias' => 'sentRequests']);
     }
 
     /**
@@ -244,5 +248,47 @@ class Users extends BModel
             $item_object = Items::findFirst(['id' => $item]);
             return $this->id === $item_object->created_by;
         }
+    }
+
+    public function checkWallet($threshold)
+    {
+        return $this->wallet >= $threshold;
+    }
+
+
+    public function minusWallet($amout) {
+        if ($this->checkWallet($amout)) {
+            $this->wallet -= $amout;
+            $this->save();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param Items $item
+     * @param int $to_id
+     * @param bool $to_user
+     * @param int $item_count
+     * @return bool
+     */
+    public function createInvoice($item, $to_id, $to_user=true, $item_count=1)
+    {
+        $invoice = new Invoices();
+        $invoice->from_user_id = $this->id;
+        if ($to_user) {
+            $invoice->to_user_id = $to_id;
+        } else {
+            $invoice->to_shop_id = $to_id;
+        }
+        $invoice->item_id = $item->id;
+        $invoice->item_count = $item_count;
+        $price = $item_count * $item->price;
+        $invoice->price = $price;
+        $this->minusWallet($price);
+        if (!$invoice->save()) {
+            return false;
+        }
+        return true;
     }
 }

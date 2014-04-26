@@ -178,5 +178,12 @@ class Items extends BModel
     {
         parent::initialize();
         $this->belongsTo('created_by', 'Users', 'id', ['alias' => 'user']);
+        $this->hasMany('id', 'Invoices', 'item_id');
+        $this->hasMany('id', 'Requests', 'item_id');
+    }
+
+    public function isOnSale()
+    {
+        return true;
     }
 }

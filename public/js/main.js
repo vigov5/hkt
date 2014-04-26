@@ -23,7 +23,50 @@ $(function() {
         img = new ImageSelector(this);
         img.toggle();
     })
+
+    $('#item-buy-btn').click(function (e) {
+        e.preventDefault();
+        var form = $('#item-buy-btn').closest('form');
+        createItemBuyConfirm(form);
+    });
 });
+
+function createItemBuyConfirm(form) {
+    var item_id = form.find('input[name="items"]').attr('value');
+    bootbox.dialog({
+        message: createItemLayout(item_id),
+        title: '<strong><span class="text-primary">Are you really want to buy the following item ?</span></strong>',
+        buttons: {
+            success: {
+                label: "OK",
+                className: "btn-success",
+                callback: function() {
+                    form.submit();
+                }
+            },
+            danger: {
+                label: "Cancel",
+                className: "btn-danger",
+                callback: function() {
+                    console.log('Cancel')
+                }
+            }
+        }
+    });
+}
+
+function createItemLayout(item_id) {
+    var item_div = $('[data-item-id=' + item_id +']');
+    var item_name = item_div.find('span.item-name').text();
+    var item_price = item_div.find('span.item-price').text();
+    var item_image = item_div.find('img').attr('src');
+    var html = '<div class="row">' +
+        '<div class="col-lg-6"><img src="' + item_image + '" class=" img-thumbnail img-responsive img-confirm-small"></div>' +
+        '<div class="col-lg-6"><div class="row">Name: <strong><span class="text-danger">' + item_name + '</span></strong></div>' +
+        '<div class="row">Price: <strong><span class="text-danger">' + item_price + '</span></strong></div></div>' +
+        '</div>';
+    return html;
+}
 
 function ImageSelector(element) {
     this.element = $(element);
