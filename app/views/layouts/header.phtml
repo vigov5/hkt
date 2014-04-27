@@ -28,13 +28,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= $this->url->get('item/index/1') ?>"><span class="fa fa-edit"></span>Deposit</a>
-                        </li>
-                        <li>
-                            <a href="<?= $this->url->get('item/index/2') ?>"><span class="fa fa-edit"></span>Withdraw</a>
-                        </li>
-                        <li>
-                            <a href="<?= $this->url->get('item/index/3') ?>"><span class="fa fa-edit"></span>Items</a>
+                            <a href="<?= $this->url->get('item/onsale') ?>"><span class="fa fa-edit"></span>Items</a>
                         </li>
                         <li class="divider"></li>
                         <li>
@@ -77,12 +71,6 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= $this->url->get('invoice') ?>"><span class="fa fa-edit"></span>Sent Invoices</a>
-                        </li>
-                        <li>
-                            <a href="<?= $this->url->get('invoice/index/2') ?>"><span class="fa fa-edit"></span>Received Invoices</a>
-                        </li>
-                        <li>
                             <a href="<?= $this->url->get('user/changepassword') ?>"><span class="fa fa-edit"></span>Your items <span class="badge"><?= $current_user->items->count() ?></span></a>
                         </li>
                         <li>
@@ -93,11 +81,25 @@
                         </li>
                     </ul>
                 </li>
-                <li class="">
-                    <a href="#">
+                <li class="dropdown <?= $current_page === 'wallet' ? 'active' : '' ?>">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="fa fa-dollar"></span>:
-                        <?= $current_user->wallet ?> hkt
+                        <?= $current_user->wallet ?> hkt <b class="caret"></b>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?= $this->url->get('item/index/1') ?>">Deposit</a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('item/index/2') ?>">Withdraw</a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('invoice') ?>">Sent Invoices</a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('invoice/index/2') ?>">Received Invoices</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
             <?php else: ?>

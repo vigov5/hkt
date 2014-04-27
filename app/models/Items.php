@@ -122,6 +122,7 @@ class Items extends BModel
     const TYPE_DEPOSIT = 1;
     const TYPE_WITHDRAW = 2;
     const TYPE_NORMAL = 3;
+    const TYPE_SET = 4;
 
     /**
      * @var array $item_type
@@ -130,6 +131,7 @@ class Items extends BModel
         self::TYPE_DEPOSIT => 'Deposit',
         self::TYPE_WITHDRAW => 'Withdraw',
         self::TYPE_NORMAL => 'Normal',
+        self::TYPE_SET => 'Set',
     ];
 
     use ImageTrait;
@@ -180,10 +182,44 @@ class Items extends BModel
         $this->belongsTo('created_by', 'Users', 'id', ['alias' => 'user']);
         $this->hasMany('id', 'Invoices', 'item_id');
         $this->hasMany('id', 'Requests', 'item_id');
+        $this->hasMany('id', 'ItemUsers', 'item_id');
+        $this->hasManyToMany('id', 'ItemUsers', 'item_id', 'user_id', 'Users', 'id', ['alias' => 'saleUsers']);
     }
 
     public function isOnSale()
     {
-        return true;
+        foreach ($this->itemusers as $itemuser) {
+            if ($itemuser->isOnSale()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function getOnSaleItems()
+    {
+        $type = self::TYPE_NORMAL;
+        return self::find([
+            "type = $type",
+        ])->filter(function ($item) {
+            if ($item->isOnSale()) {
+                return $item;
+            }
+        });
+    }
+
+    public function getSalePrice($user_id=null)
+    {
+        if (!$user_id) {
+            return $this->price;
+        }
+        $item_users = $this->getItemUsers(["user_id = $user_id"]);
+        if (!$item_users) {
+            return $this->price;
+        }
+        if ($item_users[0]->price) {
+            return $item_users[0]->price;
+        }
+        return $this->price;
     }
 }

@@ -16,10 +16,20 @@ class ItemController extends ControllerBase
     /**
      * Index action
      */
-    public function indexAction($type=1)
+    public function indexAction($type=Items::TYPE_DEPOSIT)
     {
-        //var_dump($this->security->getSessionToken());die();
-        $items = Items::find(["type = 1"]);
+        if ($type != Items::TYPE_DEPOSIT && $type != Items::TYPE_WITHDRAW) {
+            $type = Items::TYPE_DEPOSIT;
+        }
+        $this->view->current_page = 'wallet';
+        $items = Items::find(["type = $type"]);
+        $this->view->items = $items;
+        $this->view->form = new BuyForm();
+    }
+
+    public function onsaleAction()
+    {
+        $items = Items::getOnSaleItems();
         $this->view->items = $items;
         $this->view->form = new BuyForm();
     }
@@ -195,11 +205,17 @@ class ItemController extends ControllerBase
         }
         $item_id = $this->request->get('items');
         $item = Items::findFirstByid($item_id);
-        if (!$item || !$item->isOnSale()) {
-            $this->flash->error('You cannot buy that item !!!');
+        if (!$item) {
+            $this->flash->error('Item does not exist');
+            return $this->forward('item');
+        }
+        if (!$item->isOnSale()) {
+            $this->flash->error('Item is not on sale');
+            return $this->forward('item');
         }
         if (!$this->current_user->checkWallet($item->price)) {
             $this->flash->error('Sorry !!! You do not have enough money !!!');
+            return $this->forward('item');
         }
         if ($this->current_user->createInvoice($item, 1)) {
             $this->flash->success('Invoice created successfully !!!');

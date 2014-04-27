@@ -2,23 +2,28 @@
 use Phalcon\Tag;
 echo $this->getContent();
 ?>
-
-<a href="<?= $this->url->get("item/create")?>" class="btn btn-success"><i class="fa fa-edit"></i> Create New Item </a>
-<hr/>
 <div class="row">
-<?php foreach ($items as $item): ?>
-    <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="thumbnail single-item-select" data-form="item" data-item-id="<?= $item->id ?>">
-            <div class="thumbnail-detail"><span class="item-name"><?= $item->name ?></span> (<span class='item-price'><?= $item->price ?></span>)</div>
-            <?= $item->imageView() ?>
+<?php if(count($items)): ?>
+    <?php foreach ($items as $item): ?>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="thumbnail single-item-select" data-form="item" data-item-id="<?= $item->id ?>">
+                <div class="thumbnail-detail">
+                    <span class="item-name"><?= $item->name ?></span> (<span class='item-price'><?= $item->price ?></span>)
+                </div>
+                <?= $item->imageView() ?>
+            </div>
         </div>
+    <?php endforeach; ?>
     </div>
-<?php endforeach; ?>
+    <?= Tag::form(['item/buy', 'method' => 'post']) ?>
+    <?= $form->render('items', ['data-form' => 'item']) ?>
+    <?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
+    <div class="row">
+        <input type="submit" value="Buy Now" class="btn btn-primary" id="item-buy-btn">
+    </div>
+    <?= Tag::endForm() ?>
+<?php else: ?>
+<h1>No items available !</h1>
+<hr>
+<?php endif; ?>
 </div>
-<?= Tag::form(['item/buy', 'method' => 'post']) ?>
-<?= $form->render('items', ['data-form' => 'item']) ?>
-<?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
-<div class="row">
-    <input type="submit" value="Buy Now" class="btn btn-primary" id="item-buy-btn">
-</div>
-<?= Tag::endForm() ?>

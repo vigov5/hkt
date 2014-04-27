@@ -40,6 +40,7 @@ class Acl extends Component
         ],
         'item' => [
             'index' => Users::ROLE_USER,
+            'onsale' => Users::ROLE_USER,
             'search' => Users::ROLE_USER,
             'edit' => Users::ROLE_USER,
             'create' => Users::ROLE_USER,

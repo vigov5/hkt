@@ -169,6 +169,8 @@ class Users extends BModel
         $this->hasMany('id', 'Invoices', 'from_user_id', ['alias' => 'sentInvoices']);
         $this->hasMany('id', 'Requests', 'to_user_id', ['alias' => 'receivedRequests']);
         $this->hasMany('id', 'Requests', 'from_user_id', ['alias' => 'sentRequests']);
+        $this->hasMany('id', 'ItemUsers', 'user_id');
+        $this->hasManyToMany('id', 'ItemUsers', 'user_id', 'item_id', 'Items', 'id', ['alias' => 'saleItems']);
     }
 
     /**

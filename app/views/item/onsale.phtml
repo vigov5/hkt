@@ -1,0 +1,35 @@
+<?php
+use Phalcon\Tag;
+echo $this->getContent();
+?>
+<h1>On Sale Items </h1>
+<hr>
+<div class="row">
+    <?php if(count($items)): ?>
+    <?php foreach ($items as $item): ?>
+    <?php foreach($item->itemUsers as $item_user): ?>
+    <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="thumbnail single-item-select" data-form="item" data-item-id="<?= $item->id ?>">
+            <div class="thumbnail-detail">
+                <div class="row"><span class="item-name"><?= $item->name ?></span></div>
+                <div class="row"<span class='item-price'><?= $item->getSalePrice($item_user->user_id) ?></span></div>
+            <div class="row"><span class="item-seller"><?= $item_user->user->username ?></span></div>
+        </div>
+        <?= $item->imageView() ?>
+    </div>
+</div>
+<?php endforeach ?>
+<?php endforeach; ?>
+    </div>
+<?= Tag::form(['item/buy', 'method' => 'post']) ?>
+<?= $form->render('items', ['data-form' => 'item']) ?>
+<?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
+    <div class="row">
+        <input type="submit" value="Buy Now" class="btn btn-primary" id="item-buy-btn">
+    </div>
+<?= Tag::endForm() ?>
+<?php else: ?>
+    <h1>No items available !</h1>
+    <hr>
+<?php endif; ?>
+</div>
