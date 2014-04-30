@@ -109,27 +109,27 @@ class Users extends BModel
 
     public function isUnauthorized()
     {
-        return $this->role === self::ROLE_UNAUTHORIZED;
+        return $this->role == self::ROLE_UNAUTHORIZED;
     }
 
     public function isUser()
     {
-        return $this->role === self::ROLE_USER;
+        return $this->role == self::ROLE_USER;
     }
 
     public function isModerator()
     {
-        return $this->role === self::ROLE_MODERATOR;
+        return $this->role == self::ROLE_MODERATOR;
     }
 
     public function isAdmin()
     {
-        return $this->role === self::ROLE_ADMIN;
+        return $this->role == self::ROLE_ADMIN;
     }
 
     public function isSuperAdmin()
     {
-        return $this->role === self::ROLE_SUPER_ADMIN;
+        return $this->role == self::ROLE_SUPER_ADMIN;
     }
     /**
      * Validations and business logic
@@ -268,29 +268,61 @@ class Users extends BModel
     }
 
     /**
-     * @param Items $item
-     * @param int $to_id
-     * @param bool $to_user
+     * @param ItemUsers $item_user
      * @param int $item_count
      * @return bool
      */
-    public function createInvoice($item, $to_id, $to_user=true, $item_count=1)
+    public function createInvoiceToUser($item_user, $item_count=1)
     {
         $invoice = new Invoices();
         $invoice->from_user_id = $this->id;
-        if ($to_user) {
-            $invoice->to_user_id = $to_id;
-        } else {
-            $invoice->to_shop_id = $to_id;
-        }
-        $invoice->item_id = $item->id;
+        $invoice->to_user_id = $item_user->user_id;
+        $invoice->item_id = $item_user->item_id;
         $invoice->item_count = $item_count;
-        $price = $item_count * $item->price;
+        $price = $item_count * $item_user->getSalePrice();
         $invoice->price = $price;
         $this->minusWallet($price);
         if (!$invoice->save()) {
             return false;
         }
         return true;
+    }
+
+    /**
+     * @param int $type
+     * @param null|int $item_id
+     * @param int $to_user_id
+     * @return bool
+     */
+    public function createRequest($type, $item_id=null, $to_user_id=0)
+    {
+        $request = new Requests();
+        $request->from_user_id = $this->id;
+        $request->type = $type;
+        if ($item_id) {
+            $request->item_id = $item_id;
+        }
+        $request->to_user_id = $to_user_id;
+        if (!$request->save()) {
+            return false;
+        }
+        return true;
+    }
+
+    public function canAccessNoDestinationRequests()
+    {
+        return ($this->isAdmin() || $this->isSuperAdmin());
+    }
+
+    public function getAllReceivedRequests()
+    {
+        if ($this->canAccessNoDestinationRequests()) {
+            return Requests::find([
+                'conditions' => 'to_user_id = :to_user_id: OR to_user_id = 0',
+                'bind' => ['to_user_id' => $this->id],
+                'order' => 'id DESC',
+            ]);
+        }
+        return $this->getReceivedRequests();
     }
 }

@@ -22,15 +22,15 @@ class ItemController extends ControllerBase
             $type = Items::TYPE_DEPOSIT;
         }
         $this->view->current_page = 'wallet';
-        $items = Items::find(["type = $type"]);
-        $this->view->items = $items;
+        $item_users = ItemUsers::getOnSaleItems($type);
+        $this->view->item_users = $item_users;
         $this->view->form = new BuyForm();
     }
 
     public function onsaleAction()
     {
-        $items = Items::getOnSaleItems();
-        $this->view->items = $items;
+        $item_users = ItemUsers::getOnSaleItems();
+        $this->view->item_users = $item_users;
         $this->view->form = new BuyForm();
     }
 
@@ -203,25 +203,35 @@ class ItemController extends ControllerBase
         if (!$this->request->isPost()) {
             return $this->response->redirect('item');
         }
-        $item_id = $this->request->get('items');
-        $item = Items::findFirstByid($item_id);
-        if (!$item) {
+        $item_user_id = $this->request->get('items');
+        $amount = $this->request->get('amount');
+        if (!$amount) {
+            $amount = 1;
+        }
+        $item_user = ItemUsers::findFirstByid($item_user_id);
+        if (!$item_user) {
             $this->flash->error('Item does not exist');
             return $this->forward('item');
         }
-        if (!$item->isOnSale()) {
+        if (!$item_user->isOnSale()) {
             $this->flash->error('Item is not on sale');
             return $this->forward('item');
         }
-        if (!$this->current_user->checkWallet($item->price)) {
+        if (!$this->current_user->checkWallet($amount * $item_user->getSalePrice())) {
             $this->flash->error('Sorry !!! You do not have enough money !!!');
             return $this->forward('item');
         }
-        if ($this->current_user->createInvoice($item, 1)) {
+        if ($this->current_user->createInvoiceToUser($item_user, $amount)) {
             $this->flash->success('Invoice created successfully !!!');
         } else {
             $this->flash->error('An error occured when trying to create invoice! Please contact the administrator !!!');
         };
-        $this->forward('item');
+        if ($item_user->item->type == Items::TYPE_DEPOSIT) {
+            $this->forward('item/index/1');
+        } elseif ($item_user->item->type == Items::TYPE_WITHDRAW) {
+            $this->forward('item/index/2');
+        } else {
+            $this->forward('item/onsale');
+        }
     }
 }

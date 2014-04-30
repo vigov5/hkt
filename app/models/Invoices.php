@@ -81,11 +81,13 @@ class Invoices extends BModel
     const STATUS_SENT = 1;
     const STATUS_ACCEPT = 2;
     const STATUS_REJECT = 3;
+    const STATUS_CANCEL = 4;
 
     public static $status_value = [
         self::STATUS_SENT => 'SENT',
         self::STATUS_ACCEPT => 'ACCEPTED',
         self::STATUS_REJECT => 'REJECTED',
+        self::STATUS_CANCEL => 'CANCELED',
     ];
 
     const TYPE_SENT = 1;
@@ -107,8 +109,10 @@ class Invoices extends BModel
                 return "<span class='label label-info'>$val</span>";
             case self::STATUS_ACCEPT:
                 return "<span class='label label-success'>$val</span>";
-            default:
+            case self::STATUS_REJECT:
                 return "<span class='label label-danger'>$val</span>";
+            default:
+                return "<span class='label label-warning'>$val</span>";
         }
     }
     /**
@@ -146,5 +150,10 @@ class Invoices extends BModel
         $this->belongsTo('item_id', 'Items', 'id', ['alias' => 'item']);
         $this->belongsTo('from_user_id', 'Users', 'id', ['alias' => 'fromUser']);
         $this->belongsTo('to_user_id', 'Users', 'id', ['alias' => 'toUser']);
+    }
+
+    public function isStatusSent()
+    {
+        return $this->status == self::STATUS_SENT;
     }
 }

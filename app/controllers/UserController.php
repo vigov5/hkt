@@ -106,6 +106,7 @@ class UserController extends ControllerBase
                     ]);
                 if ($user->save()) {
                     $this->auth->authUserById($user->id);
+                    $user->createRequest(Requests::TYPE_REGISTER);
                     return $this->dispatcher->forward([
                         'controller' => 'index',
                         'action' => 'index'

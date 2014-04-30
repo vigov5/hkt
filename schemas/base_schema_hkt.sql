@@ -89,6 +89,8 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_shops` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `item_id` INT NOT NULL,
   `shop_id` INT NOT NULL,
+  `price` INT DEFAULT 0,
+  `force_sale` INT DEFAULT 0,
   `start_sale_date` DATETIME NULL,
   `end_sale_date` DATETIME NULL,
   `created_at` DATETIME NULL,
@@ -128,6 +130,10 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`requests` (
   `from_shop_id` INT NULL,
   `type` TINYINT(4) NOT NULL COMMENT '1: REGISTER: A new user registered, 2: CREATE_ITEM: An user want to create an item,3: CREATE_SHOP: An user want to create an shop, 4: USER_SELL_ITEM: An user want to register an item to sell, 5: SHOP_SELL_ITEM: A shop want to register an item to sell.',
   `status` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '1: SENT, 2: REJECTED, 3: ACCEPTED',
+  `item_id` INT DEFAULT 0,
+  `updated_by` INT,
+  `created_at` DATETIME,
+  `updated_at` DATETIME,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -139,6 +145,8 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `item_id` INT NOT NULL,
   `user_id` INT NOT NULL,
+  `price` INT DEFAULT 0,
+  `force_sale` INT DEFAULT 0,
   `start_sale_date` DATETIME NULL,
   `end_sale_date` DATETIME NULL,
   `created_at` DATETIME NULL,

@@ -186,6 +186,10 @@ class Items extends BModel
         $this->hasManyToMany('id', 'ItemUsers', 'item_id', 'user_id', 'Users', 'id', ['alias' => 'saleUsers']);
     }
 
+    /**
+     * Check if an item is on sale or not
+     * @return bool
+     */
     public function isOnSale()
     {
         foreach ($this->itemusers as $itemuser) {
@@ -196,6 +200,10 @@ class Items extends BModel
         return false;
     }
 
+    /**
+     * Get all items that are sale by users
+     * @return mixed
+     */
     public static function getOnSaleItems()
     {
         $type = self::TYPE_NORMAL;
@@ -208,6 +216,10 @@ class Items extends BModel
         });
     }
 
+    /**
+     * @param int|null $user_id
+     * @return int price
+     */
     public function getSalePrice($user_id=null)
     {
         if (!$user_id) {

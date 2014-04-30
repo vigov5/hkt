@@ -92,12 +92,50 @@ class ItemUsers extends BModel
     {
         parent::initialize();
         $this->belongsTo('user_id', 'Users', 'id', ['alias' => 'user']);
-        $this->belongsTo('item_id', 'Users', 'id', ['alias' => 'item']);
+        $this->belongsTo('item_id', 'Items', 'id', ['alias' => 'item']);
     }
 
+    /**
+     * Check where an item is on sale or not
+     * @return bool
+     */
     public function isOnSale()
     {
         $time = date('Y-m-d H-i-s');
         return $this->force_sale || ($this->start_sale_date <= $time && $time <= $this->end_sale_date);
+    }
+
+    /**
+     * @param int $type
+     * @return \Phalcon\Mvc\Model\Resultset\Simple
+     */
+    public static function getOnSaleItems($type=Items::TYPE_NORMAL)
+    {
+        $time = date('Y-m-d H-i-s');
+        $sql = "SELECT * FROM item_users, items WHERE (item_users.force_sale != 0 OR (item_users.start_sale_date <= ? OR item_users.end_sale_date >= ?)) AND (item_users.item_id = items.id AND items.type = ?)";
+        $params = [$time, $time, $type];
+        $item_user = new ItemUsers();
+        return new Phalcon\Mvc\Model\Resultset\Simple(null, $item_user, $item_user->getReadConnection()->query($sql, $params));
+    }
+
+    public function getItemJsonObject()
+    {
+        $obj = [
+            'item_id' => $this->item_id,
+            'item_user_id' => $this->id,
+            'name' => $this->item->name,
+            'img' => $this->item->getImageLink(),
+            'seller' => $this->user->username,
+            'price' => $this->item->getSalePrice($this->user_id),
+        ];
+        return json_encode($obj);
+    }
+
+    public function getSalePrice()
+    {
+        if ($this->price) {
+            return $this->price;
+        }
+        return $this->item->price;
     }
 }

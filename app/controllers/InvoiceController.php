@@ -8,12 +8,12 @@ class InvoiceController extends ControllerBase
         $this->view->current_page = 'wallet';
     }
 
-    public function indexAction($type=Invoices::STATUS_SENT)
+    public function indexAction($type=Invoices::TYPE_SENT)
     {
-        if ($type === Invoices::STATUS_SENT) {
-            $this->view->invoices = $this->current_user->sentInvoices;
+        if ($type === Invoices::TYPE_SENT) {
+            $this->view->invoices = $this->current_user->getSentInvoices(['order' => 'id desc']);
         } else {
-            $this->view->invoices = $this->current_user->receivedInvoices;
+            $this->view->invoices = $this->current_user->getReceivedInvoices(['order' => 'id desc']);
         }
         $this->view->type = $type;
 

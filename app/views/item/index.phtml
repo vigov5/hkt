@@ -3,24 +3,26 @@ use Phalcon\Tag;
 echo $this->getContent();
 ?>
 <div class="row">
-<?php if(count($items)): ?>
-    <?php foreach ($items as $item): ?>
+<?php if(count($item_users)): ?>
+    <?php foreach ($item_users as $item_user): ?>
         <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="thumbnail single-item-select" data-form="item" data-item-id="<?= $item->id ?>">
+            <div class="thumbnail single-item-select" data-form="item" data-item-user-id="<?= $item_user->id ?>">
                 <div class="thumbnail-detail">
-                    <span class="item-name"><?= $item->name ?></span> (<span class='item-price'><?= $item->price ?></span>)
+                    <span class="item-name"><?= $item_user->item->name ?></span> (<span class='item-price'><?= $item_user->getSalePrice() ?></span>)
                 </div>
-                <?= $item->imageView() ?>
+                <?= $item_user->item->imageView() ?>
             </div>
         </div>
+        <script type="text/javascript">
+            localStorage.setItem("item-user-" + <?= $item_user->id ?>, JSON.stringify(<?= $item_user->getItemJsonObject() ?>));
+        </script>
     <?php endforeach; ?>
     </div>
     <?= Tag::form(['item/buy', 'method' => 'post']) ?>
-    <?= $form->render('items', ['data-form' => 'item']) ?>
-    <?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
-    <div class="row">
-        <input type="submit" value="Buy Now" class="btn btn-primary" id="item-buy-btn">
-    </div>
+        <?= $form->render('items', ['data-form' => 'item']) ?>
+        <div class="row">
+            <input type="submit" value="Buy Now" class="btn btn-primary" id="item-buy-btn">
+        </div>
     <?= Tag::endForm() ?>
 <?php else: ?>
 <h1>No items available !</h1>

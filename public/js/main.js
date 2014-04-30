@@ -27,14 +27,30 @@ $(function() {
     $('#item-buy-btn').click(function (e) {
         e.preventDefault();
         var form = $('#item-buy-btn').closest('form');
-        createItemBuyConfirm(form);
+        var item_user_id = form.find('input[name="items"]').attr('value');
+        var item_object = JSON.parse(localStorage.getItem("item-user-"+item_user_id));
+        item_object.amount = 1;
+        console.log(item_object);
+        var message = createItemLayout(item_object);
+        createItemBuyConfirm(form, message);
+    });
+
+    $('.buy-btn').click(function (e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        var item_user_id = form.find('input[name="item_user_id"]').attr('value');
+        var amount = form.find('input[name="amount"]').val();
+        var item_object = JSON.parse(localStorage.getItem("item-user-"+item_user_id));
+        item_object.amount = amount;
+        console.log(item_object);
+        var message = createItemLayout(item_object);
+        createItemBuyConfirm(form, message);
     });
 });
 
-function createItemBuyConfirm(form) {
-    var item_id = form.find('input[name="items"]').attr('value');
+function createItemBuyConfirm(form, message) {
     bootbox.dialog({
-        message: createItemLayout(item_id),
+        message: message,
         title: '<strong><span class="text-primary">Are you really want to buy the following item ?</span></strong>',
         buttons: {
             success: {
@@ -55,15 +71,13 @@ function createItemBuyConfirm(form) {
     });
 }
 
-function createItemLayout(item_id) {
-    var item_div = $('[data-item-id=' + item_id +']');
-    var item_name = item_div.find('span.item-name').text();
-    var item_price = item_div.find('span.item-price').text();
-    var item_image = item_div.find('img').attr('src');
+function createItemLayout(item_object) {
     var html = '<div class="row">' +
-        '<div class="col-lg-6"><img src="' + item_image + '" class=" img-thumbnail img-responsive img-confirm-small"></div>' +
-        '<div class="col-lg-6"><div class="row">Name: <strong><span class="text-danger">' + item_name + '</span></strong></div>' +
-        '<div class="row">Price: <strong><span class="text-danger">' + item_price + '</span></strong></div></div>' +
+        '<div class="col-lg-6"><img src="/' + item_object.img + '" class=" img-thumbnail img-responsive img-confirm-small"></div>' +
+        '<div class="col-lg-6"><div class="row">Name: <strong><span class="text-danger">' + item_object.name + '</span></strong></div>' +
+        '<div class="row">Seller: <strong><span class="text-danger">' + item_object.seller + '</span></strong></div>' +
+        '<div class="row">Amount: <strong><span class="text-danger">' + item_object.amount + '</span></strong></div>'+
+        '<div class="row">Price: <strong><span class="text-danger">' + item_object.price  * item_object.amount + '</span></strong></div></div>' +
         '</div>';
     return html;
 }
@@ -80,7 +94,7 @@ ImageSelector.prototype.isSelected = function() {
 
 ImageSelector.prototype.setSelected = function() {
     this.element.addClass('img-selected');
-    this.form.attr('value', this.element.attr('data-item-id'));
+    this.form.attr('value', this.element.attr('data-item-user-id'));
 }
 
 ImageSelector.prototype.removeSelected = function() {

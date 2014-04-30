@@ -4,32 +4,37 @@ echo $this->getContent();
 ?>
 <h1>On Sale Items </h1>
 <hr>
+
+<?php if(count($item_users)): ?>
 <div class="row">
-    <?php if(count($items)): ?>
-    <?php foreach ($items as $item): ?>
-    <?php foreach($item->itemUsers as $item_user): ?>
-    <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="thumbnail single-item-select" data-form="item" data-item-id="<?= $item->id ?>">
-            <div class="thumbnail-detail">
-                <div class="row"><span class="item-name"><?= $item->name ?></span></div>
-                <div class="row"<span class='item-price'><?= $item->getSalePrice($item_user->user_id) ?></span></div>
-            <div class="row"><span class="item-seller"><?= $item_user->user->username ?></span></div>
+    <?php foreach($item_users as $item_user): ?>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+                <?= $item_user->item->imageView() ?>
+                <div class="caption">
+                    <h3><span class="item-name text-success"><?= $item_user->item->name ?></span></h3>
+                    <p><strong>Price: </strong><span class="item-price"><?= $item_user->item->getSalePrice($item_user->user_id) ?></span> |
+                        <strong>Seller: </strong><span class="item-seller"><?= $item_user->user->username ?></span>
+                    </p>
+                    <?= Tag::form(['item/buy', 'method' => 'post', 'class' => 'form-inline']) ?>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="number" name="amount" class="form-control" value="1">
+                        </div>
+                        <input type="hidden" name="items" value="<?= $item_user->item_id ?>">
+                        <input type="hidden" name="item_user_id" value="<?= $item_user->id ?>">
+                        <hr>
+                        <button type="submit" class="btn btn-primary btn-sm buy-btn">Buy now</button>
+                    <?= Tag::endForm() ?>
+                </div>
+                <script type="text/javascript">
+                    localStorage.setItem("item-user-" + <?= $item_user->id ?>, JSON.stringify(<?= $item_user->getItemJsonObject() ?>));
+                </script>
+            </div>
         </div>
-        <?= $item->imageView() ?>
-    </div>
+    <?php endforeach ?>
 </div>
-<?php endforeach ?>
-<?php endforeach; ?>
-    </div>
-<?= Tag::form(['item/buy', 'method' => 'post']) ?>
-<?= $form->render('items', ['data-form' => 'item']) ?>
-<?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
-    <div class="row">
-        <input type="submit" value="Buy Now" class="btn btn-primary" id="item-buy-btn">
-    </div>
-<?= Tag::endForm() ?>
 <?php else: ?>
     <h1>No items available !</h1>
     <hr>
 <?php endif; ?>
-</div>

@@ -103,31 +103,6 @@ class BModel extends Model
     }
 
     /**
-     * Magic method to use attribute in snake_case
-     * For example $ex->a_method is same as $ex->getAMethod()
-     * @param string $property The property in snake_case
-     * @return mixed Call the method if it exists, otherwise call parent __get() method
-     */
-    public function __get($property)
-    {
-        $method = 'get' . Phalcon\Text::camelize($property);
-        return $this->$method();
-    }
-
-    /**
-     * Magic method to use attribute in snake_case
-     * For example $ex->a_method = $value is same as $ex->setAMethod($value)
-     * @param string $property The property in snake_case
-     * @param array $params The value that will be passed to set method
-     * @return mixed Call the method if it exists, otherwise call parent __set() method
-     */
-    public function __set($property, $params)
-    {
-        $method = 'set' . Phalcon\Text::camelize($property);
-        return $this->$method($params);
-    }
-
-    /**
      * Check whether the attribute is save or not
      * @param $att string
      * @return boolean
