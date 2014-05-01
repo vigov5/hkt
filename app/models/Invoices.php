@@ -152,8 +152,51 @@ class Invoices extends BModel
         $this->belongsTo('to_user_id', 'Users', 'id', ['alias' => 'toUser']);
     }
 
+    /**
+     * Check whether the status is STATUS_SENT or not
+     * @return bool
+     */
     public function isStatusSent()
     {
         return $this->status == self::STATUS_SENT;
+    }
+
+    /**
+     * The invoice is canceled
+     */
+    public function beCanceled()
+    {
+        if (!$this->isStatusSent()) {
+            return false;
+        }
+        $this->status = self::STATUS_CANCEL;
+        $this->fromUser->increaseWallet($this->price);
+        return $this->save();
+    }
+
+    /**
+     * The invoice is accepted
+     */
+    public function beAccepted()
+    {
+        if (!$this->isStatusSent()) {
+            return false;
+        }
+        $this->status = self::STATUS_ACCEPT;
+        $this->toUser->increaseWallet($this->price);
+        $this->save();
+    }
+
+    /**
+     * The invoice is rejected
+     */
+    public function beRejected()
+    {
+        if (!$this->isStatusSent()) {
+            return false;
+        }
+        $this->status = self::STATUS_REJECT;
+        $this->fromUser->increaseWallet($this->price);
+        $this->save();
     }
 }

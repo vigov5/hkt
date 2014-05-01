@@ -18,6 +18,7 @@ class ControllerBase extends BController
         if (!$this->current_user) {
             $this->view->login_form = new LoginForm();
         }
+        $this->flashSession();
     }
 
     protected function getCurrentUser()
@@ -67,6 +68,47 @@ class ControllerBase extends BController
 
                 return false;
             }
+        }
+    }
+
+    public function setPrevUrl($url)
+    {
+        $this->session->set('prev_url', $this->url->get($url));
+    }
+
+    public function getPrevUrl()
+    {
+        return $this->session->get('prev_url');
+    }
+
+    public function redirectToPrevUrl()
+    {
+        $this->response->redirect($this->getPrevUrl());
+    }
+
+    public function setFlashSession($type, $message)
+    {
+        $this->session->set('flash_session', [$type, $message]);
+    }
+
+    public function getFlashSession()
+    {
+        return $this->session->get('flash_session');
+    }
+
+    public function removeFlashSession()
+    {
+        return $this->session->remove('flash_session');
+    }
+
+    public function flashSession()
+    {
+        $flash = $this->getFlashSession();
+        if ($flash) {
+            $type = $flash[0];
+            $message = $flash[1];
+            $this->flash->$type($message);
+            $this->removeFlashSession();
         }
     }
 }

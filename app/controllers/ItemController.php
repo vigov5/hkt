@@ -25,6 +25,7 @@ class ItemController extends ControllerBase
         $item_users = ItemUsers::getOnSaleItems($type);
         $this->view->item_users = $item_users;
         $this->view->form = new BuyForm();
+        $this->setPrevUrl("item/index/$type");
     }
 
     public function onsaleAction()
@@ -32,25 +33,8 @@ class ItemController extends ControllerBase
         $item_users = ItemUsers::getOnSaleItems();
         $this->view->item_users = $item_users;
         $this->view->form = new BuyForm();
-    }
-
-    /**
-     * Index action
-     */
-    public function listAction($type=1)
-    {
-        //var_dump($this->security->getSessionToken());die();
-        switch ($type) {
-            case Items::TYPE_DEPOSIT:
-            case Items::TYPE_WITHDRAW:
-            case Items::TYPE_NORMAL:
-                $items = Items::find(["type = $type"]);
-                break;
-            default:
-                $items = Items::find(["type = 1"]);
-        }
-        $this->view->items = $items;
-        $this->view->form = new BuyForm();
+        $this->session->set('prev_url', $this->url->get("item/onsale"));
+        $this->setPrevUrl("item/onsale");
     }
 
     /**
@@ -66,6 +50,7 @@ class ItemController extends ControllerBase
             return $this->forward('item');
         }
         $this->view->item = $item;
+        $this->setPrevUrl("item/view/$id");
     }
 
     /**
@@ -222,16 +207,10 @@ class ItemController extends ControllerBase
             return $this->forward('item');
         }
         if ($this->current_user->createInvoiceToUser($item_user, $amount)) {
-            $this->flash->success('Invoice created successfully !!!');
+            $this->setFlashSession('success', 'Invoice created successfully !!!');
         } else {
-            $this->flash->error('An error occured when trying to create invoice! Please contact the administrator !!!');
+            $this->setFlashSession('error', 'An error occured when trying to create invoice! Please contact the administrator !!!');
         };
-        if ($item_user->item->type == Items::TYPE_DEPOSIT) {
-            $this->forward('item/index/1');
-        } elseif ($item_user->item->type == Items::TYPE_WITHDRAW) {
-            $this->forward('item/index/2');
-        } else {
-            $this->forward('item/onsale');
-        }
+        $this->redirectToPrevUrl();
     }
 }

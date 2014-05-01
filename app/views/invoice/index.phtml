@@ -2,6 +2,7 @@
 /**
  * @var Users $current_user
  */
+echo $this->getContent();
 ?>
 <div class="panel panel-<?= $type == Invoices::TYPE_SENT ? 'info' : 'warning' ?>">
     <!-- Default panel contents -->
@@ -49,10 +50,10 @@
                 <td><?= $invoice->updated_at ?></td>
                 <td>
                     <?php if($type == Invoices::TYPE_SENT && $invoice->isStatusSent()): ?>
-                        <button class="btn btn-danger btn-sm">Cancel</button>
-                    <?php else: ?>
-                        <button class="btn btn-primary btn-sm">Accept</button>
-                        <button class="btn btn-danger btn-sm">Reject</button>
+                        <a href="<?= $this->url->get("invoice/cancel/{$invoice->id}"); ?>" class="btn btn-danger btn-sm" role="button">Cancel</a>
+                    <?php elseif($type != Invoices::TYPE_SENT && $invoice->isStatusSent()): ?>
+                        <a href="<?= $this->url->get("invoice/accept/{$invoice->id}"); ?>" class="btn btn-primary btn-sm" role="button">Accept</a>
+                        <a href="<?= $this->url->get("invoice/reject/{$invoice->id}"); ?>" class="btn btn-danger btn-sm" role="button">Reject</a>
                     <?php endif; ?>
                 </td>
             </tr>

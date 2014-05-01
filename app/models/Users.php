@@ -164,6 +164,7 @@ class Users extends BModel
     {
         parent::initialize();
 		$this->setSource('users');
+        $this->keepSnapshots(true);
         $this->hasMany('id', 'Items', 'created_by');
         $this->hasMany('id', 'Invoices', 'to_user_id', ['alias' => 'receivedInvoices']);
         $this->hasMany('id', 'Invoices', 'from_user_id', ['alias' => 'sentInvoices']);
@@ -171,6 +172,7 @@ class Users extends BModel
         $this->hasMany('id', 'Requests', 'from_user_id', ['alias' => 'sentRequests']);
         $this->hasMany('id', 'ItemUsers', 'user_id');
         $this->hasManyToMany('id', 'ItemUsers', 'user_id', 'item_id', 'Items', 'id', ['alias' => 'saleItems']);
+        $this->hasMany('id', 'WalletLogs', 'user_id', ['alias' => 'walletLogs']);
     }
 
     /**
@@ -193,11 +195,17 @@ class Users extends BModel
         );
     }
 
+    /**
+     * @return array Save Attributes name
+     */
     public function getSaveAttributesName()
     {
         return ['username', 'email'];
     }
 
+    /**
+     * Before create action
+     */
     public function beforeCreate()
     {
         $this->role = self::ROLE_UNAUTHORIZED;
@@ -205,6 +213,28 @@ class Users extends BModel
         $this->secret_key = Keygen::generateKey();
     }
 
+    /**
+     * Before save action
+     */
+    public function beforeSave()
+    {
+        if ($this->hasChanged('wallet')) {
+            $snapshot = $this->getSnapshotData();
+            $wallet_log = new WalletLogs();
+            $wallet_log->user_id = $this->id;
+            $wallet_log->wallet_before = $snapshot['wallet'];
+            $wallet_log->wallet_after = $this->wallet;
+            $this->setSnapshotData(['wallet' => $this->wallet]);
+            return $wallet_log->save();
+        }
+        return true;
+    }
+
+    /**
+     * Find by email or username
+     * @param string $key
+     * @return Users|null
+     */
     public static function findByKey($key)
     {
         $user = self::findFirstByEmail($key);
@@ -214,6 +244,11 @@ class Users extends BModel
         return $user;
     }
 
+    /**
+     * Update secret_key field
+     * @param bool $save
+     * @return bool
+     */
     public function updateSecretKey($save=true)
     {
         $this->secret_key = Keygen::generateKey();
@@ -223,12 +258,23 @@ class Users extends BModel
         return true;
     }
 
+    /**
+     * Validate password
+     * @param string $raw_pass
+     * @return bool
+     */
     public function validatePassword($raw_pass)
     {
         $security = new Security();
         return $security->checkHash($raw_pass, $this->password);
     }
 
+    /**
+     * Update password field
+     * @param string $raw_pass
+     * @param bool $save
+     * @return bool
+     */
     public function updatePassword($raw_pass, $save=true)
     {
         $security = new Security();
@@ -239,6 +285,11 @@ class Users extends BModel
         return true;
     }
 
+    /**
+     * Check whether user can edit an item or not
+     * @param Items|int $item
+     * @return bool
+     */
     public function canEditItem($item)
     {
         if ($this->isAdmin() || $this->isSuperAdmin()) {
@@ -252,12 +303,21 @@ class Users extends BModel
         }
     }
 
+    /**
+     * Check user's wallet
+     * @param int $threshold
+     * @return bool
+     */
     public function checkWallet($threshold)
     {
         return $this->wallet >= $threshold;
     }
 
-
+    /**
+     * Minus user's wallet
+     * @param int $amout
+     * @return bool
+     */
     public function minusWallet($amout) {
         if ($this->checkWallet($amout)) {
             $this->wallet -= $amout;
@@ -309,11 +369,20 @@ class Users extends BModel
         return true;
     }
 
+    /**
+     * Check whether user can see no-desination requests or not
+     * Normally, admin and super admin can see/update these requests
+     * @return bool
+     */
     public function canAccessNoDestinationRequests()
     {
         return ($this->isAdmin() || $this->isSuperAdmin());
     }
 
+    /**
+     * Get all requests that are sent to this user
+     * @return \Phalcon\Mvc\Model\ResultsetInterface
+     */
     public function getAllReceivedRequests()
     {
         if ($this->canAccessNoDestinationRequests()) {
@@ -324,5 +393,34 @@ class Users extends BModel
             ]);
         }
         return $this->getReceivedRequests();
+    }
+
+    /**
+     * @param int $amount
+     */
+    public function increaseWallet($amount)
+    {
+        $this->wallet += $amount;
+        $this->save();
+    }
+
+    /**
+     * Check whether this user can cancel the invoice or not
+     * @param Invoices $invoice
+     * @return bool
+     */
+    public function canCancelInvoice($invoice)
+    {
+        return $invoice->from_user_id == $this->id;
+    }
+
+    /**
+     * Check whether this user can accept/cancel the invoice or not
+     * @param Invoices $invoice
+     * @return bool
+     */
+    public function canAcceptInvoice($invoice)
+    {
+        return $invoice->to_user_id == $this->id;
     }
 }
