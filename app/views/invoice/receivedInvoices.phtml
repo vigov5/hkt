@@ -1,0 +1,66 @@
+<?php
+/**
+ * @var Users $current_user
+ */
+echo $this->getContent();
+?>
+<div class="panel panel-warning">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        Received Invoices
+            <?php if(!$type): ?>
+                <a href="<?= $this->url->get("invoice/receivedinvoices/all"); ?>" class="btn btn-success btn-xs" role="button">All</a>
+                <div class="btn-group-xs pull-right">
+                    <a href="<?= $this->url->get("invoice/accept/all"); ?>" class="btn btn-primary btn-xs" role="button">Accept All</a>
+                    <a href="<?= $this->url->get("invoice/reject/all"); ?>" class="btn btn-danger btn-xs" role="button">Reject All</a>
+                </div>
+            <?php else: ?>
+            <a href="<?= $this->url->get("invoice/receivedinvoices"); ?>" class="btn btn-success btn-xs" role="button">Only Sent</a>
+        <?php endif; ?>
+    </div>
+
+    <!-- Table -->
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>From user</th>
+            <th>To shop</th>
+            <th>Item</th>
+            <th>Amount</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($invoices as $invoice): ?>
+            <?php
+            /**
+             * @var Invoices $invoice
+             */
+            ?>
+
+            <tr class="active">
+                <td><?= $invoice->fromUser ? $invoice->fromUser->username : '' ?></td>
+                <td>SHOP HERE</td>
+                <td><?= $invoice->item->name ?></td>
+                <td><?= $invoice->item_count ?></td>
+                <td><?= $invoice->price ?></td>
+                <td><?= $invoice->printStatus() ?></td>
+                <td><?= $invoice->created_at ?></td>
+                <td><?= $invoice->updated_at ?></td>
+                <td>
+                    <?php if($invoice->isStatusSent()): ?>
+                        <a href="<?= $this->url->get("invoice/accept/{$invoice->id}"); ?>" class="btn btn-primary btn-sm" role="button">Accept</a>
+                        <a href="<?= $this->url->get("invoice/reject/{$invoice->id}"); ?>" class="btn btn-danger btn-sm" role="button">Reject</a>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+

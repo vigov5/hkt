@@ -2,54 +2,65 @@
 echo $this->getContent(); ?>
 <?php if($current_user->canEditItem($item)): ?>
     <a href="<?= $this->url->get("item/update/{$item->id}")?>" class="btn btn-warning"><i class="fa fa-edit"></i> Edit </a>
+    <hr>
 <?php endif; ?>
-<table class="table table-hover">
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('id') ?></th>
-        <td><?= $item->id ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('name') ?></th>
-        <td><?= $item->name ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('price') ?></th>
-        <td><?= $item->price ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('type') ?></th>
-        <td><?= $item->getTypeValue() ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('status') ?></th>
-        <td><?= $item->getStatusValue() ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('description') ?></th>
-        <td><?= $item->description ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('img') ?></th>
-        <td><?= $item->imageView() ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('public_range') ?></th>
-        <td><?= $item->public_range ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('created_by') ?></th>
-        <td><?= $item->user->username ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('approved_by') ?></th>
-        <td><?= $item->approved_by ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('created_at') ?></th>
-        <td><?= $item->created_at ?></td>
-    </tr>
-    <tr>
-        <th class="success"><?= $item->getAttributeLabel('updated_at') ?></th>
-        <td><?= $item->updated_at ?></td>
-    </tr>
-</table>
+
+<div class="row">
+    <div class="col-lg-4 col-xs-12">
+        <?= $item->imageView() ?>
+    </div>
+    <div class="col-lg-8 col-xs-12">
+        <table class="table table-hover">
+            <tr>
+                <th class="success"><?= $item->getAttributeLabel('name') ?></th>
+                <td><?= $item->name ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $item->getAttributeLabel('type') ?></th>
+                <td><?= $item->getTypeValue() ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $item->getAttributeLabel('status') ?></th>
+                <td><?= $item->getStatusValue() ?></td>
+            </tr>
+            <tr>
+                <th class="success">Seller</th>
+                <td><?php foreach($item->saleUsers as $seller) {
+                        echo $seller->username . "<br/>";
+                    } ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $item->getAttributeLabel('description') ?></th>
+                <td><?= $item->description ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $item->getAttributeLabel('created_by') ?></th>
+                <td><?= $item->user->username ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $item->getAttributeLabel('approved_by') ?></th>
+                <td><?= $item->approved_by ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $item->getAttributeLabel('created_at') ?></th>
+                <td><?= $item->created_at ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $item->getAttributeLabel('updated_at') ?></th>
+                <td><?= $item->updated_at ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<hr>
+<?php $num = count($invoices); ?>
+<?php if($num): ?>
+    <h3 class="text-primary">
+        Total <?= $num ?> <?= $num > 1 ? 'Invoices' : 'Invoice' ?> today
+    </h3>
+    <?= $this->partial('invoice/_invoices_list', ['invoices' => $invoices]); ?>
+<?php else: ?>
+    <h3 class="text-warning">
+        No invoice today
+    </h3>
+<?php endif; ?>

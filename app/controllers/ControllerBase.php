@@ -10,6 +10,7 @@ class ControllerBase extends BController
 
     public function initialize()
     {
+        //var_dump($this->getPrevUrl());die();
         $this->tag->setTitle('Framgia Hyakkaten');
         if (!$this->current_user) {
             $this->getCurrentUser();

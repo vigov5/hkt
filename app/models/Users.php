@@ -423,4 +423,31 @@ class Users extends BModel
     {
         return $invoice->to_user_id == $this->id;
     }
+
+    public function cancelAllInvoices()
+    {
+        $invoices = $this->getSentInvoices(['conditions' => 'status='.Invoices::STATUS_SENT]);
+        foreach ($invoices as $invoice) {
+            $invoice->beCanceled();
+        }
+        return count($invoices);
+    }
+
+    public function acceptAllInvoices()
+    {
+        $invoices = $this->getReceivedInvoices(['conditions' => 'status='.Invoices::STATUS_SENT]);
+        foreach ($invoices as $invoice) {
+            $invoice->beAccepted();
+        }
+        return count($invoices);
+    }
+
+    public function rejectAllInvoices()
+    {
+        $invoices = $this->getReceivedInvoices(['conditions' => 'status='.Invoices::STATUS_SENT]);
+        foreach ($invoices as $invoice) {
+            $invoice->beRejected();
+        }
+        return count($invoices);
+    }
 }

@@ -16,7 +16,11 @@ class ItemController extends ControllerBase
     /**
      * Index action
      */
-    public function indexAction($type=Items::TYPE_DEPOSIT)
+    public function indexAction()
+    {
+    }
+
+    public function specialAction($type=Items::TYPE_DEPOSIT)
     {
         if ($type != Items::TYPE_DEPOSIT && $type != Items::TYPE_WITHDRAW) {
             $type = Items::TYPE_DEPOSIT;
@@ -25,7 +29,7 @@ class ItemController extends ControllerBase
         $item_users = ItemUsers::getOnSaleItems($type);
         $this->view->item_users = $item_users;
         $this->view->form = new BuyForm();
-        $this->setPrevUrl("item/index/$type");
+        $this->setPrevUrl("item/special/$type");
     }
 
     public function onsaleAction()
@@ -44,11 +48,18 @@ class ItemController extends ControllerBase
      */
     public function viewAction($id)
     {
+        $id = intval($id);
         $item = Items::findFirstByid($id);
         if (!$item) {
             $this->flash->error('item was not found');
             return $this->forward('item');
         }
+        $today = date('Y-m-d 00:00:00');
+        $tomorrow = date('Y-m-d 00:00:00', time() + 86400);
+        $this->view->invoices = $item->getInvoices([
+            'conditions' => "created_at > \"$today\" AND created_at < \"$tomorrow\"",
+            'order' => 'created_at desc, to_user_id'
+        ]);
         $this->view->item = $item;
         $this->setPrevUrl("item/view/$id");
     }
@@ -190,7 +201,7 @@ class ItemController extends ControllerBase
         }
         $item_user_id = $this->request->get('items');
         $amount = $this->request->get('amount');
-        if (!$amount) {
+        if (!$amount || !is_numeric($amount) || $amount < 1) {
             $amount = 1;
         }
         $item_user = ItemUsers::findFirstByid($item_user_id);

@@ -185,6 +185,7 @@ class Invoices extends BModel
         $this->status = self::STATUS_ACCEPT;
         $this->toUser->increaseWallet($this->price);
         $this->save();
+        return true;
     }
 
     /**
@@ -198,5 +199,6 @@ class Invoices extends BModel
         $this->status = self::STATUS_REJECT;
         $this->fromUser->increaseWallet($this->price);
         $this->save();
+        return true;
     }
 }

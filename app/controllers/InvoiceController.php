@@ -10,38 +10,60 @@ class InvoiceController extends ControllerBase
 
     public function indexAction($type=Invoices::TYPE_SENT)
     {
-        if ($type == Invoices::TYPE_SENT) {
-            $this->view->invoices = $this->current_user->getSentInvoices(['order' => 'id desc']);
-            $this->setPrevUrl("invoice");
-        } else {
-            $this->setPrevUrl("invoice/index/" . Invoices::TYPE_RECEIVED);
-            $this->view->invoices = $this->current_user->getReceivedInvoices(['order' => 'id desc']);
-        }
+        $this->forward('invoice/receivedinvoices');
+    }
 
+    public function sentInvoicesAction($type='')
+    {
+        if ($type === 'all') {
+            $this->view->invoices = $this->current_user->getSentInvoices(['order' => 'id desc']);
+            $this->setPrevUrl("invoice/sentinvoices/all");
+        } else {
+            $type = null;
+            $this->view->invoices = $this->current_user->getSentInvoices(['conditions' => 'status='.Invoices::STATUS_SENT, 'order' => 'id desc']);
+            $this->setPrevUrl("invoice/sentinvoices");
+        }
+        $this->view->type = $type;
+    }
+
+    public function receivedInvoicesAction($type='')
+    {
+        if ($type === 'all') {
+            $this->view->invoices = $this->current_user->getReceivedInvoices(['order' => 'id desc']);
+            $this->setPrevUrl("invoice/receivedinvoices/all");
+        } else {
+            $type = null;
+            $this->view->invoices = $this->current_user->getReceivedInvoices(['conditions' => 'status='.Invoices::STATUS_SENT, 'order' => 'id desc']);
+            $this->setPrevUrl("invoice/receivedinvoices");
+        }
         $this->view->type = $type;
     }
 
     public function cancelAction($invoice_id)
     {
-        //var_dump($this->getPrevUrl()); die();
-        $redirect = false;
-        $invoice = Invoices::findFirst("id = $invoice_id");
-        if (!$invoice) {
-            $this->flash->error('Invoice not found');
-            $redirect = true;
-        }
-        if (!$this->current_user->canCancelInvoice($invoice)) {
-            $this->flash->error('You do not have the right to cancel this invoice');
-            $redirect = true;
-        }
-        if ($redirect) {
-            $this->forward('index/notFound');
-        }
-        if ($invoice->isStatusSent()) {
-            $invoice->beCanceled();
-            $this->setFlashSession('success', 'Invoice canceled');
+        if ($invoice_id === 'all') {
+            $count = $this->current_user->cancelAllInvoices();
+            $this->setFlashSession('success', "$count Invoice(s) canceled");
         } else {
-            $this->setFlashSession('error', 'Invoice can not be canceled');
+            $redirect = false;
+            $invoice = Invoices::findFirst("id = $invoice_id");
+            if (!$invoice) {
+                $this->flash->error('Invoice not found');
+                $redirect = true;
+            }
+            if (!$this->current_user->canCancelInvoice($invoice)) {
+                $this->flash->error('You do not have the right to cancel this invoice');
+                $redirect = true;
+            }
+            if ($redirect) {
+                $this->forward('index/notFound');
+            }
+            if ($invoice->isStatusSent()) {
+                $invoice->beCanceled();
+                $this->setFlashSession('success', 'Invoice canceled');
+            } else {
+                $this->setFlashSession('error', 'Invoice can not be canceled');
+            }
         }
 
         $this->redirectToPrevUrl();
@@ -49,24 +71,29 @@ class InvoiceController extends ControllerBase
 
     public function acceptAction($invoice_id)
     {
-        $redirect = false;
-        $invoice = Invoices::findFirst("id = $invoice_id");
-        if (!$invoice) {
-            $this->flash->error('Invoice not found');
-            $redirect = true;
-        }
-        if (!$this->current_user->canAcceptInvoice($invoice)) {
-            $this->flash->error('You do not have the right to accept this invoice');
-            $redirect = true;
-        }
-        if ($redirect) {
-            $this->forward('index/notFound');
-        }
-        if ($invoice->isStatusSent()) {
-            $invoice->beAccepted();
-            $this->setFlashSession('success', 'Invoice accepted');
+        if ($invoice_id === 'all') {
+            $count = $this->current_user->acceptAllInvoices();
+            $this->setFlashSession('success', "$count Invoice(s) accepted");
         } else {
-            $this->setFlashSession('error', 'Invoice can not be accepted');
+            $redirect = false;
+            $invoice = Invoices::findFirst("id = $invoice_id");
+            if (!$invoice) {
+                $this->flash->error('Invoice not found');
+                $redirect = true;
+            }
+            if (!$this->current_user->canAcceptInvoice($invoice)) {
+                $this->flash->error('You do not have the right to accept this invoice');
+                $redirect = true;
+            }
+            if ($redirect) {
+                $this->forward('index/notFound');
+            }
+            if ($invoice->isStatusSent()) {
+                $invoice->beAccepted();
+                $this->setFlashSession('success', 'Invoice accepted');
+            } else {
+                $this->setFlashSession('error', 'Invoice can not be accepted');
+            }
         }
 
         $this->redirectToPrevUrl();
@@ -74,25 +101,31 @@ class InvoiceController extends ControllerBase
 
     public function rejectAction($invoice_id)
     {
-        $redirect = false;
-        $invoice = Invoices::findFirst("id = $invoice_id");
-        if (!$invoice) {
-            $this->flash->error('Invoice not found');
-            $redirect = true;
-        }
-        if (!$this->current_user->canAcceptInvoice($invoice)) {
-            $this->flash->error('You do not have the right to reject this invoice');
-            $redirect = true;
-        }
-        if ($redirect) {
-            $this->forward('index/notFound');
-        }
-        if ($invoice->isStatusSent()) {
-            $invoice->beRejected();
-            $this->setFlashSession('success', 'Invoice rejected');
+        if ($invoice_id === 'all') {
+            $count = $this->current_user->rejectAllInvoices();
+            $this->setFlashSession('success', "$count Invoice(s) rejected");
         } else {
-            $this->setFlashSession('error', 'Invoice can not be rejected');
+            $redirect = false;
+            $invoice = Invoices::findFirst("id = $invoice_id");
+            if (!$invoice) {
+                $this->flash->error('Invoice not found');
+                $redirect = true;
+            }
+            if (!$this->current_user->canAcceptInvoice($invoice)) {
+                $this->flash->error('You do not have the right to reject this invoice');
+                $redirect = true;
+            }
+            if ($redirect) {
+                $this->forward('index/notFound');
+            }
+            if ($invoice->isStatusSent()) {
+                $invoice->beRejected();
+                $this->setFlashSession('success', 'Invoice rejected');
+            } else {
+                $this->setFlashSession('error', 'Invoice can not be rejected');
+            }
         }
+
         $this->redirectToPrevUrl();
     }
 }
