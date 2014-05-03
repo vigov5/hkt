@@ -51,7 +51,7 @@ echo $this->getContent();
                 <td><?= $invoice->updated_at ?></td>
                 <td>
                     <?php if($invoice->isStatusSent()): ?>
-                        <a href="<?= $this->url->get("invoice/cancel/{$invoice->id}"); ?>" class="btn btn-danger btn-sm" role="button">Cancel</a>
+                        <a href="<?= $this->url->get("invoice/cancel/{$invoice->id}"); ?>" class="btn btn-danger btn-xs btn-action" role="button">Cancel</a>
                     <?php endif; ?>
                 </td>
             </tr>

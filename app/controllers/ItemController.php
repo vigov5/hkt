@@ -224,4 +224,9 @@ class ItemController extends ControllerBase
         };
         $this->redirectToPrevUrl();
     }
+
+    public function myAction()
+    {
+        $this->view->item_users = $this->current_user->itemUsers;
+    }
 }

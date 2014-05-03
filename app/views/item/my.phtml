@@ -1,0 +1,45 @@
+<?php
+use Phalcon\Tag;
+echo $this->getContent();
+?>
+<h1>Sale Items </h1>
+<hr>
+
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Start Sale Date</th>
+        <th>End Sale Date</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+        <?php foreach($item_users as $item_user): ?>
+        <?php
+        /**
+         * @var ItemUsers $item_user
+         */
+        ?>
+            <tr class="<?= $item_user->isOnSale() ? 'success' : '' ?>" data>
+                <td><?= $item_user->item->name ?></td>
+                <td><?= $item_user->getSalePrice() ?></td>
+                <td><?= $item_user->printStatus() ?></td>
+                <td><?= $item_user->start_sale_date ?> </td>
+                <td><?= $item_user->end_sale_date ?> </td>
+                <td><?= $item_user->created_at ?> </td>
+                <td><?= $item_user->updated_at ?> </td>
+                <td>
+                    <div class="btn-group-xs">
+                        <a href="<?= $this->url->get("itemuser/accept"); ?>" class="btn btn-info btn-action" role="button">Edit</a>
+                        <?= $item_user->printActionButtonGroup() ?>
+                    </div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

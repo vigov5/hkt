@@ -42,6 +42,12 @@ class Users extends BModel
      *
      * @var integer
      */
+    public $hkt;
+
+    /**
+     *
+     * @var integer
+     */
     public $role;
 
     /**
@@ -186,6 +192,7 @@ class Users extends BModel
             'password' => 'password',
             'email' => 'email',
             'wallet' => 'wallet',
+            'hkt' => 'hkt',
             'role' => 'role',
             'secret_key' => 'secret_key',
             'created_at' => 'created_at',
@@ -210,6 +217,7 @@ class Users extends BModel
     {
         $this->role = self::ROLE_UNAUTHORIZED;
         $this->wallet = 0;
+        $this->hkt = 0;
         $this->secret_key = Keygen::generateKey();
     }
 
@@ -300,6 +308,24 @@ class Users extends BModel
         } else {
             $item_object = Items::findFirst(['id' => $item]);
             return $this->id === $item_object->created_by;
+        }
+    }
+
+    /**
+     * Check whether user can edit an item_user or not
+     * @param ItemUsers|int $item_user
+     * @return bool
+     */
+    public function canEditItemuser($item_user)
+    {
+        if ($this->isAdmin() || $this->isSuperAdmin()) {
+            return true;
+        }
+        if ($item_user instanceof ItemUsers) {
+            return $this->id === $item_user->user_id;
+        } else {
+            $item_object = Items::findFirst(['id' => $item_user]);
+            return $this->id === $item_object->user_id;
         }
     }
 
@@ -424,6 +450,10 @@ class Users extends BModel
         return $invoice->to_user_id == $this->id;
     }
 
+    /**
+     * Cancel all invoices
+     * @return int Number of invoices canceled
+     */
     public function cancelAllInvoices()
     {
         $invoices = $this->getSentInvoices(['conditions' => 'status='.Invoices::STATUS_SENT]);
@@ -433,6 +463,10 @@ class Users extends BModel
         return count($invoices);
     }
 
+    /**
+     * Accept all invoices
+     * @return int Number of invoices accepted
+     */
     public function acceptAllInvoices()
     {
         $invoices = $this->getReceivedInvoices(['conditions' => 'status='.Invoices::STATUS_SENT]);
@@ -442,6 +476,10 @@ class Users extends BModel
         return count($invoices);
     }
 
+    /**
+     * Reject all invoices
+     * @return int Number of invoices rejected
+     */
     public function rejectAllInvoices()
     {
         $invoices = $this->getReceivedInvoices(['conditions' => 'status='.Invoices::STATUS_SENT]);

@@ -46,7 +46,66 @@ $(function() {
         var message = createItemLayout(item_object);
         createItemBuyConfirm(form, message);
     });
+
+    $('.item-user-change-status').each(function (index) {
+        addBtnListener(this);
+    })
 });
+
+function addBtnListener(btn)
+{
+    $(btn).click(function (e) {
+        var item_user_id = $(this).attr('data-item-user-id');
+        var status = $(this).attr('data-status');
+        console.log(item_user_id,status);
+        $.ajax({
+            type: "POST",
+            url: "/itemuser/changestatus",
+            data: {
+                item_user_id: item_user_id,
+                status: status
+            }
+        }).done(function(message) {
+            var response = JSON.parse(message);
+            if(response.status == 'success') {
+                var item_user = response.data;
+                updateItemUser(item_user);
+            }
+        })
+        .fail(function() {
+            alert('Reuqest sent Fail !!!');
+        });
+    })
+}
+function updateItemUser(item_user)
+{
+    var class_name = '';
+    if(item_user.is_on_sale == true) {
+        class_name = 'success';
+    }
+    var btn = $('button' + '[data-item-user-id=' + item_user.id +']');
+    var tr = btn.closest('tr');
+    var html = '<td>' + item_user.name + '</td>' +
+        '<td>' + item_user.price + '</td>' +
+        '<td>' + item_user.status_value + '</td>' +
+        '<td>' + item_user.start_sale_date + '</td>' +
+        '<td>' + item_user.end_sale_date + '</td>' +
+        '<td>' + item_user.created_at + '</td>' +
+        '<td>' + item_user.updated_at + '</td>' +
+        '<td>' + '<div class="btn-group-xs">' +
+        '<a href="/itemuser/accept" class="btn btn-info btn-action" role="button">Edit</a>' +
+            item_user.btn_group +
+        '</td>';
+    $(tr).hide(500, function(){
+        $(this).removeClass().addClass(class_name);
+        $(this).html(html);
+        $(this).show(500, function(){
+            $('button' + '[data-item-user-id=' + item_user.id +']').each(function(index) {
+                addBtnListener(this);
+            });
+        });
+    });
+}
 
 function createItemBuyConfirm(form, message) {
     bootbox.dialog({

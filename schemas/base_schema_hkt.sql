@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`users` (
   `password` VARCHAR(256) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `wallet` INT DEFAULT 0,
+  `hkt` INT DEFAULT 0,
   `role` TINYINT(4) NULL COMMENT '0: UNAUTHORIZED - Can not login, 1: USER - Can login and buy items, 2: MODERATOR - Can buy, can create and sell items , 3: ADMIN - Can accept requests, authorize users, change role of user ..., 4: SUPER ADMIN - Most powerful user',
   `secret_key` VARCHAR(127) NULL,
   `created_at` DATETIME NULL,
@@ -146,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`item_users` (
   `item_id` INT NOT NULL,
   `user_id` INT NOT NULL,
   `price` INT DEFAULT 0,
-  `force_sale` INT DEFAULT 0,
+  `status` INT DEFAULT 0,
   `start_sale_date` DATETIME NULL,
   `end_sale_date` DATETIME NULL,
   `created_at` DATETIME NULL,
@@ -163,6 +164,18 @@ CREATE TABLE IF NOT EXISTS `hyakkaten`.`wallet_logs` (
   `user_id` INT NOT NULL,
   `wallet_before` INT NULL,
   `wallet_after` INT NULL,
+  `created_at` DATETIME NULL,
+  PRIMARY KEY (`id`))
+  ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `hyakkaten`.`hkt_log`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hyakkaten`.`hkt_logs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `hkt_before` INT NULL,
+  `hkt_after` INT NULL,
   `created_at` DATETIME NULL,
   PRIMARY KEY (`id`))
   ENGINE = InnoDB;

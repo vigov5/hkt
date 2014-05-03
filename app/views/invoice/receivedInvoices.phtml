@@ -53,8 +53,8 @@ echo $this->getContent();
                 <td><?= $invoice->updated_at ?></td>
                 <td>
                     <?php if($invoice->isStatusSent()): ?>
-                        <a href="<?= $this->url->get("invoice/accept/{$invoice->id}"); ?>" class="btn btn-primary btn-sm" role="button">Accept</a>
-                        <a href="<?= $this->url->get("invoice/reject/{$invoice->id}"); ?>" class="btn btn-danger btn-sm" role="button">Reject</a>
+                        <a href="<?= $this->url->get("invoice/accept/{$invoice->id}"); ?>" class="btn btn-primary btn-xs btn-action" role="button">Accept</a>
+                        <a href="<?= $this->url->get("invoice/reject/{$invoice->id}"); ?>" class="btn btn-danger btn-xs btn-action" role="button">Reject</a>
                     <?php endif; ?>
                 </td>
             </tr>
