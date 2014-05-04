@@ -1,0 +1,17 @@
+<?php use Phalcon\Tag;
+
+/**
+ * @var ItemUsers @item_user
+ */
+
+echo Tag::stylesheetLink('css/bootstrap-datetimepicker.min.css');
+echo Tag::javascriptInclude('js/moment.min.js');
+echo Tag::javascriptInclude('js/bootstrap-datetimepicker.min.js');
+?>
+
+<div class="row">
+    <?= $this->getContent(); ?>
+    <h2 class="<?= $item_user->isOnSale() ? 'text-success' : '' ?>">Update <?= $item_user->item->name ?> Selling Info</h2>
+    <hr>
+    <?php $this->partial('itemuser/_form', ['link' => "itemuser/update/$item_user->id", 'button' => 'Save']) ?>
+</div>

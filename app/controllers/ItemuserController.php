@@ -49,5 +49,23 @@ class ItemuserController extends ControllerBase
         }
         return;
     }
+
+    public function updateAction($id)
+    {
+        $item_user = ItemUsers::findFirstByid($id);
+        if (!$item_user || !$this->current_user->canEditItemuser($item_user)) {
+            return $this->forward('index/notfound');
+        }
+
+        if ($this->request->isPost()) {
+            $item_user->load($_POST);
+            if ($item_user->save()) {
+                $this->flash->success('item was updated successfully');
+            }
+        }
+        $this->setDefault($item_user);
+        $this->view->item_user = $item_user;
+        $this->view->form = new BForm($item_user);
+    }
 }
 

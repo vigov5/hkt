@@ -137,7 +137,17 @@ class ItemUsers extends BModel
     public function isInSaleTime()
     {
         $time = date('Y-m-d H-i-s');
-        $this->start_sale_date <= $time && $time <= $this->end_sale_date;
+        return ($this->start_sale_date <= $time && $time <= $this->end_sale_date);
+    }
+
+    public function beforeSave()
+    {
+        if($this->start_sale_date === '') {
+            $this->start_sale_date = null;
+        }
+        if($this->end_sale_date === '') {
+            $this->end_sale_date = null;
+        }
     }
 
     /**
@@ -147,6 +157,14 @@ class ItemUsers extends BModel
     public function isOnSale()
     {
         return $this->isForceSale() || (!$this->isForceNotSale() && $this->isInSaleTime());
+    }
+
+    /**
+     * @return array Save Attributes
+     */
+    public function getSaveAttributesName()
+    {
+        return ['price', 'status', 'start_sale_date', 'end_sale_date'];
     }
 
     /**

@@ -35,7 +35,7 @@ echo $this->getContent();
                 <td><?= $item_user->updated_at ?> </td>
                 <td>
                     <div class="btn-group-xs">
-                        <a href="<?= $this->url->get("itemuser/accept"); ?>" class="btn btn-info btn-action" role="button">Edit</a>
+                        <a href="<?= $this->url->get("itemuser/update/{$item_user->id}"); ?>" class="btn btn-info btn-action" role="button">Edit</a>
                         <?= $item_user->printActionButtonGroup() ?>
                     </div>
                 </td>

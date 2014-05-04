@@ -93,7 +93,7 @@ function updateItemUser(item_user)
         '<td>' + item_user.created_at + '</td>' +
         '<td>' + item_user.updated_at + '</td>' +
         '<td>' + '<div class="btn-group-xs">' +
-        '<a href="/itemuser/accept" class="btn btn-info btn-action" role="button">Edit</a>' +
+        '<a href="/itemuser/update/' + item_user.id + '" class="btn btn-info btn-action" role="button">Edit</a>' +
             item_user.btn_group +
         '</td>';
     $(tr).hide(500, function(){
