@@ -1,8 +1,6 @@
 <?php
 
 
-
-
 class Invoices extends BModel
 {
 
@@ -98,6 +96,7 @@ class Invoices extends BModel
         if (isset(self::$status_value[$this->status])) {
             return self::$status_value[$this->status];
         }
+
         return $this->status;
     }
 
@@ -115,6 +114,7 @@ class Invoices extends BModel
                 return "<span class='label label-warning'>$val</span>";
         }
     }
+
     /**
      * Independent Column Mapping.
      */
@@ -171,6 +171,7 @@ class Invoices extends BModel
         }
         $this->status = self::STATUS_CANCEL;
         $this->fromUser->increaseWallet($this->price);
+
         return $this->save();
     }
 
@@ -185,6 +186,7 @@ class Invoices extends BModel
         $this->status = self::STATUS_ACCEPT;
         $this->toUser->increaseWallet($this->price);
         $this->save();
+
         return true;
     }
 
@@ -199,6 +201,7 @@ class Invoices extends BModel
         $this->status = self::STATUS_REJECT;
         $this->fromUser->increaseWallet($this->price);
         $this->save();
+
         return true;
     }
 }

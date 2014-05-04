@@ -99,6 +99,7 @@ class Users extends BModel
         if (isset(self::$user_roles[$this->role])) {
             return self::$user_roles[$this->role];
         }
+
         return $this->role;
     }
 
@@ -110,6 +111,7 @@ class Users extends BModel
                 $upper_roles[$role] = $role_name;
             }
         }
+
         return $upper_roles;
     }
 
@@ -137,6 +139,17 @@ class Users extends BModel
     {
         return $this->role == self::ROLE_SUPER_ADMIN;
     }
+
+    public function isRoleOver($role)
+    {
+        return $this->role >= $role;
+    }
+
+    public function changeRole($role)
+    {
+        $this->role = $role;
+        $this->save();
+    }
     /**
      * Validations and business logic
      */
@@ -144,19 +157,22 @@ class Users extends BModel
     {
 
         $this->validate(new Email([
-            'field'    => 'email',
-            'required' => true,
-        ]));
+                'field' => 'email',
+                'required' => true,
+            ])
+        );
 
         $this->validate(new Uniqueness([
-            'field' => 'email',
-            'message' => 'The email is already registered',
-        ]));
+                'field' => 'email',
+                'message' => 'The email is already registered',
+            ])
+        );
 
         $this->validate(new Uniqueness([
                 'field' => 'username',
                 'message' => 'The username is already registered',
-            ]));
+            ])
+        );
 
         if ($this->validationHasFailed() == true) {
             return false;
@@ -169,7 +185,7 @@ class Users extends BModel
     public function initialize()
     {
         parent::initialize();
-		$this->setSource('users');
+        $this->setSource('users');
         $this->keepSnapshots(true);
         $this->hasMany('id', 'Items', 'created_by');
         $this->hasMany('id', 'Invoices', 'to_user_id', ['alias' => 'receivedInvoices']);
@@ -177,7 +193,7 @@ class Users extends BModel
         $this->hasMany('id', 'Requests', 'to_user_id', ['alias' => 'receivedRequests']);
         $this->hasMany('id', 'Requests', 'from_user_id', ['alias' => 'sentRequests']);
         $this->hasMany('id', 'ItemUsers', 'user_id');
-        $this->hasManyToMany('id', 'ItemUsers', 'user_id', 'item_id', 'Items', 'id', ['alias' => 'saleItems']);
+        $this->hasManyToMany('id', 'ItemUsers', 'user_id', 'item_id', 'Items', 'id', ['alias' => 'sellItems']);
         $this->hasMany('id', 'WalletLogs', 'user_id', ['alias' => 'walletLogs']);
     }
 
@@ -233,8 +249,10 @@ class Users extends BModel
             $wallet_log->wallet_before = $snapshot['wallet'];
             $wallet_log->wallet_after = $this->wallet;
             $this->setSnapshotData(['wallet' => $this->wallet]);
+
             return $wallet_log->save();
         }
+
         return true;
     }
 
@@ -249,6 +267,7 @@ class Users extends BModel
         if (!$user) {
             $user = self::findFirstByUsername($key);
         }
+
         return $user;
     }
 
@@ -257,12 +276,13 @@ class Users extends BModel
      * @param bool $save
      * @return bool
      */
-    public function updateSecretKey($save=true)
+    public function updateSecretKey($save = true)
     {
         $this->secret_key = Keygen::generateKey();
         if ($save) {
             return $this->save();
         }
+
         return true;
     }
 
@@ -274,6 +294,7 @@ class Users extends BModel
     public function validatePassword($raw_pass)
     {
         $security = new Security();
+
         return $security->checkHash($raw_pass, $this->password);
     }
 
@@ -283,13 +304,14 @@ class Users extends BModel
      * @param bool $save
      * @return bool
      */
-    public function updatePassword($raw_pass, $save=true)
+    public function updatePassword($raw_pass, $save = true)
     {
         $security = new Security();
         $this->password = $security->hash($raw_pass);
         if ($save) {
             return $this->save();
         }
+
         return true;
     }
 
@@ -307,6 +329,7 @@ class Users extends BModel
             return $this->id === $item->created_by;
         } else {
             $item_object = Items::findFirst(['id' => $item]);
+
             return $this->id === $item_object->created_by;
         }
     }
@@ -325,6 +348,7 @@ class Users extends BModel
             return $this->id === $item_user->user_id;
         } else {
             $item_object = Items::findFirst(['id' => $item_user]);
+
             return $this->id === $item_object->user_id;
         }
     }
@@ -344,12 +368,15 @@ class Users extends BModel
      * @param int $amout
      * @return bool
      */
-    public function minusWallet($amout) {
+    public function minusWallet($amout)
+    {
         if ($this->checkWallet($amout)) {
             $this->wallet -= $amout;
             $this->save();
+
             return true;
         }
+
         return false;
     }
 
@@ -358,7 +385,7 @@ class Users extends BModel
      * @param int $item_count
      * @return bool
      */
-    public function createInvoiceToUser($item_user, $item_count=1)
+    public function createInvoiceToUser($item_user, $item_count = 1)
     {
         $invoice = new Invoices();
         $invoice->from_user_id = $this->id;
@@ -371,6 +398,7 @@ class Users extends BModel
         if (!$invoice->save()) {
             return false;
         }
+
         return true;
     }
 
@@ -380,7 +408,7 @@ class Users extends BModel
      * @param int $to_user_id
      * @return bool
      */
-    public function createRequest($type, $item_id=null, $to_user_id=0)
+    public function createRequest($type, $item_id = null, $to_user_id = 0)
     {
         $request = new Requests();
         $request->from_user_id = $this->id;
@@ -392,6 +420,7 @@ class Users extends BModel
         if (!$request->save()) {
             return false;
         }
+
         return true;
     }
 
@@ -407,18 +436,28 @@ class Users extends BModel
 
     /**
      * Get all requests that are sent to this user
+     * @param bool $all
      * @return \Phalcon\Mvc\Model\ResultsetInterface
      */
-    public function getAllReceivedRequests()
+    public function getAllReceivedRequests($all = false)
     {
         if ($this->canAccessNoDestinationRequests()) {
+            if ($all) {
+                $condition = 'to_user_id = :to_user_id: OR to_user_id = 0';
+            } else {
+                $condition = '(to_user_id = :to_user_id: OR to_user_id = 0) AND status = ' . Requests::STATUS_SENT;
+            }
             return Requests::find([
-                'conditions' => 'to_user_id = :to_user_id: OR to_user_id = 0',
+                'conditions' => $condition,
                 'bind' => ['to_user_id' => $this->id],
                 'order' => 'id DESC',
             ]);
         }
-        return $this->getReceivedRequests();
+        if ($all) {
+            return $this->getReceivedRequests(['order' => 'id desc']);
+        } else {
+            return $this->getReceivedRequests(['conditions' => 'status=' . Requests::STATUS_SENT, 'order' => 'id desc']);
+        }
     }
 
     /**
@@ -441,6 +480,16 @@ class Users extends BModel
     }
 
     /**
+     * Check whether this user can cancel the request or not
+     * @param Invoices $request
+     * @return bool
+     */
+    public function canCancelRequest($request)
+    {
+        return $request->from_user_id == $this->id;
+    }
+
+    /**
      * Check whether this user can accept/cancel the invoice or not
      * @param Invoices $invoice
      * @return bool
@@ -451,15 +500,26 @@ class Users extends BModel
     }
 
     /**
+     * Check whether this user can accept/cancel the request or not
+     * @param Invoices $request
+     * @return bool
+     */
+    public function canAcceptRequest($request)
+    {
+        return ($this->canAccessNoDestinationRequests() || $request->to_user_id == $this->id);
+    }
+
+    /**
      * Cancel all invoices
      * @return int Number of invoices canceled
      */
     public function cancelAllInvoices()
     {
-        $invoices = $this->getSentInvoices(['conditions' => 'status='.Invoices::STATUS_SENT]);
+        $invoices = $this->getSentInvoices(['conditions' => 'status=' . Invoices::STATUS_SENT]);
         foreach ($invoices as $invoice) {
             $invoice->beCanceled();
         }
+
         return count($invoices);
     }
 
@@ -469,10 +529,11 @@ class Users extends BModel
      */
     public function acceptAllInvoices()
     {
-        $invoices = $this->getReceivedInvoices(['conditions' => 'status='.Invoices::STATUS_SENT]);
+        $invoices = $this->getReceivedInvoices(['conditions' => 'status=' . Invoices::STATUS_SENT]);
         foreach ($invoices as $invoice) {
             $invoice->beAccepted();
         }
+
         return count($invoices);
     }
 
@@ -482,10 +543,85 @@ class Users extends BModel
      */
     public function rejectAllInvoices()
     {
-        $invoices = $this->getReceivedInvoices(['conditions' => 'status='.Invoices::STATUS_SENT]);
+        $invoices = $this->getReceivedInvoices(['conditions' => 'status=' . Invoices::STATUS_SENT]);
         foreach ($invoices as $invoice) {
             $invoice->beRejected();
         }
+
         return count($invoices);
+    }
+
+    /**
+     * Change All Request Status
+     * @param int $status
+     * @return int Number of requests that has been changed
+     */
+    public function changeAllRequestsStatus($status)
+    {
+        $requests = [];
+        if ($status == Requests::STATUS_CANCEL) {
+            $requests = $this->getSentRequests(['conditions' => 'status=' . Requests::STATUS_SENT]);
+            foreach ($requests as $request) {
+                $request->beCanceled();
+            }
+        } elseif ($status == Requests::STATUS_ACCEPT) {
+            $requests = $this->getAllReceivedRequests();
+            foreach ($requests as $request) {
+                $request->beAccepted($this->id);
+            }
+        } elseif ($status == Requests::STATUS_REJECT) {
+            $requests = $this->getAllReceivedRequests();
+            foreach ($requests as $request) {
+                $request->beRejected($this->id);
+            }
+        }
+
+        return count($requests);
+    }
+
+    /**
+     * @param Items $item
+     * @return bool
+     */
+    public function canCreateBuyItemRequest($item)
+    {
+        if (!$item->isAvailable()) {
+            return false;
+        }
+        $request = $this->getSentRequests("item_id = {$item->id} AND type = " . Requests::TYPE_USER_SELL_ITEM . ' AND (status = ' . Requests::STATUS_ACCEPT . ' OR status = ' . Requests::STATUS_SENT . ')');
+
+        if (count($request)) {
+            return false;
+        }
+        $item_user = $this->getItemUsers("item_id = {$item->id}");
+        if (count($item_user)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function createSellItemRequest($item)
+    {
+        $request = new Requests();
+        $request->item_id = $item->id;
+        $request->from_user_id = $this->id;
+        $request->to_user_id = 0;
+        $request->status = Requests::STATUS_SENT;
+        $request->type = Requests::TYPE_USER_SELL_ITEM;
+        $request->save();
+        return $request;
+    }
+
+    public function createNewItemRequest($item)
+    {
+        $request = new Requests();
+        $request->item_id = $item->id;
+        $request->from_user_id = $this->id;
+        $request->to_user_id = 0;
+        $request->status = Requests::STATUS_SENT;
+        $request->type = Requests::TYPE_CREATE_ITEM;
+        $request->save();
+        return $request;
     }
 }

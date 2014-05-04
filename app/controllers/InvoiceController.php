@@ -8,32 +8,35 @@ class InvoiceController extends ControllerBase
         $this->view->current_page = 'wallet';
     }
 
-    public function indexAction($type=Invoices::TYPE_SENT)
-    {
-        $this->forward('invoice/receivedinvoices');
-    }
-
-    public function sentInvoicesAction($type='')
+    public function sentInvoicesAction($type = '')
     {
         if ($type === 'all') {
             $this->view->invoices = $this->current_user->getSentInvoices(['order' => 'id desc']);
             $this->setPrevUrl("invoice/sentinvoices/all");
         } else {
             $type = null;
-            $this->view->invoices = $this->current_user->getSentInvoices(['conditions' => 'status='.Invoices::STATUS_SENT, 'order' => 'id desc']);
+            $this->view->invoices =
+                $this->current_user->getSentInvoices(['conditions' => 'status=' . Invoices::STATUS_SENT,
+                        'order' => 'id desc'
+                    ]
+                );
             $this->setPrevUrl("invoice/sentinvoices");
         }
         $this->view->type = $type;
     }
 
-    public function receivedInvoicesAction($type='')
+    public function receivedInvoicesAction($type = '')
     {
         if ($type === 'all') {
             $this->view->invoices = $this->current_user->getReceivedInvoices(['order' => 'id desc']);
             $this->setPrevUrl("invoice/receivedinvoices/all");
         } else {
             $type = null;
-            $this->view->invoices = $this->current_user->getReceivedInvoices(['conditions' => 'status='.Invoices::STATUS_SENT, 'order' => 'id desc']);
+            $this->view->invoices =
+                $this->current_user->getReceivedInvoices(['conditions' => 'status=' . Invoices::STATUS_SENT,
+                        'order' => 'id desc'
+                    ]
+                );
             $this->setPrevUrl("invoice/receivedinvoices");
         }
         $this->view->type = $type;

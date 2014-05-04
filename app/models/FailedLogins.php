@@ -1,8 +1,6 @@
 <?php
 
 
-
-
 class FailedLogins extends BModel
 {
 

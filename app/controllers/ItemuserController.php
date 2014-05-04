@@ -14,7 +14,9 @@ class ItemuserController extends ControllerBase
             $this->view->disable();
             $item_user_id = $this->request->getPost('item_user_id', 'int');
             $status = $this->request->getPost('status', 'int');
-            if ($status != ItemUsers::STATUS_NORMAL && $status != ItemUsers::STATUS_FORCE_SALE && $status != ItemUsers::STATUS_FORCE_NOT_SALE) {
+            if ($status != ItemUsers::STATUS_NORMAL && $status != ItemUsers::STATUS_FORCE_SALE &&
+                $status != ItemUsers::STATUS_FORCE_NOT_SALE
+            ) {
                 $response = [
                     'status' => 'fail',
                     'message' => 'Status Invalid',
@@ -26,7 +28,7 @@ class ItemuserController extends ControllerBase
 
                     $response = [
                         'status' => 'success',
-                        'data' =>[
+                        'data' => [
                             'id' => $item_user->id,
                             'name' => $item_user->item->name,
                             'price' => $item_user->getSalePrice(),
@@ -37,7 +39,8 @@ class ItemuserController extends ControllerBase
                             'updated_at' => $item_user->updated_at,
                             'btn_group' => $item_user->printActionButtonGroup(),
                             'is_on_sale' => $item_user->isOnSale(),
-                    ]];
+                        ]
+                    ];
                 } else {
                     $response = [
                         'status' => 'fail',
@@ -47,6 +50,7 @@ class ItemuserController extends ControllerBase
             }
             echo json_encode($response);
         }
+
         return;
     }
 

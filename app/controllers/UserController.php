@@ -14,14 +14,15 @@ class UserController extends ControllerBase
 
     }
 
-    public function facebookAction(){
+    public function facebookAction()
+    {
         $facebook_id = $this->facebook->getUser();
-        if (!$facebook_id)
-        {
+        if (!$facebook_id) {
             $this->flash->error("Invalid Facebook Call.");
+
             return $this->response->redirect('login');
         }
-        try{
+        try {
             $facebook_user = $this->facebook->api('/me');
         } catch (\FacebookApiException $e) {
             $this->flash->error("Could not fetch your facebook user.");
@@ -31,18 +32,21 @@ class UserController extends ControllerBase
         if (!$user) {
             $user = new Users();
             $user->assign([
-                'username' => $facebook_user['username'],
-                'email' => $facebook_user['email'],
-                'password' => $this->security->hash(Phalcon\Text::random(Phalcon\Text::RANDOM_ALNUM,8)),
-            ]);
+                    'username' => $facebook_user['username'],
+                    'email' => $facebook_user['email'],
+                    'password' => $this->security->hash(Phalcon\Text::random(Phalcon\Text::RANDOM_ALNUM, 8)),
+                ]
+            );
             if ($user->save()) {
                 $this->auth->authUserById($user->id);
+
                 return $this->response->redirect('index');
-            }else{
+            } else {
                 $this->flash->error('There was an error connecting your facebook user.');
             }
-        }else{
+        } else {
             $this->auth->authUserById($user->id);
+
             return $this->response->redirect('index');
         }
     }
@@ -63,10 +67,12 @@ class UserController extends ControllerBase
                     }
                 } else {
                     $this->auth->check([
-                        'email' => $this->request->getPost('email'),
-                        'password' => $this->request->getPost('password'),
-                        'remember' => $this->request->getPost('remember')
-                    ]);
+                            'email' => $this->request->getPost('email'),
+                            'password' => $this->request->getPost('password'),
+                            'remember' => $this->request->getPost('remember')
+                        ]
+                    );
+
                     return $this->response->redirect('user');
                 }
             }
@@ -80,12 +86,14 @@ class UserController extends ControllerBase
     {
         $this->auth->remove();
         $this->getCurrentUser();
-        if($this->facebook->getUser()){
-            $logout_url =  $this->facebook->getLogoutUrl(['next' => $this->url->get('index')]);
+        if ($this->facebook->getUser()) {
+            $logout_url = $this->facebook->getLogoutUrl(['next' => $this->url->get('index')]);
             $this->facebook->destroySession();
             $this->facebook->setAccessToken('');
+
             return $this->response->redirect($logout_url, true);
         }
+
         return $this->response->redirect('index');
     }
 
@@ -103,14 +111,17 @@ class UserController extends ControllerBase
                         'username' => $this->request->getPost('username', 'striptags'),
                         'email' => $this->request->getPost('email'),
                         'password' => $this->security->hash($this->request->getPost('password')),
-                    ]);
+                    ]
+                );
                 if ($user->save()) {
                     $this->auth->authUserById($user->id);
                     $user->createRequest(Requests::TYPE_REGISTER);
+
                     return $this->dispatcher->forward([
-                        'controller' => 'index',
-                        'action' => 'index'
-                    ]);
+                            'controller' => 'index',
+                            'action' => 'index'
+                        ]
+                    );
                 }
                 $this->flash->error($user->getMessages());
             }
@@ -132,7 +143,8 @@ class UserController extends ControllerBase
                 if (!$user) {
                     $this->flash->success('There is no account associated to this email/username');
                 } else {
-                    $reset_url = 'http://' . $_SERVER['SERVER_NAME'] . "/user/resetpassword/{$user->email}/{$user->secret_key}";
+                    $reset_url =
+                        'http://' . $_SERVER['SERVER_NAME'] . "/user/resetpassword/{$user->email}/{$user->secret_key}";
                     $this->mail->send(
                         [$user->email => $user->username],
                         'HKT Password Recovery',
@@ -141,6 +153,7 @@ class UserController extends ControllerBase
                     );
                     $this->forward('index');
                     $this->flash->success('Success! Please check your messages for an email reset password');
+
                     return;
                 }
             }
@@ -149,7 +162,7 @@ class UserController extends ControllerBase
         $this->view->form = $form;
     }
 
-    public function resetPasswordAction($email='', $secret_key='')
+    public function resetPasswordAction($email = '', $secret_key = '')
     {
         $user = Users::findFirst(['email' => $email]);
         if (!$user || $user->secret_key != $secret_key) {
@@ -167,6 +180,7 @@ class UserController extends ControllerBase
                 $user->updateSecretKey();
                 $this->flash->success('Your password was successfully changed');
                 $this->auth->authUserById($user->id);
+
                 return $this->forward('index/index');
             }
         }

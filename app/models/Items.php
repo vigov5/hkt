@@ -95,9 +95,9 @@ class Items extends BModel
     const STATUS_AVAILABLE = 1;
 
     /**
-    *
-    * @var array $item_status
-    */
+     *
+     * @var array $item_status
+     */
     public static $item_status = [
         self::STATUS_UNAVAILABLE => 'Unavailable',
         self::STATUS_AVAILABLE => 'Available'
@@ -113,6 +113,7 @@ class Items extends BModel
         if (isset(self::$item_status[$this->status])) {
             return self::$item_status[$this->status];
         }
+
         return $this->status;
     }
 
@@ -146,19 +147,31 @@ class Items extends BModel
         if (isset(self::$item_types[$this->type])) {
             return self::$item_types[$this->type];
         }
+
         return $this->type;
     }
 
+    /**
+     * @return array Save Attributes
+     */
     public function getSaveAttributesName()
     {
         return ['name', 'price', 'type', 'description', 'img', 'public_range'];
     }
 
+    /**
+     * @return array Attribute Labels
+     */
     public static function getAttributeLabels()
     {
         return [
             'img' => 'Image Path',
         ];
+    }
+
+    public function beforeCreate()
+    {
+        $this->status = self::STATUS_UNAVAILABLE;
     }
 
     /**
@@ -187,16 +200,36 @@ class Items extends BModel
     }
 
     /**
+     * @return bool Item is available or not
+     */
+    public function isAvailable()
+    {
+        return $this->status == self::STATUS_AVAILABLE;
+    }
+
+    public function changeStatus($status)
+    {
+        if ($this->status != $status) {
+            $this->status = $status;
+            $this->save();
+        }
+    }
+
+    /**
      * Check if an item is on sale or not
      * @return bool
      */
     public function isOnSale()
     {
+        if (!$this->isAvailable()) {
+            return false;
+        }
         foreach ($this->itemusers as $itemuser) {
             if ($itemuser->isOnSale()) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -207,20 +240,23 @@ class Items extends BModel
     public static function getOnSaleItems()
     {
         $type = self::TYPE_NORMAL;
+
         return self::find([
-            "type = $type",
-        ])->filter(function ($item) {
-            if ($item->isOnSale()) {
-                return $item;
-            }
-        });
+                "type = $type",
+            ]
+        )->filter(function ($item) {
+                    if ($item->isOnSale()) {
+                        return $item;
+                    }
+                }
+            );
     }
 
     /**
      * @param int|null $user_id
      * @return int price
      */
-    public function getSalePrice($user_id=null)
+    public function getSalePrice($user_id = null)
     {
         if (!$user_id) {
             return $this->price;
@@ -232,6 +268,7 @@ class Items extends BModel
         if ($item_users[0]->price) {
             return $item_users[0]->price;
         }
+
         return $this->price;
     }
 }

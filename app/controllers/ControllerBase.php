@@ -51,9 +51,11 @@ class ControllerBase extends BController
             if (!is_array($identity)) {
                 $this->flash->notice('You don\'t have access to this module: private');
                 $dispatcher->forward(array(
-                    'controller' => 'index',
-                    'action' => 'notFound',
-                ));
+                        'controller' => 'index',
+                        'action' => 'notFound',
+                    )
+                );
+
                 return false;
             }
 
@@ -63,9 +65,10 @@ class ControllerBase extends BController
                 $this->flash->error('You don\'t have access to this module: ' . $controller_name . ':' . $action_name);
 
                 $dispatcher->forward(array(
-                    'controller' => 'index',
-                    'action' => 'notFound',
-                ));
+                        'controller' => 'index',
+                        'action' => 'notFound',
+                    )
+                );
 
                 return false;
             }

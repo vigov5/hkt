@@ -50,6 +50,27 @@ $(function() {
     $('.item-user-change-status').each(function (index) {
         addBtnListener(this);
     })
+
+    $('.item-sell-request').click(function (e) {
+        var item_id = $(this).attr('data-item-id');
+        $.ajax({
+            type: "POST",
+            url: "/item/request",
+            data: {
+                item_id: item_id
+            }
+        }).success(function(message) {
+            var response = JSON.parse(message);
+            if(response.status == 'success') {
+                bootbox.alert('Request has been created ! Please wait for the administrators to confirm it', function() {
+                    $('#item-sell-request-' + item_id).hide();
+                });
+            }
+        })
+        .fail(function() {
+            bootbox.alert('Reuqest sent Fail !!!');
+        });
+    });
 });
 
 function addBtnListener(btn)
@@ -65,7 +86,7 @@ function addBtnListener(btn)
                 item_user_id: item_user_id,
                 status: status
             }
-        }).done(function(message) {
+        }).success(function(message) {
             var response = JSON.parse(message);
             if(response.status == 'success') {
                 var item_user = response.data;

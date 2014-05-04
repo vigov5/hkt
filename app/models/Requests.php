@@ -1,8 +1,6 @@
 <?php
 
 
-
-
 class Requests extends BModel
 {
 
@@ -72,25 +70,19 @@ class Requests extends BModel
     const TYPE_CREATE_SHOP = 3;
 
     /**
-     * An user want to buy an item
-     */
-    const TYPE_BUY_ITEM = 4;
-
-    /**
      * An user want to register an item to sell
      */
-    const TYPE_USER_SELL_ITEM = 5;
+    const TYPE_USER_SELL_ITEM = 4;
 
     /**
      * A shop want to register an item to sell
      */
-    const TYPE_SHOP_SELL_ITEM = 6;
+    const TYPE_SHOP_SELL_ITEM = 5;
 
     public static $type_value = [
         self::TYPE_REGISTER => 'Register',
         self::TYPE_CREATE_ITEM => 'Create Item',
         self::TYPE_CREATE_SHOP => 'Create Shop',
-        self::TYPE_BUY_ITEM => 'Buy Item',
         self::TYPE_USER_SELL_ITEM => 'User Sell Item',
         self::TYPE_SHOP_SELL_ITEM => 'Shop Sell Item',
     ];
@@ -112,9 +104,6 @@ class Requests extends BModel
         self::STATUS_CANCEL => 'CANCELED',
     ];
 
-    const TYPE_SENT = 1;
-    const TYPE_RECEIVED = 2;
-
     /**
      * Get Status value in string
      * @return int
@@ -124,6 +113,7 @@ class Requests extends BModel
         if (isset(self::$status_value[$this->status])) {
             return self::$status_value[$this->status];
         }
+
         return $this->status;
     }
 
@@ -136,6 +126,7 @@ class Requests extends BModel
         if (isset(self::$type_value[$this->type])) {
             return self::$type_value[$this->type];
         }
+
         return $this->type;
     }
 
@@ -198,11 +189,74 @@ class Requests extends BModel
         if ($this->to_user_id) {
             return $this->toUser->username;
         }
+
         return 'HKT Administrators';
     }
 
     public function isStatusSent()
     {
         return $this->status == self::STATUS_SENT;
+    }
+
+    /**
+     * The request is canceled
+     */
+    public function beCanceled($user_id = null)
+    {
+        if (!$this->isStatusSent()) {
+            return false;
+        }
+        if (!$user_id) {
+            $user_id = $this->from_user_id;
+        }
+        $this->status = self::STATUS_CANCEL;
+        $this->updated_by = $user_id;
+        return $this->save();
+    }
+
+    /**
+     * The request is rejected
+     */
+    public function beRejected($user_id = null)
+    {
+        if (!$this->isStatusSent()) {
+            return false;
+        }
+        $this->status = self::STATUS_REJECT;
+        $this->updated_by = $user_id;
+
+        return $this->save();
+    }
+
+    public function beAccepted($user_id = null)
+    {
+        if (!$this->isStatusSent()) {
+            return false;
+        }
+
+        $this->status = self::STATUS_ACCEPT;
+        $this->updated_by = $user_id;
+
+        switch ($this->type) {
+            case self::TYPE_REGISTER:
+                $this->fromUser->changeRole(Users::ROLE_USER);
+                break;
+            case self::TYPE_CREATE_ITEM:
+                $this->item->changeStatus(Items::STATUS_AVAILABLE);
+                break;
+            case self::TYPE_CREATE_SHOP:
+                break;
+            case self::TYPE_USER_SELL_ITEM:
+                $item_user = new ItemUsers();
+                $item_user->item_id = $this->item_id;
+                $item_user->user_id = $this->from_user_id;
+                $item_user->status = ItemUsers::STATUS_NORMAL;
+                $item_user->save();
+                break;
+            case self::TYPE_SHOP_SELL_ITEM:
+                break;
+        }
+
+        return $this->save();
     }
 }

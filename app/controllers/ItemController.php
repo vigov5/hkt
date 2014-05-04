@@ -13,6 +13,7 @@ class ItemController extends ControllerBase
         parent::initialize();
         $this->view->current_page = 'item';
     }
+
     /**
      * Index action
      */
@@ -20,7 +21,7 @@ class ItemController extends ControllerBase
     {
     }
 
-    public function specialAction($type=Items::TYPE_DEPOSIT)
+    public function specialAction($type = Items::TYPE_DEPOSIT)
     {
         if ($type != Items::TYPE_DEPOSIT && $type != Items::TYPE_WITHDRAW) {
             $type = Items::TYPE_DEPOSIT;
@@ -52,14 +53,16 @@ class ItemController extends ControllerBase
         $item = Items::findFirstByid($id);
         if (!$item) {
             $this->flash->error('item was not found');
+
             return $this->forward('item');
         }
         $today = date('Y-m-d 00:00:00');
         $tomorrow = date('Y-m-d 00:00:00', time() + 86400);
         $this->view->invoices = $item->getInvoices([
-            'conditions' => "created_at > \"$today\" AND created_at < \"$tomorrow\"",
-            'order' => 'created_at desc, to_user_id'
-        ]);
+                'conditions' => "created_at > \"$today\" AND created_at < \"$tomorrow\"",
+                'order' => 'created_at desc, to_user_id'
+            ]
+        );
         $this->view->item = $item;
         $this->setPrevUrl("item/view/$id");
     }
@@ -122,7 +125,14 @@ class ItemController extends ControllerBase
             }
 
             if ($item->save()) {
+                $request1 = $this->current_user->createNewItemRequest($item);
+                $request2 = $this->current_user->createSellItemRequest($item);
+                if ($this->current_user->canAccessNoDestinationRequests()) {
+                    $request1->beAccepted($this->current_user->id);
+                    $request2->beAccepted($this->current_user->id);
+                }
                 $this->flash->success('item was created successfully');
+
                 return $this->forward('item/view', ['id' => $item->id]);
             } else {
                 $this->setDefault($item);
@@ -141,6 +151,7 @@ class ItemController extends ControllerBase
         $item = Items::findFirstByid($id);
         if (!$item) {
             $this->flash->error('item was not found');
+
             return $this->forward('item');
         }
 
@@ -157,6 +168,7 @@ class ItemController extends ControllerBase
             }
             if ($item->save()) {
                 $this->flash->success('item was updated successfully');
+
                 return $this->forward('item/view', ['id' => $item->id]);
             }
         }
@@ -199,28 +211,47 @@ class ItemController extends ControllerBase
         if (!$this->request->isPost()) {
             return $this->response->redirect('item');
         }
-        $item_user_id = $this->request->get('items');
+        $item_user_id = $this->request->get('item_user_id', 'int');
+        $item_id = $this->request->get('items', 'int');
         $amount = $this->request->get('amount');
         if (!$amount || !is_numeric($amount) || $amount < 1) {
             $amount = 1;
         }
         $item_user = ItemUsers::findFirstByid($item_user_id);
         if (!$item_user) {
-            $this->flash->error('Item does not exist');
-            return $this->forward('item');
+            $this->setFlashSession('error', 'Item does not exist');
+            $this->redirectToPrevUrl();
+            return;
         }
+
+        if ($item_user->item_id != $item_id) {
+            $this->setFlashSession('error', 'Data Invalid');
+            $this->redirectToPrevUrl();
+            return;
+        }
+
         if (!$item_user->isOnSale()) {
-            $this->flash->error('Item is not on sale');
-            return $this->forward('item');
+            $this->setFlashSession('error', 'Item is not on sale');
+            $this->redirectToPrevUrl();
+            return;
+        }
+        if (!$item_user->item || !$item_user->item->isAvailable()) {
+            $this->setFlashSession('error', 'Item is currently unavailable');
+            $this->redirectToPrevUrl();
+            return;
         }
         if (!$this->current_user->checkWallet($amount * $item_user->getSalePrice())) {
-            $this->flash->error('Sorry !!! You do not have enough money !!!');
-            return $this->forward('item');
+            $this->setFlashSession('error', 'Sorry !!! You do not have enough money !!!');
+            $this->redirectToPrevUrl();
+            return;
         }
+
         if ($this->current_user->createInvoiceToUser($item_user, $amount)) {
             $this->setFlashSession('success', 'Invoice created successfully !!!');
         } else {
-            $this->setFlashSession('error', 'An error occured when trying to create invoice! Please contact the administrator !!!');
+            $this->setFlashSession('error',
+                'An error occured when trying to create invoice! Please contact the administrator !!!'
+            );
         };
         $this->redirectToPrevUrl();
     }
@@ -228,5 +259,27 @@ class ItemController extends ControllerBase
     public function myAction()
     {
         $this->view->item_users = $this->current_user->itemUsers;
+    }
+
+    public function requestAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $item_id = $this->request->getPost('item_id', 'int');
+            $item = Items::findFirstById($item_id);
+            if (!$item || !$this->current_user->canCreateBuyItemRequest($item)) {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Invalid Item',
+                ];
+            } else {
+                $this->current_user->createSellItemRequest($item);
+                $response = [
+                    'status' => 'success',
+                ];
+            }
+            echo json_encode($response);
+        }
+        return ;
     }
 }

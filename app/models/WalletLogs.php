@@ -1,8 +1,6 @@
 <?php
 
 
-
-
 class WalletLogs extends BModel
 {
 
