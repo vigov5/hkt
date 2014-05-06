@@ -601,6 +601,11 @@ class Users extends BModel
         return true;
     }
 
+    /**
+     * Create sell item request
+     * @param Items $item
+     * @return Requests
+     */
     public function createSellItemRequest($item)
     {
         $request = new Requests();
@@ -613,6 +618,11 @@ class Users extends BModel
         return $request;
     }
 
+    /**
+     * Create new item request
+     * @param Items $item
+     * @return Requests
+     */
     public function createNewItemRequest($item)
     {
         $request = new Requests();

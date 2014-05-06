@@ -87,6 +87,9 @@ class Pagination
 
     public function generatePagination()
     {
+        if ($this->page->total_pages <= 1) {
+            return '';
+        }
         $current = $this->page->current;
         $text = '<ul class="pagination">';
         $text .= $this->generatePage(self::FIRST);

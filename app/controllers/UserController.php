@@ -73,7 +73,7 @@ class UserController extends ControllerBase
                         ]
                     );
 
-                    return $this->response->redirect('user');
+                    return $this->response->redirect('item/onsale');
                 }
             }
         } catch (Exception $e) {

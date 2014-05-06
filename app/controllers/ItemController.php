@@ -6,7 +6,7 @@ use Phalcon\Paginator\Adapter\Model as Paginator;
 class ItemController extends ControllerBase
 {
 
-    const ITEM_PER_PAGE = 5;
+    const ITEM_PER_PAGE = 20;
 
     public function initialize()
     {
@@ -281,5 +281,27 @@ class ItemController extends ControllerBase
             echo json_encode($response);
         }
         return ;
+    }
+
+    public function availableAction($page = 1)
+    {
+        $page = intval($page);
+        if ($page < 1) {
+            $page = 1;
+        }
+        $builder = $this->modelsManager->createBuilder()
+            ->from('Items')
+            ->where('status =' . Items::STATUS_AVAILABLE)
+            ->andWhere('type = ' . Items::TYPE_NORMAL)
+            ->orderBy('id desc');
+
+        $paginator = new Phalcon\Paginator\Adapter\QueryBuilder([
+            'builder' => $builder,
+            'limit' => self::ITEM_PER_PAGE,
+            'page' => $page
+        ]);
+        $page = $paginator->getPaginate();
+        $this->view->pagination = new Pagination($page, '/item/available');
+        $this->view->items = $page->items;
     }
 }

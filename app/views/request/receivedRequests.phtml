@@ -8,14 +8,14 @@ echo $this->getContent();
     <!-- Default panel contents -->
     <div class="panel-heading">
         Received Invoices
-            <?php if(!$type): ?>
+            <?php if($type != 'all'): ?>
                 <a href="<?= $this->url->get("request/receivedrequests/all"); ?>" class="btn btn-success btn-xs" role="button">All</a>
                 <div class="btn-group-xs pull-right">
                     <a href="<?= $this->url->get("request/accept/all"); ?>" class="btn btn-primary btn-xs" role="button">Accept All</a>
                     <a href="<?= $this->url->get("request/reject/all"); ?>" class="btn btn-danger btn-xs" role="button">Reject All</a>
                 </div>
             <?php else: ?>
-            <a href="<?= $this->url->get("request/receivedrequests"); ?>" class="btn btn-success btn-xs" role="button">Only Sent</a>
+            <a href="<?= $this->url->get("request/receivedrequests/restricted"); ?>" class="btn btn-success btn-xs" role="button">Only Sent</a>
         <?php endif; ?>
     </div>
 
@@ -63,4 +63,4 @@ echo $this->getContent();
     </table>
 </div>
 
-
+<?= $pagination->generatePagination() ?>

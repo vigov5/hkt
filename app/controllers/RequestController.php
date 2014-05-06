@@ -2,41 +2,70 @@
 
 class RequestController extends ControllerBase
 {
+    const REQUESTS_PER_PAGE = 2;
+
     public function initialize()
     {
         parent::initialize();
         $this->view->current_page = 'request';
     }
 
-    public function sentRequestsAction($type = '')
+    public function sentRequestsAction($type = 'restricted', $page = 1)
     {
+        $page = intval($page);
+        if ($page < 1) {
+            $page = 1;
+        }
         if ($type === 'all') {
-            $this->view->requests = $this->current_user->getSentRequests(['order' => 'id desc']);
-            $this->setPrevUrl("request/sentrequests/all");
+            $requests = $this->current_user->getSentRequests(['order' => 'id desc']);
         } else {
-            $type = null;
-            $this->view->requests = $this->current_user->getSentRequests(
+            $type = 'restricted';
+            $requests = $this->current_user->getSentRequests(
                 [
                     'conditions' => 'status=' . Requests::STATUS_SENT,
                     'order' => 'id desc'
                 ]
             );
-            $this->setPrevUrl("request/sentrequests");
         }
+
+        $this->setPrevUrl("request/sentrequests/$type/$page");
+        $paginator = new \Phalcon\Paginator\Adapter\Model(
+            array(
+                'data' => $requests,
+                'limit' => self::REQUESTS_PER_PAGE,
+                'page' => $page,
+            )
+        );
+        $page = $paginator->getPaginate();
+        $this->view->pagination = new Pagination($page, "/request/sentrequests/$type");
+        $this->view->requests = $page->items;
         $this->view->type = $type;
     }
 
-    public function receivedRequestsAction($type = '')
+    public function receivedRequestsAction($type = 'restricted', $page = 1)
     {
-
-        if ($type === 'all') {
-            $this->view->requests = $this->current_user->getAllReceivedRequests(true);
-            $this->setPrevUrl("request/receivedrequests/all");
-        } else {
-            $type = null;
-            $this->view->requests = $this->current_user->getAllReceivedRequests();
-            $this->setPrevUrl("request/receivedrequests");
+        $page = intval($page);
+        if ($page < 1) {
+            $page = 1;
         }
+        if ($type === 'all') {
+            $requests = $this->current_user->getAllReceivedRequests(true);
+        } else {
+            $type = 'restricted';
+            $requests = $this->current_user->getAllReceivedRequests();
+        }
+
+        $this->setPrevUrl("request/receivedrequests/$type/$page");
+        $paginator = new \Phalcon\Paginator\Adapter\Model(
+            array(
+                'data' => $requests,
+                'limit' => self::REQUESTS_PER_PAGE,
+                'page' => $page,
+            )
+        );
+        $page = $paginator->getPaginate();
+        $this->view->pagination = new Pagination($page, "/request/receivedrequests/$type");
+        $this->view->requests = $page->items;
         $this->view->type = $type;
     }
 

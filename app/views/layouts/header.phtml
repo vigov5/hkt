@@ -28,7 +28,11 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= $this->url->get('item/onsale') ?>"><span class="fa fa-edit"></span>Items</a>
+                            <a href="<?= $this->url->get('item/onsale') ?>">On Sale</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="<?= $this->url->get('item/available') ?>">Request Sell Items</a>
                         </li>
                         <li class="divider"></li>
                         <li>
@@ -71,16 +75,16 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= $this->url->get('request/sentrequests') ?>"><span class="fa fa-edit"></span>Sent Requests</a>
+                            <a href="<?= $this->url->get('request/sentrequests/restricted') ?>">Sent Requests</a>
                         </li>
                         <li>
-                            <a href="<?= $this->url->get('request/receivedrequests') ?>"><span class="fa fa-edit"></span>Received Request</a>
+                            <a href="<?= $this->url->get('request/receivedrequests/restricted') ?>">Received Request</a>
                         </li>
                         <li>
-                            <a href="<?= $this->url->get('item/my') ?>"><span class="fa fa-edit"></span>My items</a>
+                            <a href="<?= $this->url->get('item/my') ?>">My Sale items</a>
                         </li>
                         <li>
-                            <a href="<?= $this->url->get('user/changepassword') ?>"><span class="fa fa-edit"></span>Change Password</a>
+                            <a href="<?= $this->url->get('user/changepassword') ?>">Change Password</a>
                         </li>
                         <li>
                             <a href="<?= $this->url->get('user/logout') ?>"><span class="fa fa-power-off"></span>Log out</a>
@@ -100,10 +104,10 @@
                             <a href="<?= $this->url->get('item/special/2') ?>">Withdraw</a>
                         </li>
                         <li>
-                            <a href="<?= $this->url->get('invoice/sentinvoices') ?>">Sent Invoices</a>
+                            <a href="<?= $this->url->get('invoice/sentinvoices/restricted') ?>">Sent Invoices</a>
                         </li>
                         <li>
-                            <a href="<?= $this->url->get('invoice/receivedinvoices') ?>">Received Invoices</a>
+                            <a href="<?= $this->url->get('invoice/receivedinvoices/restricted') ?>">Received Invoices</a>
                         </li>
                     </ul>
                 </li>

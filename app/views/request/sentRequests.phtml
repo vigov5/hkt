@@ -7,13 +7,13 @@ echo $this->getContent();
 <div class="panel panel-info">
     <!-- Default panel contents -->
     <div class="panel-heading">Sent Invoices
-        <?php if(!$type): ?>
+        <?php if($type != 'all'): ?>
             <a href="<?= $this->url->get("request/sentrequests/all"); ?>" class="btn btn-success btn-xs" role="button">All</a>
             <div class="pull-right">
                 <a href="<?= $this->url->get("request/cancel/all"); ?>" class="btn btn-danger btn-xs" role="button">Cancel All</a>
             </div>
         <?php else: ?>
-            <a href="<?= $this->url->get("request/sentrequests"); ?>" class="btn btn-success btn-xs" role="button">Only Sent</a>
+            <a href="<?= $this->url->get("request/sentrequests/restricted"); ?>" class="btn btn-success btn-xs" role="button">Only Sent</a>
         <?php endif; ?>
     </div>
 
@@ -58,4 +58,5 @@ echo $this->getContent();
     </table>
 </div>
 
+<?= $pagination->generatePagination() ?>
 

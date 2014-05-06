@@ -1,0 +1,56 @@
+<?php
+use Phalcon\Tag;
+
+/**
+ * @var Items[] $items
+ * @var Users $current_user
+ * @var Pagination $pagination
+ */
+
+echo $this->getContent();
+?>
+<h1>Available Items </h1>
+<hr>
+
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th>Item</th>
+        <th>Suggested Price</th>
+        <th>Created By</th>
+        <th>Created At</th>
+        <th>Seller</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+        <?php foreach($items as $item): ?>
+        <?php
+        /**
+         * @var ItemUsers $item_user
+         */
+        ?>
+            <tr>
+                <td><?= $item->name ?></td>
+                <td><?= $item->price ?></td>
+                <td><?= $item->user->username ?> </td>
+                <td><?= $item->created_at ?> </td>
+                <td>
+                    <?php foreach($item->saleUsers as $user): ?>
+                        <?= $user->username . '  ' ?>
+                    <?php endforeach; ?>
+                </td>
+                <td>
+                    <div class="btn-group-xs">
+                        <a href="<?= $this->url->get("item/view/{$item->id}"); ?>" class="btn btn-info btn-sm btn-action" role="button">View</a>
+                        <?php if ($current_user->canCreateBuyItemRequest($item)): ?>
+                            <button class='btn btn-primary btn-action item-sell-request' id="item-sell-request-<?= $item->id ?>" data-item-id='<?= $item->id ?>'>Request Sell This Item</button>
+                        <?php endif; ?>
+                    </div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?= $pagination->generatePagination() ?>
