@@ -40,12 +40,6 @@
                         </li>
                     </ul>
                 </li>
-                <li class="<?= $current_page === 'contact' ? 'active' : '' ?>">
-                    <a href="<?= $this->url->get('contact') ?>">
-                        <span class="fa fa-envelope"></span>
-                        Contact
-                    </a>
-                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown <?= $current_page === 'setting' ? 'active' : '' ?>">
@@ -94,7 +88,7 @@
                 <li class="dropdown <?= $current_page === 'wallet' ? 'active' : '' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="fa fa-dollar"></span>:
-                        <?= $current_user->wallet ?> hkt <b class="caret"></b>
+                        <?= $current_user->wallet ?> <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
                         <li>
@@ -109,6 +103,14 @@
                         <li>
                             <a href="<?= $this->url->get('invoice/receivedinvoices/restricted') ?>">Received Invoices</a>
                         </li>
+                    </ul>
+                </li>
+                <li class="dropdown <?= $current_page === 'hkt' ? 'active' : '' ?>">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        HKT:
+                        <?= $current_user->hkt ?> <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
                     </ul>
                 </li>
             </ul>

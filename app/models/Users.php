@@ -115,6 +115,14 @@ class Users extends BModel
         return $upper_roles;
     }
 
+    public static function checkAuthorized($role)
+    {
+        if ($role === 'Unauthorized User' || (is_numeric($role) && $role == self::ROLE_UNAUTHORIZED)) {
+            return false;
+        }
+        return true;
+    }
+
     public function isUnauthorized()
     {
         return $this->role == self::ROLE_UNAUTHORIZED;
@@ -242,7 +250,7 @@ class Users extends BModel
      */
     public function beforeSave()
     {
-        if ($this->hasChanged('wallet')) {
+        if ($this->hasSnapshotData() && $this->hasChanged('wallet')) {
             $snapshot = $this->getSnapshotData();
             $wallet_log = new WalletLogs();
             $wallet_log->user_id = $this->id;

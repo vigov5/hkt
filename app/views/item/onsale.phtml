@@ -1,6 +1,12 @@
 <?php
 use Phalcon\Tag;
+
+/**
+ * @var ItemUsers[] $item_users
+ * @var Users $current_user
+ */
 echo $this->getContent();
+
 ?>
 <h1>On Sale Items </h1>
 <hr>
@@ -24,7 +30,7 @@ echo $this->getContent();
                         <input type="hidden" name="items" value="<?= $item_user->item_id ?>">
                         <input type="hidden" name="item_user_id" value="<?= $item_user->id ?>">
                         <hr>
-                        <button type="submit" class="btn btn-primary btn-sm buy-btn">Buy now</button>
+                        <button type="submit" class="btn btn-primary btn-sm buy-btn <?= $current_user->checkWallet($item_user->item->getSalePrice($item_user->user_id)) ? '' : 'disabled' ?>">Buy now</button>
                         <a href="<?= $this->url->get("item/view/{$item_user->item_id}"); ?>" class="btn btn-info btn-sm" role="button">View</a>
                     <?= Tag::endForm() ?>
                 </div>

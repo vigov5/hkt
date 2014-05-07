@@ -5,14 +5,14 @@ use Phalcon\Acl\Adapter\Memory as AclMemory;
 use Phalcon\Acl\Role as AclRole;
 use Phalcon\Acl\Resource as AclResource;
 
-/**
- * Vokuro\Acl\Acl
- */
 class Acl extends Component
 {
 
     /**
      * The ACL Object
+     * Public resources are the resources that do not require authentication to access
+     * Private resources are the resources that require authorization
+     * Resources that do not appear in both public and private list can be access by default Users::ROLE_NORMAL_USER
      *
      * @var \Phalcon\Acl\Adapter\Memory
      */
@@ -26,32 +26,24 @@ class Acl extends Component
     private $_file_path;
 
     /**
-     * Define the resources that are considered "private". These controller => actions require authentication.
+     * Define the resources that are considered "public". User does not need login to access these actions
+     * @var array
+     */
+    private $_public_resources = [
+        'index' => ['index', 'notFound', 'about', 'contact'],
+        'user'  => ['login', 'logout', 'register', 'forgotpassword', 'resetpassword'],
+    ];
+    /**
+     * Define the resources that are considered "private". These controller => actions require authorization.
+     * Private actions require the roles that more powerful than normal user
      *
      * @var array
      */
     private $_private_resources = [
         'user' => [
             'index' => Users::ROLE_MODERATOR,
-            'search' => Users::ROLE_USER,
             'update' => Users::ROLE_ADMIN,
             'delete' => Users::ROLE_ADMIN,
-            'changePassword' => Users::ROLE_USER,
-        ],
-        'item' => [
-            'index' => Users::ROLE_USER,
-            'onsale' => Users::ROLE_USER,
-            'search' => Users::ROLE_USER,
-            'edit' => Users::ROLE_USER,
-            'create' => Users::ROLE_USER,
-            'delete' => Users::ROLE_USER,
-        ],
-        'shop' => [
-            'index' => Users::ROLE_USER,
-            'search' => Users::ROLE_USER,
-            'edit' => Users::ROLE_USER,
-            'create' => Users::ROLE_USER,
-            'delete' => Users::ROLE_USER,
         ],
         'setting' => [
             'index' => Users::ROLE_ADMIN,
@@ -64,8 +56,9 @@ class Acl extends Component
     {
         $this->_file_path = __DIR__ . '/../cache/acl_data.txt';
     }
+
     /**
-     * Checks if a controller is private or not
+     * Checks if an action is private or not. Private actions require the roles that more powerful than normal user
      *
      * @param string $controller_name
      * @param string $action_name
@@ -77,7 +70,23 @@ class Acl extends Component
             return false;
         }
         $controller_resource = $this->_private_resources[$controller_name];
-        return isset($controller_resource[$action_name]);
+        return in_array($action_name, $controller_resource);
+    }
+
+    /**
+     * Checks if a controller is public or not
+     *
+     * @param string $controller_name
+     * @param string $action_name
+     * @return boolean
+     */
+    public function isPublic($controller_name, $action_name)
+    {
+        if (!isset($this->_public_resources[$controller_name])) {
+            return false;
+        }
+        $controller_resource = $this->_public_resources[$controller_name];
+        return in_array($action_name, $controller_resource);
     }
 
     /**

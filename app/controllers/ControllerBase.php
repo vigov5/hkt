@@ -41,23 +41,38 @@ class ControllerBase extends BController
         $controller_name = $dispatcher->getControllerName();
         $action_name = $dispatcher->getActionName();
 
+        if ($this->acl->isPublic($controller_name, $action_name)) {
+            return true;
+        }
+        // Get the current identity
+        $identity = $this->auth->getIdentity();
+
+        // If there is no identity available the user is redirected to index/index
+        if (!is_array($identity)) {
+            $this->flash->notice('You don\'t have access to this module: private');
+            $dispatcher->forward(array(
+                    'controller' => 'index',
+                    'action' => 'notFound',
+                )
+            );
+
+            return false;
+        }
+
+        if (!Users::checkAuthorized($identity['role'])) {
+            $this->flash->error('Your account is unauthorized. Please contact administrators !');
+
+            $dispatcher->forward(array(
+                    'controller' => 'index',
+                    'action' => 'notFound',
+                )
+            );
+
+            return false;
+        }
+
         // Only check permissions on private controllers
         if ($this->acl->isPrivate($controller_name, $action_name)) {
-
-            // Get the current identity
-            $identity = $this->auth->getIdentity();
-
-            // If there is no identity available the user is redirected to index/index
-            if (!is_array($identity)) {
-                $this->flash->notice('You don\'t have access to this module: private');
-                $dispatcher->forward(array(
-                        'controller' => 'index',
-                        'action' => 'notFound',
-                    )
-                );
-
-                return false;
-            }
 
             // Check if the user have permission to the current option
             if (!$this->acl->isAllowed($identity['role'], $controller_name, $action_name)) {

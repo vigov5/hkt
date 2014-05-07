@@ -1,11 +1,18 @@
+<?php
+use Phalcon\Tag;
+?>
 <footer>
     <div class="container container-footer">
         <hr>
         <div class="row text-center">
-            Powered by <?= Phalcon\Tag::linkTo(['http://phalconphp.com/', 'PhalconPHP', 'local' => false]) ?>
+            <span class="fa fa-info-circle"></span> <?= Tag::linkTo(['index/about', 'About']) ?> -
+            <span class="fa fa-envelope"></span> <?= Tag::linkTo(['index/contact', 'Contact']) ?>
         </div>
         <div class="row text-center">
-            Copyright © <?= date('Y') ?> by HKT Group @ <?= Phalcon\Tag::linkTo(['http://framgia.com/en/', 'Framgia Vietnam', FALSE]) ?>
+            Powered by <?= Tag::linkTo(['http://phalconphp.com/', 'PhalconPHP', 'local' => false]) ?>
+        </div>
+        <div class="row text-center">
+            Copyright © <?= date('Y') ?> by HKT Group @ <?= Tag::linkTo(['http://framgia.com/en/', 'Framgia Vietnam', FALSE]) ?>
         </div>
     </div>
 </footer>
