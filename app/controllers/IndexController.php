@@ -17,15 +17,5 @@ class IndexController extends ControllerBase
     {
 
     }
-
-    public function aboutAction()
-    {
-
-    }
-
-    public function contactAction()
-    {
-
-    }
 }
 

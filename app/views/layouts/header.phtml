@@ -1,5 +1,4 @@
 <?php use Phalcon\Tag;
-
 /**
  * @var Users $current_user
  */
@@ -105,10 +104,10 @@
                         </li>
                     </ul>
                 </li>
-                <li class="dropdown <?= $current_page === 'hkt' ? 'active' : '' ?>">
+                <li class="dropdown <?= $current_page === 'hcoin' ? 'active' : '' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        HKT:
-                        <?= $current_user->hkt ?> <b class="caret"></b>
+                        HCoin:
+                        <?= $current_user->hcoin ?> <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
                     </ul>

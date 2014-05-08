@@ -1,0 +1,7 @@
+<?php use Phalcon\Tag;?>
+<div class="row">
+    <?= $this->getContent(); ?>
+    <h2>Create new FAQ</h2>
+    <hr>
+    <?= $this->partial('faq/_form', ['link' => 'faq/create', 'button' => 'Create']) ?>
+</div>

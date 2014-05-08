@@ -32,6 +32,8 @@ class Acl extends Component
     private $_public_resources = [
         'index' => ['index', 'notFound', 'about', 'contact'],
         'user'  => ['login', 'logout', 'register', 'forgotpassword', 'resetpassword'],
+        'faq' => ['index'],
+        'contact' => ['index'],
     ];
     /**
      * Define the resources that are considered "private". These controller => actions require authorization.
@@ -49,6 +51,10 @@ class Acl extends Component
             'index' => Users::ROLE_ADMIN,
             'acl' => Users::ROLE_ADMIN,
         ],
+        'faq' => [
+            'create' => Users::ROLE_ADMIN,
+            'update' => Users::ROLE_ADMIN,
+        ]
     ];
 
 

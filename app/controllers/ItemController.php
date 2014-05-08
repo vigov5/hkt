@@ -177,35 +177,6 @@ class ItemController extends ControllerBase
         $this->view->form = new BForm($item);
     }
 
-    /**
-     * Deletes a item
-     *
-     * @param string $id
-     * @return mix Forward to item/index if there are any errors. Otherwise forward to item/search
-     */
-    public function deleteAction($id)
-    {
-        $item = Items::findFirstByid($id);
-        if (!$item) {
-            $this->flash->error('item was not found');
-
-            return $this->forward('item');
-        }
-
-        if (!$item->delete()) {
-
-            foreach ($item->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-
-            return $this->forward('item/search');
-        }
-
-        $this->flash->success('item was deleted successfully');
-
-        return $this->forward('item');
-    }
-
     public function buyAction()
     {
         if (!$this->request->isPost()) {

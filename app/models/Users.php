@@ -42,7 +42,7 @@ class Users extends BModel
      *
      * @var integer
      */
-    public $hkt;
+    public $hcoin;
 
     /**
      *
@@ -216,7 +216,7 @@ class Users extends BModel
             'password' => 'password',
             'email' => 'email',
             'wallet' => 'wallet',
-            'hkt' => 'hkt',
+            'hcoin' => 'hcoin',
             'role' => 'role',
             'secret_key' => 'secret_key',
             'created_at' => 'created_at',
@@ -241,7 +241,7 @@ class Users extends BModel
     {
         $this->role = self::ROLE_UNAUTHORIZED;
         $this->wallet = 0;
-        $this->hkt = 0;
+        $this->hcoin = 0;
         $this->secret_key = Keygen::generateKey();
     }
 
