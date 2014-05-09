@@ -216,6 +216,41 @@ class Items extends BModel
     }
 
     /**
+     * Check whether this item is NORMAL ITEM or not
+     * @return bool
+     */
+    public function isNormalItem()
+    {
+        return $this->type == self::TYPE_NORMAL;
+    }
+
+    /**
+     * Check whether this item is DEPOSIT ITEM or not
+     * @return bool
+     */
+    public function isDepositItem()
+    {
+        return $this->type == self::TYPE_DEPOSIT;
+    }
+
+    /**
+     * Check whether this item is WITHDRAW ITEM or not
+     * @return bool
+     */
+    public function isWithdrawItem()
+    {
+        return $this->type == self::TYPE_WITHDRAW;
+    }
+
+    /**
+     * Check whether this item is SET ITEM or not
+     * @return bool
+     */
+    public function isSetItem()
+    {
+        return $this->type == self::TYPE_SET;
+    }
+    /**
      * Check if an item is on sale or not
      * @return bool
      */

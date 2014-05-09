@@ -50,6 +50,18 @@ class Invoices extends BModel
      *
      * @var integer
      */
+    public $real_price;
+
+    /**
+     *
+     * @var integer
+     */
+    public $hcoin_receive;
+
+    /**
+     *
+     * @var integer
+     */
     public $status;
 
     /**
@@ -128,6 +140,8 @@ class Invoices extends BModel
             'item_id' => 'item_id',
             'item_count' => 'item_count',
             'price' => 'price',
+            'real_price' => 'real_price',
+            'hcoin_receive' => 'hcoin_receive',
             'status' => 'status',
             'set_items_id' => 'set_items_id',
             'comment' => 'comment',
@@ -170,7 +184,12 @@ class Invoices extends BModel
             return false;
         }
         $this->status = self::STATUS_CANCEL;
-        $this->fromUser->increaseWallet($this->price);
+
+        if ($this->price) {
+            $wallet_before = $this->fromUser->wallet;
+            $wallet_after = $this->fromUser->increaseWallet($this->price);
+            WalletLogs::createNew($this->from_user_id, $wallet_before, $wallet_after, $this->id, WalletLogs::ACTION_CANCEL);
+        }
 
         return $this->save();
     }
@@ -184,7 +203,18 @@ class Invoices extends BModel
             return false;
         }
         $this->status = self::STATUS_ACCEPT;
-        $this->toUser->increaseWallet($this->price);
+        if ($this->real_price) {
+            $wallet_before = $this->toUser->wallet;
+            $wallet_after = $this->toUser->increaseWallet($this->real_price);
+            WalletLogs::createNew($this->to_user_id, $wallet_before, $wallet_after, $this->id, WalletLogs::ACTION_ACCEPT);
+        }
+
+        if ($this->hcoin_receive) {
+            $hcoin_before = $this->fromUser->hcoin;
+            $hcoin_after = $this->fromUser->increaseHCoin($this->hcoin_receive);
+            WalletLogs::createNew($this->from_user_id, $hcoin_before, $hcoin_after, $this->id, WalletLogs::ACTION_ACCEPT, WalletLogs::TYPE_HCOIN);
+        }
+
         $this->save();
 
         return true;
@@ -199,7 +229,13 @@ class Invoices extends BModel
             return false;
         }
         $this->status = self::STATUS_REJECT;
-        $this->fromUser->increaseWallet($this->price);
+
+        if ($this->price) {
+            $wallet_before = $this->fromUser->wallet;
+            $wallet_after = $this->fromUser->increaseWallet($this->price);
+            WalletLogs::createNew($this->from_user_id, $wallet_before, $wallet_after, $this->id, WalletLogs::ACTION_REJECT);
+        }
+
         $this->save();
 
         return true;

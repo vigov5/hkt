@@ -20,13 +20,31 @@ class WalletLogs extends BModel
      *
      * @var integer
      */
-    public $wallet_before;
+    public $before;
 
     /**
      *
      * @var integer
      */
-    public $wallet_after;
+    public $after;
+
+    /**
+     *
+     * @var integer
+     */
+    public $invoice_id;
+
+    /**
+     *
+     * @var integer
+     */
+    public $action;
+
+    /**
+     *
+     * @var integer
+     */
+    public $type;
 
     /**
      *
@@ -34,6 +52,12 @@ class WalletLogs extends BModel
      */
     public $created_at;
 
+    const ACTION_CANCEL = 0;
+    const ACTION_ACCEPT = 1;
+    const ACTION_REJECT = 2;
+
+    const TYPE_MONEY = 0;
+    const TYPE_HCOIN = 1;
     /**
      * Independent Column Mapping.
      */
@@ -42,8 +66,11 @@ class WalletLogs extends BModel
         return array(
             'id' => 'id',
             'user_id' => 'user_id',
-            'wallet_before' => 'wallet_before',
-            'wallet_after' => 'wallet_after',
+            'before' => 'before',
+            'after' => 'after',
+            'action' => 'action',
+            'type' => 'type',
+            'invoice_id' => 'invoice_id',
             'created_at' => 'created_at'
         );
     }
@@ -55,5 +82,27 @@ class WalletLogs extends BModel
     {
         parent::initialize();
         $this->belongsTo('user_id', 'Users', 'id', ['alias' => 'user']);
+        $this->belongsTo('invoice_id', 'Invoices', 'id', ['alias' => 'invoice']);
+    }
+
+    /**
+     * @param int $user_id
+     * @param int $before
+     * @param int $after
+     * @param int $invoice_id
+     * @param int $action
+     * @param int $type
+     */
+    public static function createNew($user_id, $before, $after, $invoice_id, $action = self::ACTION_ACCEPT, $type = self::TYPE_MONEY)
+    {
+        $hcoin_log = new WalletLogs();
+        $hcoin_log->create([
+            'user_id' => $user_id,
+            'before' => $before,
+            'after' => $after,
+            'action' => $action,
+            'invoice_id' => $invoice_id,
+            'type' => $type,
+        ]);
     }
 }

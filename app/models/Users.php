@@ -194,7 +194,6 @@ class Users extends BModel
     {
         parent::initialize();
         $this->setSource('users');
-        $this->keepSnapshots(true);
         $this->hasMany('id', 'Items', 'created_by');
         $this->hasMany('id', 'Invoices', 'to_user_id', ['alias' => 'receivedInvoices']);
         $this->hasMany('id', 'Invoices', 'from_user_id', ['alias' => 'sentInvoices']);
@@ -243,25 +242,6 @@ class Users extends BModel
         $this->wallet = 0;
         $this->hcoin = 0;
         $this->secret_key = Keygen::generateKey();
-    }
-
-    /**
-     * Before save action
-     */
-    public function beforeSave()
-    {
-        if ($this->hasSnapshotData() && $this->hasChanged('wallet')) {
-            $snapshot = $this->getSnapshotData();
-            $wallet_log = new WalletLogs();
-            $wallet_log->user_id = $this->id;
-            $wallet_log->wallet_before = $snapshot['wallet'];
-            $wallet_log->wallet_after = $this->wallet;
-            $this->setSnapshotData(['wallet' => $this->wallet]);
-
-            return $wallet_log->save();
-        }
-
-        return true;
     }
 
     /**
@@ -400,8 +380,10 @@ class Users extends BModel
         $invoice->to_user_id = $item_user->user_id;
         $invoice->item_id = $item_user->item_id;
         $invoice->item_count = $item_count;
+        $invoice->hcoin_receive = $item_user->getHCoinReceived();
         $price = $item_count * $item_user->getSalePrice();
         $invoice->price = $price;
+        $invoice->real_price = $item_count * $item_user->getRealPrice();
         $this->minusWallet($price);
         if (!$invoice->save()) {
             return false;
@@ -470,11 +452,24 @@ class Users extends BModel
 
     /**
      * @param int $amount
+     * @return int wallet after
      */
     public function increaseWallet($amount)
     {
         $this->wallet += $amount;
         $this->save();
+        return $this->wallet;
+    }
+
+    /**
+     * @param int $amount
+     * @return int hcoin after
+     */
+    public function increaseHCoin($amount)
+    {
+        $this->hcoin += $amount;
+        $this->save();
+        return $this->hcoin;
     }
 
     /**

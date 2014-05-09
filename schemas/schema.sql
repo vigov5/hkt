@@ -22,17 +22,7 @@ CREATE TABLE `faqs` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hcoin_logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `hcoin_before` int(11) DEFAULT NULL,
-  `hcoin_after` int(11) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -212,8 +202,11 @@ CREATE TABLE `users` (
 CREATE TABLE `wallet_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `wallet_before` int(11) DEFAULT NULL,
-  `wallet_after` int(11) DEFAULT NULL,
+  `before` int(11) DEFAULT NULL,
+  `after` int(11) DEFAULT NULL,
+  `invoice_id` int(11) DEFAULT NULL,
+  `action` int(11) DEFAULT 0,
+  `type` int(11) DEFAULT 0,
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=139 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
