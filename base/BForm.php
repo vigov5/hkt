@@ -321,4 +321,24 @@ class BForm
         $label = Tag::tagHtml('label', ['class' => 'control-label']) . $this->model->getAttributeLabel($attribute) . Tag::tagHtmlClose('label', true);
         return $this->startDefault($div_class) . $label . $input . $error . $this->endDefault();
     }
+
+    /**
+     * Check whether the field has value or not
+     * @param string $field
+     * @return bool
+     */
+    public function hasValue($field)
+    {
+        return isset($this->model->$field);
+    }
+
+    /**
+     * Get the field value
+     * @param string $field
+     * @return string
+     */
+    public function getFieldValue($field)
+    {
+        return $this->model->$field;
+    }
 }

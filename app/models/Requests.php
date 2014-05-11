@@ -79,12 +79,18 @@ class Requests extends BModel
      */
     const TYPE_SHOP_SELL_ITEM = 5;
 
+    /**
+     * An user want to be a shop' staff
+     */
+    const TYPE_SHOP_STAFF = 6;
+
     public static $type_value = [
         self::TYPE_REGISTER => 'Register',
         self::TYPE_CREATE_ITEM => 'Create Item',
         self::TYPE_CREATE_SHOP => 'Create Shop',
         self::TYPE_USER_SELL_ITEM => 'User Sell Item',
         self::TYPE_SHOP_SELL_ITEM => 'Shop Sell Item',
+        self::TYPE_SHOP_STAFF => 'Shop Staff',
     ];
     /**
      *
@@ -179,6 +185,7 @@ class Requests extends BModel
     {
         parent::initialize();
         $this->belongsTo('item_id', 'Items', 'id', ['alias' => 'item']);
+        $this->belongsTo('from_shop_id', 'Shops', 'id', ['alias' => 'shop']);
         $this->belongsTo('from_user_id', 'Users', 'id', ['alias' => 'fromUser']);
         $this->belongsTo('to_user_id', 'Users', 'id', ['alias' => 'toUser']);
         $this->belongsTo('updated_by', 'Users', 'id', ['alias' => 'updatedBy']);
@@ -215,7 +222,8 @@ class Requests extends BModel
     }
 
     /**
-     * The request is rejected
+     * @param null|int $user_id
+     * @return bool
      */
     public function beRejected($user_id = null)
     {
@@ -228,6 +236,10 @@ class Requests extends BModel
         return $this->save();
     }
 
+    /**
+     * @param null|int $user_id
+     * @return bool
+     */
     public function beAccepted($user_id = null)
     {
         if (!$this->isStatusSent()) {
@@ -245,6 +257,7 @@ class Requests extends BModel
                 $this->item->changeStatus(Items::STATUS_AVAILABLE);
                 break;
             case self::TYPE_CREATE_SHOP:
+                $this->shop->changeStatus(Shops::STATUS_NORMAL);
                 break;
             case self::TYPE_USER_SELL_ITEM:
                 $item_user = new ItemUsers();

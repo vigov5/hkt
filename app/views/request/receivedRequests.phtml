@@ -44,7 +44,7 @@ echo $this->getContent();
 
             <tr class="active">
                 <td><?= $request->fromUser ? $request->fromUser->username : '' ?></td>
-                <td>SHOP HERE</td>
+                <td><?= $request->shop ? $request->shop->name : '' ?></td>
                 <td><?= $request->item ? $request->item->name : '' ?></td>
                 <td><?= $request->getTypeValue() ?></td>
                 <td><?= $request->printStatus() ?></td>

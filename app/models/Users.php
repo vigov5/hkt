@@ -202,6 +202,7 @@ class Users extends BModel
         $this->hasMany('id', 'ItemUsers', 'user_id');
         $this->hasManyToMany('id', 'ItemUsers', 'user_id', 'item_id', 'Items', 'id', ['alias' => 'sellItems']);
         $this->hasMany('id', 'WalletLogs', 'user_id', ['alias' => 'walletLogs']);
+        $this->hasMany('id', 'UserShops', 'user_id');
     }
 
     /**
@@ -636,5 +637,65 @@ class Users extends BModel
         $request->type = Requests::TYPE_CREATE_ITEM;
         $request->save();
         return $request;
+    }
+
+    /**
+     * Create new shop request
+     * @param Shops $shop
+     * @return Requests
+     */
+    public function createNewShopRequest($shop)
+    {
+        $request = new Requests();
+        $request->from_shop_id = $shop->id;
+        $request->from_user_id = $this->id;
+        $request->to_user_id = 0;
+        $request->status = Requests::STATUS_SENT;
+        $request->type = Requests::TYPE_CREATE_SHOP;
+        $request->save();
+        return $request;
+    }
+
+    /**
+     * Check whether user can edit a shop or not
+     * @param Shops|int $shop
+     * @return bool
+     */
+    public function canEditShop($shop)
+    {
+        if ($this->isAdmin() || $this->isSuperAdmin()) {
+            return true;
+        }
+        if ($shop->checkOwner($this)) {
+            return true;
+        }
+        return $shop->checkStaff($this);
+    }
+
+    /**
+     * @param Shops $shop
+     * @return bool
+     */
+    public function canCreateShopStaffRequest($shop)
+    {
+        if ($shop->isUnauthorized()) {
+            return false;
+        }
+
+        if ($shop->checkOwner($this)) {
+            return false;
+        }
+
+        if ($shop->checkStaff($this)) {
+            return false;
+        }
+
+        $request = $this->getSentRequests("from_shop_id = {$shop->id} AND type = " . Requests::TYPE_SHOP_STAFF . ' AND status = ' . Requests::STATUS_SENT);
+
+        if (count($request)) {
+            return false;
+        }
+
+        return true;
     }
 }

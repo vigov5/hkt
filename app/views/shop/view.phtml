@@ -1,0 +1,51 @@
+<?php use Phalcon\Tag;
+
+/**
+ * @var Users $current_user
+ * @var Shops $shop
+ */
+echo $this->getContent(); ?>
+
+<div class="row">
+    <div class="col-lg-4 col-xs-12">
+        <?= $shop->imageView() ?>
+    </div>
+    <div class="col-lg-8 col-xs-12">
+        <table class="table table-hover">
+            <tr>
+                <th class="success"><?= $shop->getAttributeLabel('name') ?></th>
+                <td><?= $shop->name ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $shop->getAttributeLabel('status') ?></th>
+                <td><?= $shop->getStatusValue() ?></td>
+            </tr>
+            <tr>
+                <th class="success">Owner</th>
+                <td><?= $shop->user->username ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $shop->getAttributeLabel('description') ?></th>
+                <td><?= $shop->description ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $shop->getAttributeLabel('created_at') ?></th>
+                <td><?= $shop->created_at ?></td>
+            </tr>
+            <tr>
+                <th class="success">Action</th>
+                <td>
+                    <div class="btn-group-xs">
+                        <?php if ($current_user->canEditShop($shop)) : ?>
+                            <a href="<?= $this->url->get("shop/update/{$shop->id}")?>" class="btn btn-warning btn-action"><i class="fa fa-edit"></i> Edit </a>
+                        <?php endif; ?>
+                        <?php if ($current_user->canCreateShopStaffRequest($shop)): ?>
+                            <button class='btn btn-primary btn-action shop-sell-request' id="shop-sell-request-<?= $shop->id ?>" data-shop-id='<?= $shop->id ?>'>Sent Request to be a staff of this shop</button>
+                        <?php endif; ?>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<hr>

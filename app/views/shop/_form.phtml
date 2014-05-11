@@ -1,0 +1,88 @@
+<?php
+/**
+ * @var Users $current_user
+ * @var BForm $form
+ */
+?>
+
+<div class="item-form center-block">
+<?php
+    echo $form->start($link, ['enctype' => 'multipart/form-data']);
+    echo $form->textField('name');
+?>
+
+<?php if ($form->hasValue('status') && $form->getFieldValue('status') != Shops::STATUS_UNAUTHORIZED): ?>
+<?php
+    $status = Shops::$shop_status;
+    if (!$current_user->isRoleOver(Users::ROLE_ADMIN)) {
+        unset($status[Shops::STATUS_UNAUTHORIZED]);
+    }
+    echo $form->selectStatic('status',  Shops::$shop_status);
+?>
+<div class="form-group">
+    <label class="control-label">Start Date</label>
+    <div class='input-group date datetimepicker' data-default-date="<?= $form->model->start_date ?>" data-date-format="YYYY-MM-DD HH:mm:ss">
+        <input type='text' class="form-control" name="start_date"/>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label">End Date</label>
+    <div class='input-group date datetimepicker' data-default-date="<?= $form->model->end_date ?>" data-date-format="YYYY-MM-DD HH:mm:ss">
+        <input type='text' class="form-control" name="end_date"/>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+    </div>
+</div>
+<?php endif; ?>
+<?php $img_error = $form->hasError('img'); ?>
+<div class="form-group <?= $img_error ? 'has-error' : '' ?>">
+    <label class="control-label">Image</label>
+    <ul class="nav nav-tabs" id="file-input-tab">
+        <li class="active">
+            <a href="#fileinput" data-toggle="tab">Input Link</a>
+        </li>
+        <li>
+            <a href="#fileupload" data-toggle="tab">Upload Image</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="fileinput">
+            <?= Phalcon\Tag::textField(['img', 'class' => 'form-control']); ?>
+        </div>
+        <div class="tab-pane fade" id="fileupload">
+            <?= Phalcon\Tag::fileField(['img_upload']); ?>
+        </div>
+    </div>
+
+    <?php if($img_error) {
+        echo $form->createError('img');
+    }
+    ?>
+</div>
+
+
+<?php
+    echo $form->textArea('description', ['rows' => 5]);
+    echo $form->submitButton($button);
+    echo $form->end();
+?>
+</div>
+
+<script>
+    $('#file-input-tab a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    })
+
+    $(function () {
+        $('.datetimepicker').each(function (index) {
+            var default_date = $(this).attr('data-default-date');
+            $(this).datetimepicker({
+                pick12HourFormat: false,
+                defaultDate: default_date
+            });
+        })
+    });
+</script>

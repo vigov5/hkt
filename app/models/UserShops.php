@@ -1,7 +1,9 @@
 <?php
 
 
-class ItemShops extends BModel
+
+
+class UserShops extends BModel
 {
 
     /**
@@ -14,7 +16,7 @@ class ItemShops extends BModel
      *
      * @var integer
      */
-    public $item_id;
+    public $user_id;
 
     /**
      *
@@ -26,25 +28,13 @@ class ItemShops extends BModel
      *
      * @var integer
      */
-    public $price;
+    public $role;
 
     /**
      *
      * @var integer
      */
-    public $force_sale;
-
-    /**
-     *
-     * @var string
-     */
-    public $start_sale_date;
-
-    /**
-     *
-     * @var string
-     */
-    public $end_sale_date;
+    public $sales;
 
     /**
      *
@@ -71,12 +61,10 @@ class ItemShops extends BModel
     {
         return array(
             'id' => 'id',
-            'item_id' => 'item_id',
+            'user_id' => 'user_id',
             'shop_id' => 'shop_id',
-            'price' => 'price',
-            'force_sale' => 'force_sale',
-            'start_sale_date' => 'start_sale_date',
-            'end_sale_date' => 'end_sale_date',
+            'role' => 'role',
+            'sales' => 'sales',
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
             'deleted_at' => 'deleted_at'

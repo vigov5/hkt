@@ -68,41 +68,6 @@ class ItemController extends ControllerBase
     }
 
     /**
-     * Searches for item
-     */
-    public function searchAction()
-    {
-        $numberPage = 1;
-        if ($this->request->isPost()) {
-            $query = Criteria::fromInput($this->di, 'Item', $_POST);
-            $this->persistent->parameters = $query->getParams();
-        } else {
-            $numberPage = $this->request->getQuery('page', 'int');
-        }
-
-        $parameters = $this->persistent->parameters;
-        if (!is_array($parameters)) {
-            $parameters = [];
-        }
-        $parameters['order'] = 'id';
-
-        $item = Items::find($parameters);
-        if (count($item) == 0) {
-            $this->flash->notice('The search did not find any item');
-
-            return $this->forward('item');
-        }
-
-        $paginator = new Paginator([
-            'data' => $item,
-            'limit' => 10,
-            'page' => $numberPage,
-        ]);
-
-        $this->view->page = $paginator->getPaginate();
-    }
-
-    /**
      * Creates a new item
      */
     public function createAction()

@@ -197,6 +197,7 @@ class Items extends BModel
         $this->hasMany('id', 'Requests', 'item_id');
         $this->hasMany('id', 'ItemUsers', 'item_id');
         $this->hasManyToMany('id', 'ItemUsers', 'item_id', 'user_id', 'Users', 'id', ['alias' => 'saleUsers']);
+        $this->hasMany('id', 'ItemShops', 'item_id');
     }
 
     /**
@@ -207,6 +208,10 @@ class Items extends BModel
         return $this->status == self::STATUS_AVAILABLE;
     }
 
+    /**
+     * Change current item status
+     * @param int $status
+     */
     public function changeStatus($status)
     {
         if ($this->status != $status) {
