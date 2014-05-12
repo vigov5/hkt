@@ -267,6 +267,13 @@ class Requests extends BModel
                 $item_user->save();
                 break;
             case self::TYPE_SHOP_SELL_ITEM:
+                $item_shop = new ItemShops();
+                $item_shop->item_id = $this->item_id;
+                $item_shop->shop_id = $this->from_shop_id;
+                $item_shop->status = ItemShops::STATUS_NORMAL;
+                $item_shop->save();
+                break;
+            case self::TYPE_SHOP_STAFF:
                 break;
         }
 

@@ -1,13 +1,16 @@
 <?php
 /**
  * @var Users $current_user
+ * @var Requests[] $requests
+ * @var Pagination $pagination
+ * @var string $type
  */
 echo $this->getContent();
 ?>
 <div class="panel panel-warning">
     <!-- Default panel contents -->
     <div class="panel-heading">
-        Received Invoices
+        Received Requests
             <?php if($type != 'all'): ?>
                 <a href="<?= $this->url->get("request/receivedrequests/all"); ?>" class="btn btn-success btn-xs" role="button">All</a>
                 <div class="btn-group-xs pull-right">

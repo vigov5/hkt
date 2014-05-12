@@ -306,7 +306,7 @@ class Users extends BModel
 
     /**
      * Check whether user can edit an item or not
-     * @param Items|int $item
+     * @param Items $item
      * @return bool
      */
     public function canEditItem($item)
@@ -314,13 +314,19 @@ class Users extends BModel
         if ($this->isAdmin() || $this->isSuperAdmin()) {
             return true;
         }
-        if ($item instanceof Items) {
-            return $this->id === $item->created_by;
-        } else {
-            $item_object = Items::findFirst(['id' => $item]);
 
-            return $this->id === $item_object->created_by;
+        if ($this->id === $item->created_by) {
+            return true;
         }
+
+        $shops = $item->itemShops;
+        foreach ($shops as $shop) {
+            if ($shop->checkOwnerOrStaff($this)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -622,6 +628,19 @@ class Users extends BModel
         return $request;
     }
 
+    public function createShopSellItemRequest($item, $shop)
+    {
+        $request = new Requests();
+        $request->item_id = $item->id;
+        $request->from_user_id = $this->id;
+        $request->from_shop_id = $shop->id;
+        $request->to_user_id = 0;
+        $request->status = Requests::STATUS_SENT;
+        $request->type = Requests::TYPE_SHOP_SELL_ITEM;
+        $request->save();
+        return $request;
+    }
+
     /**
      * Create new item request
      * @param Items $item
@@ -666,10 +685,7 @@ class Users extends BModel
         if ($this->isAdmin() || $this->isSuperAdmin()) {
             return true;
         }
-        if ($shop->checkOwner($this)) {
-            return true;
-        }
-        return $shop->checkStaff($this);
+        return $shop->checkOwnerOrStaff($this);
     }
 
     /**

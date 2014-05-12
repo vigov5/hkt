@@ -3,6 +3,7 @@
 /**
  * @var Users $current_user
  * @var Shops $shop
+ * @var ItemShops $item_shops
  */
 echo $this->getContent(); ?>
 
@@ -42,6 +43,13 @@ echo $this->getContent(); ?>
                         <?php if ($current_user->canCreateShopStaffRequest($shop)): ?>
                             <button class='btn btn-primary btn-action shop-sell-request' id="shop-sell-request-<?= $shop->id ?>" data-shop-id='<?= $shop->id ?>'>Sent Request to be a staff of this shop</button>
                         <?php endif; ?>
+                        <?php if ($shop->checkOwnerOrStaff($current_user)): ?>
+                            <a href="<?= $this->url->get("item/create/{$shop->id}")?>" class="btn btn-primary btn-action"> Create Item </a>
+                            <a href="<?= $this->url->get("item/shop/{$shop->id}")?>" class="btn btn-primary btn-action"> View list Items </a>
+                            <a href="<?= $this->url->get("shop/update/{$shop->id}")?>" class="btn btn-success btn-action"> Set Open </a>
+                            <a href="<?= $this->url->get("shop/update/{$shop->id}")?>" class="btn btn-info btn-action"> Set Normal </a>
+                            <a href="<?= $this->url->get("shop/update/{$shop->id}")?>" class="btn btn-danger btn-action"> Set Close </a>
+                        <?php endif; ?>
                     </div>
                 </td>
             </tr>
@@ -49,3 +57,19 @@ echo $this->getContent(); ?>
     </div>
 </div>
 <hr>
+
+<?php if ($item_shops->count() == 0): ?>
+    <h2 class="text-warning"> No Items Available </h2>
+<?php else: ?>
+    <h2 class="text-warning"> On Sale </h2>
+    <?php foreach ($item_shops as $item_shop): ?>
+    <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="thumbnail single-item-select" data-form="item" data-item-shop-id="<?= $item_shop->id ?>">
+            <div class="thumbnail-detail">
+                <span class="item-name"><?= $item_shop->item->name ?></span>
+            </div>
+            <?= $item_shop->item->imageView() ?>
+        </div>
+    </div>
+    <?php endforeach; ?>
+<?php endif; ?>

@@ -196,6 +196,20 @@ class Shops extends BModel
         return $staff->count();
     }
 
+    /**
+     * Check whether the user is shop owner or a staff
+     * @param Users $user
+     * @return bool
+     */
+    public function checkOwnerOrStaff($user)
+    {
+        return $this->checkOwner($user) || $this->checkStaff($user);
+    }
+
+    /**
+     * Get all open shops
+     * @return \Phalcon\Mvc\Model\ResultsetInterface
+     */
     public static function getAllOpenShops()
     {
         $time = date('Y-m-d H:i:s');
@@ -204,5 +218,40 @@ class Shops extends BModel
             'bind' => ['time' => $time],
         ]);
         return $shops;
+    }
+
+    public function isOnOpen()
+    {
+        if ($this->status == self::STATUS_OPEN) {
+            return true;
+        }
+        if ($this->status == self::STATUS_NORMAL) {
+            $time = date('Y-m-d H:i:s');
+            return $this->start_date <= $time && $time <= $this->end_date;
+        }
+        return false;
+    }
+
+    public function getAllOnSaleItems($type = null)
+    {
+        if (!$this->isOnOpen()) {
+            return [];
+        }
+        $time = Date('Y-m-d H:i:s');
+        $condition = 'status = ' . ItemShops::STATUS_FORCE_SALE . ' OR (' . 'status = ' . ItemShops::STATUS_NORMAL . ' AND (' .
+                     'start_sale_date <= "' . $time . '" AND "' . $time . '" <= end_sale_date))';
+
+        $item_shops = $this->getItemShops([
+            'conditions' => $condition
+        ]);
+        if ($type) {
+            $item_shops = $item_shops->filter(function ($item_shop) use ($type) {
+                if ($item_shop->item->type == $type) {
+                    return $item_shop;
+                };
+            });
+        }
+
+        return $item_shops;
     }
 }

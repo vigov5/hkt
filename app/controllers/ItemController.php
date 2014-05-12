@@ -69,11 +69,21 @@ class ItemController extends ControllerBase
 
     /**
      * Creates a new item
+     * @param int|null $shop_id
+     * @return mixed Forward if something went wrong
      */
-    public function createAction()
+    public function createAction($shop_id = null)
     {
         if (!$this->current_user) {
             $this->response->redirect();
+        }
+        $shop = null;
+        if ($shop_id) {
+            $shop = Shops::findFirstById($shop_id);
+            if (!$shop || !$shop->checkOwnerOrStaff($this->current_user)) {
+                $this->flash->success('Invalid Shop');
+                return $this->forward('shop/open');
+            }
         }
         $item = new Items();
         $errors = [];
@@ -91,7 +101,12 @@ class ItemController extends ControllerBase
 
             if ($item->save()) {
                 $request1 = $this->current_user->createNewItemRequest($item);
-                $request2 = $this->current_user->createSellItemRequest($item);
+                if ($shop) {
+                    $request2 = $this->current_user->createShopSellItemRequest($item, $shop);
+                } else {
+                    $request2 = $this->current_user->createSellItemRequest($item);
+                }
+
                 if ($this->current_user->canAccessNoDestinationRequests()) {
                     $request1->beAccepted($this->current_user->id);
                     $request2->beAccepted($this->current_user->id);
@@ -103,6 +118,7 @@ class ItemController extends ControllerBase
                 $this->setDefault($item);
             }
         }
+        $this->view->link = $shop ? "item/create/{$shop->id}" : 'item/create';
         $this->view->item = $item;
         $this->view->form = new BForm($item, $errors);
     }
@@ -120,6 +136,9 @@ class ItemController extends ControllerBase
             return $this->forward('item');
         }
 
+        if (!$this->current_user->canEditItem($item)) {
+            return $this->forward('index/notFound');
+        }
         $this->setDefault($item);
         if ($this->request->isPost()) {
             $item->load($_POST);
@@ -195,6 +214,17 @@ class ItemController extends ControllerBase
     public function myAction()
     {
         $this->view->item_users = $this->current_user->itemUsers;
+    }
+
+    public function shopAction($shop_id)
+    {
+        $shop = Shops::findFirstById($shop_id);
+        if (!$shop || !$shop->checkOwnerOrStaff($this->current_user)) {
+            return $this->forward('index/notFound');
+        }
+
+        $this->view->shop = $shop;
+        $this->view->item_shops = $shop->itemShops;
     }
 
     public function requestAction()
