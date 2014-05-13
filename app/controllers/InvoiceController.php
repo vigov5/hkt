@@ -120,8 +120,12 @@ class InvoiceController extends ControllerBase
                 $this->forward('index/notFound');
             }
             if ($invoice->isStatusSent()) {
-                $invoice->beAccepted();
-                $this->setFlashSession('success', 'Invoice accepted');
+                if ($invoice->beAccepted()) {
+                    $this->setFlashSession('success', 'Invoice accepted');
+                } else {
+                    $this->setFlashSession('error', 'Invoice can not be accepted');
+                }
+
             } else {
                 $this->setFlashSession('error', 'Invoice can not be accepted');
             }

@@ -2,7 +2,7 @@
 
 class RequestController extends ControllerBase
 {
-    const REQUESTS_PER_PAGE = 2;
+    const REQUESTS_PER_PAGE = 20;
 
     public function initialize()
     {

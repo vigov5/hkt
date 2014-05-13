@@ -391,7 +391,9 @@ class Users extends BModel
         $price = $item_count * $item_user->getSalePrice();
         $invoice->price = $price;
         $invoice->real_price = $item_count * $item_user->getRealPrice();
-        $this->minusWallet($price);
+        if ($item_user->item->isNormalItem()) {
+            $this->minusWallet($price);
+        }
         if (!$invoice->save()) {
             return false;
         }

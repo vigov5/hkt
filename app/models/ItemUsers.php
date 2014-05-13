@@ -124,6 +124,19 @@ class ItemUsers extends BModel
         $this->belongsTo('item_id', 'Items', 'id', ['alias' => 'item']);
     }
 
+    /**
+     * Validations and business logic
+     */
+    public function validation()
+    {
+
+        $this->validate(new \Phalcon\Mvc\Model\Validator\Numericality(['field' => 'price']));
+
+        if ($this->validationHasFailed() == true) {
+            return false;
+        }
+    }
+
     public function isForceSale()
     {
         return $this->status == self::STATUS_FORCE_SALE;
@@ -177,9 +190,10 @@ class ItemUsers extends BModel
      */
     public static function getOnSaleItems($type = Items::TYPE_NORMAL)
     {
+
         $time = date('Y-m-d H-i-s');
         $sql =
-            "SELECT item_users.* FROM item_users, items WHERE (item_users.status = ? OR (item_users.status != ? AND (item_users.start_sale_date <= ? OR item_users.end_sale_date >= ?))) AND (item_users.item_id = items.id AND items.type = ? AND items.status = ?)";
+            "SELECT item_users.* FROM item_users, items WHERE (item_users.status = ? OR (item_users.status != ? AND (item_users.start_sale_date <= ? AND item_users.end_sale_date >= ?))) AND (item_users.item_id = items.id AND items.type = ? AND items.status = ?)";
         $params = [self::STATUS_FORCE_SALE, self::STATUS_FORCE_NOT_SALE, $time, $time, $type, Items::STATUS_AVAILABLE];
         $item_user = new ItemUsers();
 
@@ -252,7 +266,7 @@ class ItemUsers extends BModel
 
     /**
      * Get the real price of this item.
-     * If this item is a Normal Item, it will be charge a fee
+     * If this item is a Normal Item, it will be charge a fr
      * @return float|int
      */
     public function getRealPrice()

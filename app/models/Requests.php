@@ -264,6 +264,7 @@ class Requests extends BModel
                 $item_user->item_id = $this->item_id;
                 $item_user->user_id = $this->from_user_id;
                 $item_user->status = ItemUsers::STATUS_NORMAL;
+                $item_user->price = 0;
                 $item_user->save();
                 break;
             case self::TYPE_SHOP_SELL_ITEM:
@@ -271,6 +272,7 @@ class Requests extends BModel
                 $item_shop->item_id = $this->item_id;
                 $item_shop->shop_id = $this->from_shop_id;
                 $item_shop->status = ItemShops::STATUS_NORMAL;
+                $item_shop->price = 0;
                 $item_shop->save();
                 break;
             case self::TYPE_SHOP_STAFF:

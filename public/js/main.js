@@ -27,7 +27,7 @@ $(function() {
     $('#item-buy-btn').click(function (e) {
         e.preventDefault();
         var form = $('#item-buy-btn').closest('form');
-        var item_user_id = form.find('input[name="items"]').attr('value');
+        var item_user_id = form.find('input[data-form="item"]').attr('value');
         var item_object = JSON.parse(localStorage.getItem("item-user-"+item_user_id));
         item_object.amount = 1;
         console.log(item_object);
@@ -48,8 +48,12 @@ $(function() {
     });
 
     $('.item-user-change-status').each(function (index) {
-        addBtnListener(this);
-    })
+        addItemUserBtnListener(this);
+    });
+
+    $('.item-shop-change-status').each(function (index) {
+        addItemShopBtnListener(this);
+    });
 
     $('.item-sell-request').click(function (e) {
         var item_id = $(this).attr('data-item-id');
@@ -73,7 +77,7 @@ $(function() {
     });
 });
 
-function addBtnListener(btn)
+function addItemUserBtnListener(btn)
 {
     $(btn).click(function (e) {
         var item_user_id = $(this).attr('data-item-user-id');
@@ -90,7 +94,8 @@ function addBtnListener(btn)
             var response = JSON.parse(message);
             if(response.status == 'success') {
                 var item_user = response.data;
-                updateItemUser(item_user);
+                console.log(item_user);
+                updateItemObj(item_user, 'addItemUserBtnListener', 'user');
             }
         })
         .fail(function() {
@@ -98,31 +103,62 @@ function addBtnListener(btn)
         });
     })
 }
-function updateItemUser(item_user)
+
+function addItemShopBtnListener(btn)
+{
+    $(btn).click(function (e) {
+        var item_shop_id = $(this).attr('data-item-shop-id');
+        var status = $(this).attr('data-status');
+        console.log(item_shop_id,status);
+        $.ajax({
+            type: "POST",
+            url: "/itemshop/changestatus",
+            data: {
+                item_shop_id: item_shop_id,
+                status: status
+            }
+        }).success(function(message) {
+            var response = JSON.parse(message);
+            if(response.status == 'success') {
+                var item_shop = response.data;
+                console.log(item_shop);
+                updateItemObj(item_shop, 'addItemShopBtnListener', 'shop');
+            }
+        })
+        .fail(function() {
+            alert('Reuqest sent Fail !!!');
+        });
+    })
+}
+
+function updateItemObj(item_obj, callback, type)
 {
     var class_name = '';
-    if(item_user.is_on_sale == true) {
+    if(item_obj.is_on_sale == true) {
         class_name = 'success';
     }
-    var btn = $('button' + '[data-item-user-id=' + item_user.id +']');
+
+    var btn_search = 'button' + '[data-item-' + type + '-id=' + item_obj.id +']';
+    var btn = $(btn_search);
     var tr = btn.closest('tr');
-    var html = '<td>' + item_user.name + '</td>' +
-        '<td>' + item_user.price + '</td>' +
-        '<td>' + item_user.status_value + '</td>' +
-        '<td>' + item_user.start_sale_date + '</td>' +
-        '<td>' + item_user.end_sale_date + '</td>' +
-        '<td>' + item_user.created_at + '</td>' +
-        '<td>' + item_user.updated_at + '</td>' +
+    var html = '<td>' + item_obj.name + '</td>' +
+        '<td>' + item_obj.type_value + '</td>' +
+        '<td>' + item_obj.price + '</td>' +
+        '<td>' + item_obj.status_value + '</td>' +
+        '<td>' + item_obj.start_sale_date + '</td>' +
+        '<td>' + item_obj.end_sale_date + '</td>' +
+        '<td>' + item_obj.created_at + '</td>' +
+        '<td>' + item_obj.updated_at + '</td>' +
         '<td>' + '<div class="btn-group-xs">' +
-        '<a href="/itemuser/update/' + item_user.id + '" class="btn btn-info btn-action" role="button">Edit</a>' +
-            item_user.btn_group +
+        '<a href="/itemuser/update/' + item_obj.id + '" class="btn btn-info btn-action" role="button">Edit</a>' +
+        item_obj.btn_group +
         '</td>';
     $(tr).hide(500, function(){
         $(this).removeClass().addClass(class_name);
         $(this).html(html);
         $(this).show(500, function(){
-            $('button' + '[data-item-user-id=' + item_user.id +']').each(function(index) {
-                addBtnListener(this);
+            $(btn_search).each(function(index) {
+                window[callback](this);
             });
         });
     });

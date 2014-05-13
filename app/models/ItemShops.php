@@ -115,6 +115,14 @@ class ItemShops extends BModel
     }
 
     /**
+     * @return array Save Attributes
+     */
+    public function getSaveAttributesName()
+    {
+        return ['price', 'status', 'start_sale_date', 'end_sale_date'];
+    }
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
@@ -122,6 +130,19 @@ class ItemShops extends BModel
         parent::initialize();
         $this->belongsTo('item_id', 'Items', 'id', ['alias' => 'item']);
         $this->belongsTo('shop_id', 'Shops', 'id', ['alias' => 'shop']);
+    }
+
+    /**
+     * Validations and business logic
+     */
+    public function validation()
+    {
+
+        $this->validate(new \Phalcon\Mvc\Model\Validator\Numericality(['field' => 'price']));
+
+        if ($this->validationHasFailed() == true) {
+            return false;
+        }
     }
 
     public function isForceSale()
@@ -180,5 +201,13 @@ class ItemShops extends BModel
         }
 
         return $this->item->price;
+    }
+
+    public function beForced($status = self::STATUS_NORMAL)
+    {
+        if ($this->status != $status) {
+            $this->status = $status;
+            $this->save();
+        }
     }
 }

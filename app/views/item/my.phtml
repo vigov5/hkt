@@ -9,6 +9,7 @@ echo $this->getContent();
     <thead>
     <tr>
         <th>Item</th>
+        <th>Type</th>
         <th>Price</th>
         <th>Status</th>
         <th>Start Sale Date</th>
@@ -27,6 +28,7 @@ echo $this->getContent();
         ?>
             <tr class="<?= $item_user->isOnSale() ? 'success' : '' ?>" data>
                 <td><?= $item_user->item->name ?></td>
+                <td><?= $item_user->item->getTypeValue() ?></td>
                 <td><?= $item_user->getSalePrice() ?></td>
                 <td><?= $item_user->printStatus() ?></td>
                 <td><?= $item_user->start_sale_date ?> </td>

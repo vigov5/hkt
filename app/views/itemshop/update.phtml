@@ -1,0 +1,17 @@
+<?php use Phalcon\Tag;
+
+/**
+ * @var ItemShops $item_shop
+ */
+
+echo Tag::stylesheetLink('css/bootstrap-datetimepicker.min.css');
+echo Tag::javascriptInclude('js/moment.min.js');
+echo Tag::javascriptInclude('js/bootstrap-datetimepicker.min.js');
+?>
+
+<div class="row">
+    <?= $this->getContent(); ?>
+    <h2 class="<?= $item_shop->isOnSale() ? 'text-success' : '' ?>">Update <?= $item_shop->item->name ?> Selling Info</h2>
+    <hr>
+    <?php $this->partial('itemshop/_form', ['link' => "itemshop/update/$item_shop->id", 'button' => 'Save']) ?>
+</div>

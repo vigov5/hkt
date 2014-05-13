@@ -172,6 +172,7 @@ class ItemController extends ControllerBase
         if (!$amount || !is_numeric($amount) || $amount < 1) {
             $amount = 1;
         }
+
         $item_user = ItemUsers::findFirstByid($item_user_id);
         if (!$item_user) {
             $this->setFlashSession('error', 'Item does not exist');
@@ -179,7 +180,7 @@ class ItemController extends ControllerBase
             return;
         }
 
-        if ($item_user->item_id != $item_id) {
+        if ($item_id && $item_user->item_id != $item_id) {
             $this->setFlashSession('error', 'Data Invalid');
             $this->redirectToPrevUrl();
             return;

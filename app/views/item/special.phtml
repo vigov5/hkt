@@ -20,7 +20,7 @@ echo $this->getContent();
     <?php endforeach; ?>
     </div>
     <?= Tag::form(['item/buy', 'method' => 'post']) ?>
-        <?= $form->render('items', ['data-form' => 'item']) ?>
+        <?= $form->render('item_user_id', ['data-form' => 'item']) ?>
         <div class="row">
             <input type="submit" value="Buy Now" class="btn btn-primary" id="item-buy-btn">
         </div>

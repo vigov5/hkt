@@ -31,6 +31,7 @@ class ItemuserController extends ControllerBase
                         'data' => [
                             'id' => $item_user->id,
                             'name' => $item_user->item->name,
+                            'type_value' => $item_user->item->getTypeValue(),
                             'price' => $item_user->getSalePrice(),
                             'status_value' => $item_user->printStatus(),
                             'start_sale_date' => $item_user->start_sale_date ? $item_user->start_sale_date : '',

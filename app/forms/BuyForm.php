@@ -8,7 +8,7 @@ class BuyForm extends Form
 
     public function initialize()
     {
-        $items = new Hidden('items');
+        $items = new Hidden('item_user_id');
         $this->add($items);
 
         // CSRF
