@@ -39,15 +39,16 @@ class UserController extends ControllerBase
             );
             if ($user->save()) {
                 $this->auth->authUserById($user->id);
+                $user->createRequest(Requests::TYPE_REGISTER);
 
-                return $this->response->redirect('index');
+                return $this->response->redirect('item/onsale');
             } else {
                 $this->flash->error('There was an error connecting your facebook user.');
             }
         } else {
             $this->auth->authUserById($user->id);
 
-            return $this->response->redirect('index');
+            return $this->response->redirect('item/onsale');
         }
     }
 
