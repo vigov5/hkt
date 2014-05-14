@@ -1,7 +1,11 @@
 <?php use Phalcon\Tag;?>
 <div class="row">
     <?= $this->getContent(); ?>
-    <h2>Create new Item</h2>
+    <h2>Create new Item
+        <?php if ($shop): ?>
+            for <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="item-name text-warning"><?= $shop->name ?></span></a>
+        <?php endif ?>
+    </h2>
     <hr>
     <?= $this->partial('item/_form', ['link' => $link, 'button' => 'Create']) ?>
 </div>

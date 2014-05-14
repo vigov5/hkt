@@ -31,7 +31,7 @@ class Acl extends Component
      */
     private $_public_resources = [
         'index' => ['index', 'notFound', 'about', 'contact'],
-        'user'  => ['login', 'logout', 'register', 'forgotpassword', 'resetpassword'],
+        'user'  => ['login', 'logout', 'facebook', 'register', 'forgotpassword', 'resetpassword'],
         'faq' => ['index'],
         'contact' => ['index'],
     ];

@@ -5,7 +5,7 @@ echo $this->getContent();
  * @var ItemShops[] $item_shops
  */
 ?>
-<h1><span class="text-primary"><?= $shop->name ?></span>'s Items </h1>
+<h1><a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="item-name text-warning"><?= $shop->name ?></span></a>'s Items </h1>
 <hr>
 
 <table class="table table-striped table-hover">

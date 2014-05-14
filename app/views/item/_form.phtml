@@ -1,5 +1,6 @@
 <?php
 /**
+ * @var Users $current_user
  * @var BForm $form
  */
 ?>
@@ -8,7 +9,12 @@
     echo $form->start($link, ['enctype' => 'multipart/form-data']);
     echo $form->textField('name');
     echo $form->numericField('price');
-    echo $form->selectStatic('type',  Items::$item_types);
+    if ($current_user->isRoleOver(Users::ROLE_ADMIN)) {
+        $types = Items::$item_types;
+    } else {
+        $types = Items::$item_types_restricted;
+    }
+    echo $form->selectStatic('type',  $types);
 ?>
 
 

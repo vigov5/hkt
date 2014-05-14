@@ -210,4 +210,14 @@ class ItemShops extends BModel
             $this->save();
         }
     }
+
+    public static function createNew($item_id, $shop_id, $price = 0, $status = self::STATUS_NORMAL)
+    {
+        $item_shop = new ItemShops();
+        $item_shop->item_id = $item_id;
+        $item_shop->shop_id = $shop_id;
+        $item_shop->price = $price;
+        $item_shop->status = $status;
+        $item_shop->save();
+    }
 }

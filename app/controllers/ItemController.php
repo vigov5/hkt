@@ -100,16 +100,14 @@ class ItemController extends ControllerBase
             }
 
             if ($item->save()) {
-                $request1 = $this->current_user->createNewItemRequest($item);
                 if ($shop) {
-                    $request2 = $this->current_user->createShopSellItemRequest($item, $shop);
+                    $request = $shop->createNewItemRequest($item);
                 } else {
-                    $request2 = $this->current_user->createSellItemRequest($item);
+                    $request = $this->current_user->createNewItemRequest($item);
                 }
 
                 if ($this->current_user->canAccessNoDestinationRequests()) {
-                    $request1->beAccepted($this->current_user->id);
-                    $request2->beAccepted($this->current_user->id);
+                    $request->beAccepted($this->current_user->id);
                 }
                 $this->flash->success('item was created successfully');
 
@@ -120,6 +118,7 @@ class ItemController extends ControllerBase
         }
         $this->view->link = $shop ? "item/create/{$shop->id}" : 'item/create';
         $this->view->item = $item;
+        $this->view->shop = $shop;
         $this->view->form = new BForm($item, $errors);
     }
 

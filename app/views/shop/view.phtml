@@ -46,9 +46,9 @@ echo $this->getContent(); ?>
                         <?php if ($shop->checkOwnerOrStaff($current_user)): ?>
                             <a href="<?= $this->url->get("item/create/{$shop->id}")?>" class="btn btn-primary btn-action"> Create Item </a>
                             <a href="<?= $this->url->get("item/shop/{$shop->id}")?>" class="btn btn-primary btn-action"> View list Items </a>
-                            <a href="<?= $this->url->get("shop/update/{$shop->id}")?>" class="btn btn-success btn-action"> Set Open </a>
-                            <a href="<?= $this->url->get("shop/update/{$shop->id}")?>" class="btn btn-info btn-action"> Set Normal </a>
-                            <a href="<?= $this->url->get("shop/update/{$shop->id}")?>" class="btn btn-danger btn-action"> Set Close </a>
+                            <a href="<?= $this->url->get("shop/changestatus/{$shop->id}/" . Shops::STATUS_OPEN)?>" class="btn btn-success btn-action"> Set Open </a>
+                            <a href="<?= $this->url->get("shop/changestatus/{$shop->id}/" . Shops::STATUS_NORMAL)?>" class="btn btn-info btn-action"> Set Normal </a>
+                            <a href="<?= $this->url->get("shop/changestatus/{$shop->id}/" . Shops::STATUS_CLOSE)?>" class="btn btn-danger btn-action"> Set Close </a>
                         <?php endif; ?>
                     </div>
                 </td>
@@ -58,7 +58,7 @@ echo $this->getContent(); ?>
 </div>
 <hr>
 
-<?php if ($item_shops->count() == 0): ?>
+<?php if (!$item_shops || count($item_shops) == 0): ?>
     <h2 class="text-warning"> No Items Available </h2>
 <?php else: ?>
     <h2 class="text-warning"> On Sale </h2>
@@ -66,7 +66,7 @@ echo $this->getContent(); ?>
     <div class="col-sm-6 col-md-4 col-lg-3">
         <div class="thumbnail single-item-select" data-form="item" data-item-shop-id="<?= $item_shop->id ?>">
             <div class="thumbnail-detail">
-                <span class="item-name"><?= $item_shop->item->name ?></span>
+                <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name text-warning"><?= $item_shop->item->name ?></span></a>
             </div>
             <?= $item_shop->item->imageView() ?>
         </div>

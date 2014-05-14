@@ -129,8 +129,13 @@ class Items extends BModel
      * @var array $item_type
      */
     public static $item_types = [
+        self::TYPE_NORMAL => 'Normal',
+        self::TYPE_SET => 'Set',
         self::TYPE_DEPOSIT => 'Deposit',
         self::TYPE_WITHDRAW => 'Withdraw',
+    ];
+
+    public static $item_types_restricted = [
         self::TYPE_NORMAL => 'Normal',
         self::TYPE_SET => 'Set',
     ];
@@ -310,5 +315,10 @@ class Items extends BModel
         }
 
         return $this->price;
+    }
+
+    public function createViewLink($text = 'View')
+    {
+        return '<a href="/item/view/' . $this->id . '" class="btn btn-info btn-sm btn-action" role="button">' . $text . '</a>';
     }
 }

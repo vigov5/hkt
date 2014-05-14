@@ -255,25 +255,20 @@ class Requests extends BModel
                 break;
             case self::TYPE_CREATE_ITEM:
                 $this->item->changeStatus(Items::STATUS_AVAILABLE);
+                if ($this->from_shop_id) {
+                    ItemShops::createNew($this->item_id, $this->from_shop_id);
+                } else {
+                    ItemUsers::createNew($this->item_id, $this->from_user_id);
+                }
                 break;
             case self::TYPE_CREATE_SHOP:
                 $this->shop->changeStatus(Shops::STATUS_NORMAL);
                 break;
             case self::TYPE_USER_SELL_ITEM:
-                $item_user = new ItemUsers();
-                $item_user->item_id = $this->item_id;
-                $item_user->user_id = $this->from_user_id;
-                $item_user->status = ItemUsers::STATUS_NORMAL;
-                $item_user->price = 0;
-                $item_user->save();
+                ItemUsers::createNew($this->item_id, $this->from_user_id);
                 break;
             case self::TYPE_SHOP_SELL_ITEM:
-                $item_shop = new ItemShops();
-                $item_shop->item_id = $this->item_id;
-                $item_shop->shop_id = $this->from_shop_id;
-                $item_shop->status = ItemShops::STATUS_NORMAL;
-                $item_shop->price = 0;
-                $item_shop->save();
+                ItemShops::createNew($this->item_id, $this->from_shop_id);
                 break;
             case self::TYPE_SHOP_STAFF:
                 break;

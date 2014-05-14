@@ -188,8 +188,12 @@ function createItemBuyConfirm(form, message) {
 }
 
 function createItemLayout(item_object) {
+    var img = item_object.img;
+    if (item_object.img.indexOf('http') != 0) {
+        img = '/' + img;
+    }
     var html = '<div class="row">' +
-        '<div class="col-lg-6"><img src="/' + item_object.img + '" class=" img-thumbnail img-responsive img-confirm-small"></div>' +
+        '<div class="col-lg-6"><img src="' + img + '" class=" img-thumbnail img-responsive img-confirm-small"></div>' +
         '<div class="col-lg-6"><div class="row">Name: <strong><span class="text-danger">' + item_object.name + '</span></strong></div>' +
         '<div class="row">Seller: <strong><span class="text-danger">' + item_object.seller + '</span></strong></div>' +
         '<div class="row">Amount: <strong><span class="text-danger">' + item_object.amount + '</span></strong></div>'+

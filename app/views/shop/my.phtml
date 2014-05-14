@@ -1,0 +1,29 @@
+<?php
+use Phalcon\Tag;
+echo $this->getContent();
+/**
+ * @var Shops[] $own_shops
+ * @var Shops[] $shops
+ */
+?>
+<h2>Owned Shops</h2>
+<div class="row">
+    <?php if (!$own_shops || $own_shops->count() == 0): ?>
+        <h3>No shops</h3>
+    <?php else: ?>
+        <?php foreach($own_shops as $shop): ?>
+            <?= $this->partial('shop/_a_shop', ['shop' => $shop]); ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+<hr>
+<h2>Managing Shops</h2>
+<div class="row">
+    <?php if (!$shops || $shops->count() == 0): ?>
+        <h3>No shops</h3>
+    <?php else: ?>
+        <?php foreach($shops as $shop): ?>
+            <?= $this->partial('shop/_a_shop', ['shop' => $shop]); ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>

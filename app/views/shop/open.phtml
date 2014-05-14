@@ -14,16 +14,7 @@ echo $this->getContent();
     <hr>
     <div class="row">
         <?php foreach($shops as $shop): ?>
-            <div class="col-md-6 col-lg-4">
-                <div class="thumbnail">
-                    <div class="thumbnail-detail">
-                        <span class="row shop-name text-primary"><?= $shop->name ?></span>
-                        Manager: <?= $shop->user->username ?>
-                        <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>" class="btn btn-info btn-sm" role="button">View</a>
-                    </div>
-                    <?= $shop->imageView() ?>
-                </div>
-            </div>
+            <?= $this->partial('shop/_a_shop', ['shop' => $shop]); ?>
         <?php endforeach ?>
     </div>
 <?php else: ?>

@@ -11,6 +11,12 @@ class ShopController extends ControllerBase
         $this->view->current_page = 'shop';
     }
 
+    public function myAction()
+    {
+        $this->view->own_shops = $this->current_user->ownShops;
+        $this->view->shops = $this->current_user->shops;
+    }
+
     public function openAction($page = 1)
     {
         $page = intval($page);
@@ -95,8 +101,8 @@ class ShopController extends ControllerBase
     public function updateAction($id)
     {
         $shop = Shops::findFirstByid($id);
-        if (!$shop) {
-            $this->flash->error('shop was not found');
+        if (!$shop || !$this->current_user->canEditShop($shop)) {
+            $this->flash->error('Shop Unavailable');
 
             return $this->forward('shop');
         }
@@ -113,7 +119,7 @@ class ShopController extends ControllerBase
                 }
             }
             if ($shop->save()) {
-                $this->flash->success('shop was updated successfully');
+                $this->flash->success('Shop was updated successfully');
 
                 return $this->forward('shop/view', ['id' => $shop->id]);
             } else {
@@ -123,5 +129,23 @@ class ShopController extends ControllerBase
         $this->setDefault($shop);
         $this->view->shop = $shop;
         $this->view->form = new BForm($shop);
+    }
+
+    public function changeStatusAction($shop_id, $status)
+    {
+        $shop = Shops::findFirstByid($shop_id);
+        if (!$shop || !$this->current_user->canEditShop($shop)) {
+            $this->flash->error('Shop Unavailable');
+            return $this->forward('shop');
+        }
+
+        if (!Shops::isValidStatus($status)) {
+            $this->flash->error('Invalid Status');
+            return $this->forward('shop');
+        }
+
+        $shop->changeStatus($status);
+        $this->flash->success("{$shop->name} has been change to {$shop->getStatusValue()}");
+        return $this->forward('shop/view', ['id' => $shop->id]);
     }
 }

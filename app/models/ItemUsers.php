@@ -259,7 +259,7 @@ class ItemUsers extends BModel
     {
         if ($this->item->isNormalItem()) {
             $rate = Setting::getHCoinRate();
-            return $this->getSalePrice() * $rate;
+            return $this->getSalePrice() * $rate / 100;
         }
         return 0;
     }
@@ -276,5 +276,15 @@ class ItemUsers extends BModel
             return floor($this->getSalePrice() * (100 - $rate) / 100);
         }
         return $this->getSalePrice();
+    }
+
+    public static function createNew($item_id, $user_id, $price = 0, $status = self::STATUS_NORMAL)
+    {
+        $item_user = new ItemUsers();
+        $item_user->item_id = $item_id;
+        $item_user->user_id = $user_id;
+        $item_user->status = $status;
+        $item_user->price = $price;
+        $item_user->save();
     }
 }

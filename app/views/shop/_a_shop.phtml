@@ -1,0 +1,18 @@
+<?php
+/**
+ * @var Users $current_user
+ * @var Shops $shop
+ */
+?>
+
+<div class="col-md-6 col-lg-4">
+    <div class="thumbnail">
+        <div class="thumbnail-detail">
+            <span class="row">
+                <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="item-name text-warning"><?= $shop->name ?></span></a>
+            </span>
+            Manager: <?= $shop->user->username ?>
+        </div>
+        <?= $shop->imageView() ?>
+    </div>
+</div>

@@ -10,7 +10,7 @@ class Config
     const PRODUCT = false;
     const IMG_UPLOAD_DIR = 'img/upload/';
 
-    const MAX_IMG_FILE_SIZE = 200000; // 200KB
+    const MAX_IMG_FILE_SIZE = 1000000; // 1MB
 
     public static function getFullImageUploadDir()
     {

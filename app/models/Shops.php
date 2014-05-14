@@ -125,6 +125,16 @@ class Shops extends BModel
         return $this->status;
     }
 
+    /**
+     * Check a status is valid or not
+     * @param int $status
+     * @return bool
+     */
+    public static function isValidStatus($status)
+    {
+        return isset(self::$shop_status[$status]);
+    }
+
     public function isUnauthorized()
     {
         return $this->status == self::STATUS_UNAUTHORIZED;
@@ -164,6 +174,18 @@ class Shops extends BModel
         $this->hasMany('id', 'UserShops', 'shop_id');
         $this->hasManyToMany('id', 'ItemShops', 'shop_id', 'item_id', 'Items', 'id', ['alias' => 'sellItems']);
         $this->hasManyToMany('id', 'UserShops', 'shop_id', 'user_id', 'Users', 'id', ['alias' => 'shopStaffs']);
+    }
+
+    /**
+     * @return bool
+     */
+    public function validation()
+    {
+        $this->validate(new \Phalcon\Mvc\Model\Validator\Uniqueness(['field' => 'name']));
+        $this->validate(new ImageValidator(['field' => 'img']));
+        if ($this->validationHasFailed() == true) {
+            return false;
+        }
     }
 
     /**
@@ -237,21 +259,37 @@ class Shops extends BModel
         if (!$this->isOnOpen()) {
             return [];
         }
-        $time = Date('Y-m-d H:i:s');
-        $condition = 'status = ' . ItemShops::STATUS_FORCE_SALE . ' OR (' . 'status = ' . ItemShops::STATUS_NORMAL . ' AND (' .
-                     'start_sale_date <= "' . $time . '" AND "' . $time . '" <= end_sale_date))';
 
-        $item_shops = $this->getItemShops([
-            'conditions' => $condition
-        ]);
-        if ($type) {
-            $item_shops = $item_shops->filter(function ($item_shop) use ($type) {
-                if ($item_shop->item->type == $type) {
-                    return $item_shop;
-                };
-            });
-        }
+        $item_shops = $this->getItemShops()->filter(function ($item_shop) use ($type) {
+            $valid = true;
+            if (!$item_shop->isOnSale()) {
+                $valid = false;
+            }
+            if ($valid && $type && $item_shop->item->type != $type) {
+                $valid = false;
+            };
+            if ($valid) {
+                return $item_shop;
+            }
+        });
 
         return $item_shops;
+    }
+
+    /**
+     * @param Items $item
+     * @return Requests
+     */
+    public function createNewItemRequest($item)
+    {
+        $request = new Requests();
+        $request->item_id = $item->id;
+        $request->from_user_id = $this->created_by;
+        $request->to_user_id = 0;
+        $request->from_shop_id = $this->id;
+        $request->status = Requests::STATUS_SENT;
+        $request->type = Requests::TYPE_CREATE_ITEM;
+        $request->save();
+        return $request;
     }
 }
