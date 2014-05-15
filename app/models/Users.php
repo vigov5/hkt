@@ -321,13 +321,6 @@ class Users extends BModel
             return true;
         }
 
-        $shops = $item->itemShops;
-        foreach ($shops as $shop) {
-            if ($shop->checkOwnerOrStaff($this)) {
-                return true;
-            }
-        }
-
         return false;
     }
 
@@ -407,15 +400,19 @@ class Users extends BModel
      * @param int $type
      * @param null|int $item_id
      * @param int $to_user_id
+     * * @param null|int $from_shop_id
      * @return bool
      */
-    public function createRequest($type, $item_id = null, $to_user_id = 0)
+    public function createRequest($type, $item_id = null, $to_user_id = 0, $from_shop_id = null)
     {
         $request = new Requests();
         $request->from_user_id = $this->id;
         $request->type = $type;
         if ($item_id) {
             $request->item_id = $item_id;
+        }
+        if ($from_shop_id) {
+            $request->from_shop_id = $from_shop_id;
         }
         $request->to_user_id = $to_user_id;
         if (!$request->save()) {
@@ -632,6 +629,11 @@ class Users extends BModel
         return $request;
     }
 
+    /**
+     * @param Items $item
+     * @param Shops $shop
+     * @return Requests
+     */
     public function createShopSellItemRequest($item, $shop)
     {
         $request = new Requests();

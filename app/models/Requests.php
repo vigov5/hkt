@@ -271,6 +271,7 @@ class Requests extends BModel
                 ItemShops::createNew($this->item_id, $this->from_shop_id);
                 break;
             case self::TYPE_SHOP_STAFF:
+                UserShops::createNew($this->from_user_id, $this->from_shop_id);
                 break;
         }
 

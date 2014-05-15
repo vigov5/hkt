@@ -75,6 +75,28 @@ $(function() {
             bootbox.alert('Reuqest sent Fail !!!');
         });
     });
+
+    $('.shop-sell-request').click(function (e) {
+        var shop_id = $(this).attr('data-shop-id');
+        console.log(shop_id);
+        $.ajax({
+            type: "POST",
+            url: "/shop/request",
+            data: {
+                shop_id: shop_id
+            }
+        }).success(function(message) {
+                var response = JSON.parse(message);
+                if(response.status == 'success') {
+                    bootbox.alert(response.message, function() {
+                        $('.shop-sell-request').remove();
+                    });
+                }
+            })
+            .fail(function() {
+                alert('Reuqest sent Fail !!!');
+            });
+    })
 });
 
 function addItemUserBtnListener(btn)

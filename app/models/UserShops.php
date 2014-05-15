@@ -26,27 +26,9 @@ class UserShops extends BModel
 
     /**
      *
-     * @var integer
-     */
-    public $role;
-
-    /**
-     *
-     * @var integer
-     */
-    public $sales;
-
-    /**
-     *
      * @var string
      */
     public $created_at;
-
-    /**
-     *
-     * @var string
-     */
-    public $updated_at;
 
     /**
      *
@@ -63,10 +45,7 @@ class UserShops extends BModel
             'id' => 'id',
             'user_id' => 'user_id',
             'shop_id' => 'shop_id',
-            'role' => 'role',
-            'sales' => 'sales',
             'created_at' => 'created_at',
-            'updated_at' => 'updated_at',
             'deleted_at' => 'deleted_at'
         );
     }
@@ -79,5 +58,19 @@ class UserShops extends BModel
         parent::initialize();
         $this->belongsTo('user_id', 'Users', 'id', ['alias' => 'user']);
         $this->belongsTo('item_id', 'Shops', 'id', ['alias' => 'shop']);
+    }
+
+    /**
+     * Create new record
+     * @param int $user_id
+     * @param int $shop_id
+     * @return bool
+     */
+    public static function createNew($user_id, $shop_id)
+    {
+        $user_shop = new UserShops();
+        $user_shop->user_id = $user_id;
+        $user_shop->shop_id = $shop_id;
+        return $user_shop->save();
     }
 }

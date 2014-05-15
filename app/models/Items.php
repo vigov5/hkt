@@ -202,6 +202,7 @@ class Items extends BModel
         $this->hasMany('id', 'Requests', 'item_id');
         $this->hasMany('id', 'ItemUsers', 'item_id');
         $this->hasManyToMany('id', 'ItemUsers', 'item_id', 'user_id', 'Users', 'id', ['alias' => 'saleUsers']);
+        $this->hasManyToMany('id', 'ItemShops', 'item_id', 'shop_id', 'Shops', 'id', ['alias' => 'saleShops']);
         $this->hasMany('id', 'ItemShops', 'item_id');
     }
 

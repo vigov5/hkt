@@ -5,25 +5,39 @@
  * @var Shops $shop
  * @var ItemShops $item_shops
  */
-echo $this->getContent(); ?>
+echo $this->getContent();
 
+$can_edit_shop = $current_user->canEditShop($shop);
+?>
+
+<h2 class="text-primary"><?= $shop->name ?></h2>
 <div class="row">
     <div class="col-lg-4 col-xs-12">
         <?= $shop->imageView() ?>
     </div>
     <div class="col-lg-8 col-xs-12">
         <table class="table table-hover">
-            <tr>
-                <th class="success"><?= $shop->getAttributeLabel('name') ?></th>
-                <td><?= $shop->name ?></td>
-            </tr>
+            <?php if ($can_edit_shop): ?>
+                <tr>
+                    <th class="success"><?= $shop->getAttributeLabel('sales') ?></th>
+                    <td><?= $shop->sales ?></td>
+                </tr>
+            <?php endif; ?>
             <tr>
                 <th class="success"><?= $shop->getAttributeLabel('status') ?></th>
                 <td><?= $shop->getStatusValue() ?></td>
             </tr>
             <tr>
-                <th class="success">Owner</th>
+                <th class="success">Founder</th>
                 <td><?= $shop->user->username ?></td>
+            </tr>
+            <tr>
+                <th class="success">Staff</th>
+                <td>
+                    <?php foreach ($shop->shopStaffs as $user): ?>
+                        <?= $user->username ?>
+                    <?php endforeach ?>
+                </td>
             </tr>
             <tr>
                 <th class="success"><?= $shop->getAttributeLabel('description') ?></th>
@@ -37,7 +51,7 @@ echo $this->getContent(); ?>
                 <th class="success">Action</th>
                 <td>
                     <div class="btn-group-xs">
-                        <?php if ($current_user->canEditShop($shop)) : ?>
+                        <?php if ($can_edit_shop) : ?>
                             <a href="<?= $this->url->get("shop/update/{$shop->id}")?>" class="btn btn-warning btn-action"><i class="fa fa-edit"></i> Edit </a>
                         <?php endif; ?>
                         <?php if ($current_user->canCreateShopStaffRequest($shop)): ?>

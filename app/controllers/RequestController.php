@@ -102,7 +102,7 @@ class RequestController extends ControllerBase
     public function acceptAction($request_id)
     {
         if ($request_id === 'all') {
-            $count = $this->current_user->acceptAllRequests();
+            $count = $this->current_user->changeAllRequestsStatus(Requests::STATUS_ACCEPT);
             $this->setFlashSession('success', "$count Request(s) accepted");
         } else {
             $redirect = false;

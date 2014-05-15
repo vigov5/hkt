@@ -154,6 +154,7 @@ CREATE TABLE `setting` (
 CREATE TABLE `shops` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `sales` int(11) NOT NULL DEFAULT '0',
   `status` tinyint(4) DEFAULT '0' COMMENT '0: UNAUTHORIZED, 1: OPEN, 2: NORMAL, 3: CLOSE',
   `description` text COLLATE utf8_unicode_ci,
   `img` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -184,10 +185,7 @@ CREATE TABLE `user_shops` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `shop_id` int(11) NOT NULL,
-  `role` int(11) NOT NULL COMMENT '1: FOUNDER - The user will take the money when an item is bought, 2: ASSISTANT - The users who help founder manage the shop',
-  `sales` int(11) NOT NULL DEFAULT '0',
   `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

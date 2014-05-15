@@ -22,6 +22,12 @@ class Shops extends BModel
      *
      * @var integer
      */
+    public $sales;
+
+    /**
+     *
+     * @var integer
+     */
     public $status;
 
     /**
@@ -81,6 +87,7 @@ class Shops extends BModel
             'id' => 'id',
             'name' => 'name',
             'status' => 'status',
+            'sales' => 'sales',
             'description' => 'description',
             'img' => 'img',
             'start_date' => 'start_date',

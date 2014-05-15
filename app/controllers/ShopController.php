@@ -148,4 +148,34 @@ class ShopController extends ControllerBase
         $this->flash->success("{$shop->name} has been change to {$shop->getStatusValue()}");
         return $this->forward('shop/view', ['id' => $shop->id]);
     }
+
+    public function requestAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $shop_id = $this->request->getPost('shop_id', 'int');
+            $shop = Shops::findFirstById($shop_id);
+            if (!$shop || $shop->checkOwnerOrStaff($this->current_user)) {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Request Invalid',
+                ];
+            } else {
+                if ($this->current_user->createRequest(Requests::TYPE_SHOP_STAFF, null, $shop->created_by, $shop_id)) {
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Request Created',
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'fail',
+                        'message' => 'Something went wrong',
+                    ];
+                }
+            }
+            echo json_encode($response);
+        }
+
+        return;
+    }
 }
