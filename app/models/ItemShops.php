@@ -220,4 +220,18 @@ class ItemShops extends BModel
         $item_shop->status = $status;
         $item_shop->save();
     }
+
+    public function getItemJsonObject()
+    {
+        $obj = [
+            'item_id' => $this->item_id,
+            'item_shop_id' => $this->id,
+            'name' => $this->item->name,
+            'img' => $this->item->getImageLink(),
+            'seller' => $this->shop->name,
+            'price' => $this->getSalePrice(),
+        ];
+
+        return json_encode($obj);
+    }
 }

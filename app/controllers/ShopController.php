@@ -53,6 +53,7 @@ class ShopController extends ControllerBase
         }
         $this->view->shop = $shop;
         $this->view->item_shops = $shop->getAllOnSaleItems();
+
         $this->setPrevUrl("shop/view/$id");
     }
 

@@ -30,7 +30,6 @@ $(function() {
         var item_user_id = form.find('input[data-form="item"]').attr('value');
         var item_object = JSON.parse(localStorage.getItem("item-user-"+item_user_id));
         item_object.amount = 1;
-        console.log(item_object);
         var message = createItemLayout(item_object);
         createItemBuyConfirm(form, message);
     });
@@ -42,7 +41,6 @@ $(function() {
         var amount = form.find('input[name="amount"]').val();
         var item_object = JSON.parse(localStorage.getItem("item-user-"+item_user_id));
         item_object.amount = amount;
-        console.log(item_object);
         var message = createItemLayout(item_object);
         createItemBuyConfirm(form, message);
     });
@@ -97,6 +95,47 @@ $(function() {
                 alert('Reuqest sent Fail !!!');
             });
     })
+
+    $('#shop-buy-btn').click(function (e) {
+        var item_shop_id = null;
+        var has_set = false;
+        var item = [];
+        var item_sets = [];
+
+        var item_shop = null;
+        var sets = [];
+
+        $('.single-item-select').each(function (index) {
+            if ($(this).hasClass('img-selected')) {
+                item.push(this);
+            }
+        });
+        $('.multi-item-select').each(function (index) {
+            has_set = true;
+            if ($(this).hasClass('img-selected')) {
+                item_sets.push(this);
+            }
+        });
+        if (item.length != 1) {
+            bootbox.alert('Invalid item. You must select one and only one item');
+            return;
+        } else {
+            var id = $(item[0]).attr('data-item-shop-id');
+            item_shop = JSON.parse(localStorage.getItem("item-shop-"+id));
+        }
+        if (has_set && item_sets.length == 0) {
+            bootbox.alert('Invalid set. You must select at least one item from set');
+            return;
+        } else {
+            for (i=0; i<item_sets.length; i++) {
+                var id = $(item_sets[i]).attr('data-item-shop-id');
+                sets.push(JSON.parse(localStorage.getItem("item-shop-"+id)));
+            }
+        }
+        console.log(item_shop, sets);
+        var message = createShopItemLayout(item_shop, sets);
+        createItemBuyConfirm(null, message);
+    });
 });
 
 function addItemUserBtnListener(btn)
@@ -220,6 +259,34 @@ function createItemLayout(item_object) {
         '<div class="row">Seller: <strong><span class="text-danger">' + item_object.seller + '</span></strong></div>' +
         '<div class="row">Amount: <strong><span class="text-danger">' + item_object.amount + '</span></strong></div>'+
         '<div class="row">Price: <strong><span class="text-danger">' + item_object.price  * item_object.amount + '</span></strong></div></div>' +
+        '</div>';
+    return html;
+}
+
+function createShopItemLayout(item_object, sets) {
+    var img = item_object.img;
+    if (item_object.img.indexOf('http') != 0) {
+        img = '/' + img;
+    }
+    var sets_html = '';
+    if (sets.length != 0) {
+        sets_html = '<div class="row">Sets: <strong><span class="text-danger">';
+        var count = 0;
+        for (i=0; i<sets.length; i++) {
+            if (count != 0) {
+                sets_html += ', ';
+            }
+            sets_html += sets[i].name;
+            count++;
+        }
+        sets_html += '</span></strong></div>';
+    }
+    var html = '<div class="row">' +
+        '<div class="col-lg-6"><img src="' + img + '" class=" img-thumbnail img-responsive img-confirm-small"></div>' +
+        '<div class="col-lg-6"><div class="row">Name: <strong><span class="text-danger">' + item_object.name + '</span></strong></div>' +
+        '<div class="row">Seller: <strong><span class="text-danger">' + item_object.seller + '</span></strong></div>' +
+        sets_html +
+        '<div class="row">Price: <strong><span class="text-danger">' + item_object.price  + '</span></strong></div></div>' +
         '</div>';
     return html;
 }

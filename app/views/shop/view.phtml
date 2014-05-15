@@ -75,15 +75,44 @@ $can_edit_shop = $current_user->canEditShop($shop);
 <?php if (!$item_shops || count($item_shops) == 0): ?>
     <h2 class="text-warning"> No Items Available </h2>
 <?php else: ?>
+    <?php $set = []; ?>
     <h2 class="text-warning"> On Sale </h2>
+    <div class="row">
     <?php foreach ($item_shops as $item_shop): ?>
-    <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="thumbnail single-item-select" data-form="item" data-item-shop-id="<?= $item_shop->id ?>">
-            <div class="thumbnail-detail">
-                <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name text-warning"><?= $item_shop->item->name ?></span></a>
+        <?php if ($item_shop->item->isNormalItem()): ?>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="thumbnail single-item-select" data-form="item" data-item-shop-id="<?= $item_shop->id ?>">
+                    <div class="thumbnail-detail">
+                        <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name text-warning"><?= $item_shop->item->name ?></span></a>
+                    </div>
+                    <?= $item_shop->item->imageView() ?>
+                </div>
             </div>
-            <?= $item_shop->item->imageView() ?>
-        </div>
-    </div>
+            <script type="text/javascript">
+                localStorage.setItem("item-shop-" + <?= $item_shop->id ?>, JSON.stringify(<?= $item_shop->getItemJsonObject() ?>));
+            </script>
+        <?php elseif($item_shop->item->isSetItem()): ?>
+            <?php $set[] = $item_shop; ?>
+        <?php endif; ?>
     <?php endforeach; ?>
+    </div>
+    <?php if (count($set)): ?>
+        <hr>
+        <div class="row">
+        <?php foreach ($set as $item_shop): ?>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="thumbnail multi-item-select" data-form="item_set" data-item-shop-id="<?= $item_shop->id ?>">
+                    <div class="thumbnail-detail">
+                        <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name text-warning"><?= $item_shop->item->name ?></span></a>
+                    </div>
+                    <?= $item_shop->item->imageView() ?>
+                </div>
+            </div>
+            <script type="text/javascript">
+                localStorage.setItem("item-shop-" + <?= $item_shop->id ?>, JSON.stringify(<?= $item_shop->getItemJsonObject() ?>));
+            </script>
+        <?php endforeach ?>
+        </div>
+    <?php endif; ?>
+    <button class="btn btn-primary" id = "shop-buy-btn">Buy Now</button>
 <?php endif; ?>
