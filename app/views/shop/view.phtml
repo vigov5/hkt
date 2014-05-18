@@ -8,6 +8,8 @@
 echo $this->getContent();
 
 $can_edit_shop = $current_user->canEditShop($shop);
+$action = $shop->checkOwnerOrStaff($current_user);
+$has_set = false;
 ?>
 
 <h2 class="text-primary"><?= $shop->name ?></h2>
@@ -92,7 +94,10 @@ $can_edit_shop = $current_user->canEditShop($shop);
                 localStorage.setItem("item-shop-" + <?= $item_shop->id ?>, JSON.stringify(<?= $item_shop->getItemJsonObject() ?>));
             </script>
         <?php elseif($item_shop->item->isSetItem()): ?>
-            <?php $set[] = $item_shop; ?>
+            <?php
+                $has_set = true;
+                $set[] = $item_shop;
+            ?>
         <?php endif; ?>
     <?php endforeach; ?>
     </div>
@@ -114,5 +119,29 @@ $can_edit_shop = $current_user->canEditShop($shop);
         <?php endforeach ?>
         </div>
     <?php endif; ?>
-    <button class="btn btn-primary" id = "shop-buy-btn">Buy Now</button>
+    <div class="row">
+        <div class="col-md-6 col-lg-3">
+            <div class="input-group">
+                <input type="number" name="amount" id="item-shop-amount" class="form-control" value="1">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" id = "shop-buy-btn">Buy Now</button>
+                </span>
+            </div>
+        </div>
+    </div>
 <?php endif; ?>
+
+<hr>
+<h2 class="text-success"> Today Invoices </h2>
+<div class="panel panel-warning">
+    <div class="panel-heading">
+        Received Invoices
+        <?php if (!empty($action)): ?>
+            <div class="btn-group-xs pull-right">
+                <button class="btn btn-primary btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_ACCEPT ?>">Accept All</button>
+                <button class="btn btn-danger btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_REJECT ?>">Reject All</button>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?= $this->partial('invoice/_received_list', ['invoices' => $invoices, 'action' => $action, 'has_set' => $has_set]); ?>
+</div>

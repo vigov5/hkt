@@ -179,6 +179,7 @@ class Shops extends BModel
         $this->belongsTo('created_by', 'Users', 'id', ['alias' => 'user']);
         $this->hasMany('id', 'ItemShops', 'shop_id');
         $this->hasMany('id', 'UserShops', 'shop_id');
+        $this->hasMany('id', 'Invoices', 'to_shop_id');
         $this->hasManyToMany('id', 'ItemShops', 'shop_id', 'item_id', 'Items', 'id', ['alias' => 'sellItems']);
         $this->hasManyToMany('id', 'UserShops', 'shop_id', 'user_id', 'Users', 'id', ['alias' => 'shopStaffs']);
     }
@@ -298,5 +299,35 @@ class Shops extends BModel
         $request->type = Requests::TYPE_CREATE_ITEM;
         $request->save();
         return $request;
+    }
+
+    /**
+     * @param string $date
+     * @return Invoices[]
+     */
+    public function getInvoicesByDay($date = null)
+    {
+        if (!$date) {
+            $date = date(Config::DATE_FORMAT);
+        }
+
+        $start = $date . ' 00:00:00';
+        $end = $date . ' 23:59:59';
+
+        return $this->getInvoices()->filter(function($invoice) use ($start, $end) {
+            if ($invoice->status != Invoices::STATUS_CANCEL && $invoice->created_at >= $start && $invoice->created_at <= $end) {
+                return $invoice;
+            }
+        });
+    }
+
+    /**
+     * @param int $money
+     * @return bool
+     */
+    public function increaseSale($money)
+    {
+        $this->sales += $money;
+        return $this->save();
     }
 }

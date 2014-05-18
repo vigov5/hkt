@@ -78,6 +78,12 @@ class Invoices extends BModel
 
     /**
      *
+     * @var integer
+     */
+    public $updated_by;
+
+    /**
+     *
      * @var string
      */
     public $created_at;
@@ -132,7 +138,7 @@ class Invoices extends BModel
      */
     public function columnMap()
     {
-        return array(
+        return [
             'id' => 'id',
             'from_user_id' => 'from_user_id',
             'to_user_id' => 'to_user_id',
@@ -145,9 +151,10 @@ class Invoices extends BModel
             'status' => 'status',
             'set_items_id' => 'set_items_id',
             'comment' => 'comment',
+            'updated_by' => 'updated_by',
             'created_at' => 'created_at',
             'updated_at' => 'updated_at'
-        );
+        ];
     }
 
     public function beforeValidationOnCreate()
@@ -163,7 +170,9 @@ class Invoices extends BModel
         parent::initialize();
         $this->belongsTo('item_id', 'Items', 'id', ['alias' => 'item']);
         $this->belongsTo('from_user_id', 'Users', 'id', ['alias' => 'fromUser']);
+        $this->belongsTo('updated_by', 'Users', 'id', ['alias' => 'updatedUser']);
         $this->belongsTo('to_user_id', 'Users', 'id', ['alias' => 'toUser']);
+        $this->belongsTo('to_shop_id', 'Shops', 'id', ['alias' => 'toShop']);
     }
 
     /**
@@ -177,13 +186,14 @@ class Invoices extends BModel
 
     /**
      * The invoice is canceled
+     * @var int $user_id
+     * @return bool
      */
-    public function beCanceled()
+    public function beCanceled($user_id = 0)
     {
         if (!$this->isStatusSent()) {
             return false;
         }
-        $this->status = self::STATUS_CANCEL;
 
         if ($this->item->isNormalItem()) {
             if ($this->price) {
@@ -192,24 +202,36 @@ class Invoices extends BModel
                 WalletLogs::createNew($this->from_user_id, $wallet_before, $wallet_after, $this->id, WalletLogs::ACTION_CANCEL);
             }
         }
-
+        $this->status = self::STATUS_CANCEL;
+        $this->updated_by = $user_id;
         return $this->save();
     }
 
     /**
      * The invoice is accepted
+     * @var int $user_id
+     * @return bool
      */
-    public function beAccepted()
+    public function beAccepted($user_id = 0)
     {
         if (!$this->isStatusSent()) {
             return false;
         }
-        $this->status = self::STATUS_ACCEPT;
+
         if ($this->item->isNormalItem()) {
             if ($this->real_price) {
-                $wallet_before = $this->toUser->wallet;
-                $wallet_after = $this->toUser->increaseWallet($this->real_price);
-                WalletLogs::createNew($this->to_user_id, $wallet_before, $wallet_after, $this->id, WalletLogs::ACTION_ACCEPT);
+                if ($this->to_user_id) {
+                    $to_user = $this->toUser;
+                } else {
+                    $to_user = $this->toShop->user;
+                }
+
+                $wallet_before = $to_user->wallet;
+                $wallet_after = $to_user->increaseWallet($this->real_price);
+                WalletLogs::createNew($to_user->id, $wallet_before, $wallet_after, $this->id, WalletLogs::ACTION_ACCEPT);
+                if ($this->to_shop_id) {
+                    $this->toShop->increaseSale($this->real_price);
+                }
             }
 
             if ($this->hcoin_receive) {
@@ -222,13 +244,15 @@ class Invoices extends BModel
             $wallet_after = $this->fromUser->increaseWallet($this->real_price);
             WalletLogs::createNew($this->from_user_id, $wallet_before, $wallet_after, $this->id, WalletLogs::ACTION_ACCEPT);
         } elseif ($this->item->isWithdrawItem()) {
-            if (!$this->fromUser->checkWallet($this->real_price)) {
+            $wallet_before = $this->fromUser->wallet;
+            $wallet_after = $this->fromUser->minusWallet($this->real_price);
+            if ($wallet_after === false) {
                 return false;
             }
-            $wallet_before = $this->toUser->wallet;
-            $wallet_after = $this->toUser->minusWallet($this->real_price);
-            WalletLogs::createNew($this->to_user_id, $wallet_before, $wallet_after, $this->id, WalletLogs::ACTION_ACCEPT);
+            WalletLogs::createNew($this->from_user_id, $wallet_before, $wallet_after, $this->id, WalletLogs::ACTION_ACCEPT);
         }
+        $this->status = self::STATUS_ACCEPT;
+        $this->updated_by = $user_id;
 
         $this->save();
 
@@ -237,13 +261,14 @@ class Invoices extends BModel
 
     /**
      * The invoice is rejected
+     * @var int $user_id
+     * @return bool
      */
-    public function beRejected()
+    public function beRejected($user_id = 0)
     {
         if (!$this->isStatusSent()) {
             return false;
         }
-        $this->status = self::STATUS_REJECT;
 
         if ($this->item->isNormalItem()) {
             if ($this->price) {
@@ -252,9 +277,63 @@ class Invoices extends BModel
                 WalletLogs::createNew($this->from_user_id, $wallet_before, $wallet_after, $this->id, WalletLogs::ACTION_REJECT);
             }
         }
-
+        $this->status = self::STATUS_REJECT;
+        $this->updated_by = $user_id;
         $this->save();
 
         return true;
+    }
+
+    /**
+     * @param int $status
+     * @param Users $user
+     * @return string $error
+     */
+    public function changeStatus($status, $user)
+    {
+        $error = '';
+        switch ($status) {
+            case Invoices::STATUS_ACCEPT:
+                if ($user->canAcceptInvoice($this)) {
+                    if (!$this->beAccepted($user->id)) {
+                        $error = 'User do not have enough money! Invoice can not be accepted';
+                    }
+                } else {
+                    $error = 'Authorized Fail';
+                }
+                break;
+            case Invoices::STATUS_REJECT:
+                if ($user->canAcceptInvoice($this)) {
+                    $this->beRejected($user->id);
+                } else {
+                    $error = 'Authorized Fail';
+                }
+                break;
+            case Invoices::STATUS_CANCEL:
+                if ($user->canCancelInvoice($this)) {
+                    $this->beCanceled($user->id);
+                } else {
+                    $error = 'Authorized Fail';
+                }
+                break;
+        }
+        return $error;
+    }
+
+    public function getSetItems()
+    {
+        $result = [];
+        if ($this->set_items_id) {
+            $item_shop_ids = json_decode($this->set_items_id);
+            if (is_array($item_shop_ids)) {
+                foreach ($item_shop_ids as $item_shop_id) {
+                    $item_shop = ItemShops::findFirstById($item_shop_id);
+                    if ($item_shop) {
+                        $result[] = $item_shop;
+                    }
+                }
+            }
+        }
+        return $result;
     }
 }

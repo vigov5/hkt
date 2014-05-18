@@ -90,7 +90,7 @@ class InvoiceController extends ControllerBase
                 $this->forward('index/notFound');
             }
             if ($invoice->isStatusSent()) {
-                $invoice->beCanceled();
+                $invoice->beCanceled($this->current_user->id);
                 $this->setFlashSession('success', 'Invoice canceled');
             } else {
                 $this->setFlashSession('error', 'Invoice can not be canceled');
@@ -120,7 +120,7 @@ class InvoiceController extends ControllerBase
                 $this->forward('index/notFound');
             }
             if ($invoice->isStatusSent()) {
-                if ($invoice->beAccepted()) {
+                if ($invoice->beAccepted($this->current_user->id)) {
                     $this->setFlashSession('success', 'Invoice accepted');
                 } else {
                     $this->setFlashSession('error', 'Invoice can not be accepted');
@@ -154,7 +154,7 @@ class InvoiceController extends ControllerBase
                 $this->forward('index/notFound');
             }
             if ($invoice->isStatusSent()) {
-                $invoice->beRejected();
+                $invoice->beRejected($this->current_user->id);
                 $this->setFlashSession('success', 'Invoice rejected');
             } else {
                 $this->setFlashSession('error', 'Invoice can not be rejected');
@@ -162,5 +162,91 @@ class InvoiceController extends ControllerBase
         }
 
         $this->redirectToPrevUrl();
+    }
+
+    public function changeStatusAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $error = '';
+            $data = [];
+            $invoice_id = $this->request->getPost('invoice_id', 'int');
+            $status = $this->request->getPost('status', 'int');
+            if ($status != Invoices::STATUS_ACCEPT && $status != Invoices::STATUS_CANCEL &&
+                $status != Invoices::STATUS_REJECT
+            ) {
+                $error = 'Invalid Status ' . $status;
+            } else {
+                $invoice = Invoices::findFirstById($invoice_id);
+                if ($invoice && $invoice->isStatusSent()) {
+                    $error = $invoice->changeStatus($status, $this->current_user);
+                    if (!$error) {
+                        $data = [
+                            'updated_by' => $invoice->updatedUser->username,
+                            'updated_at' => $invoice->updated_at,
+                            'status' => $invoice->status,
+                            'status_string' => $invoice->printStatus(),
+                        ];
+                    }
+                } else {
+                    $error = 'Invalid Invoice';
+                }
+            }
+            $response = [
+                'status' => $error ? 'fail' : 'success',
+                'message' => $error,
+                'data' => $data,
+                'current_user_wallet' => $this->getCurrentUser()->wallet,
+            ];
+            echo json_encode($response);
+            return;
+        }
+
+        return $this->forwardNotFound();
+    }
+
+    public function changeStatusAllAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $error = '';
+            $data = [];
+            $count = 0;
+            $invoices_id = $this->request->getPost('invoices_id', 'int');
+            $status = $this->request->getPost('status', 'int');
+            if ($status != Invoices::STATUS_ACCEPT && $status != Invoices::STATUS_CANCEL &&
+                $status != Invoices::STATUS_REJECT
+            ) {
+                $error = 'Invalid Status ' . $status;
+            } else {
+                foreach ($invoices_id as $invoice_id) {
+                    $count++;
+                    $invoice = Invoices::findFirstById($invoice_id);
+                    if ($invoice && $invoice->isStatusSent()) {
+                        $error = $invoice->changeStatus($status, $this->current_user);
+                        if (!$error) {
+                            $data[$invoice_id] = [
+                                'id' => $invoice_id,
+                                'updated_by' => $invoice->updatedUser->username,
+                                'updated_at' => $invoice->updated_at,
+                                'status' => $invoice->status,
+                                'status_string' => $invoice->printStatus(),
+                            ];
+                        }
+                    }
+                }
+            }
+            $response = [
+                'status' => $error ? 'fail' : 'success',
+                'message' => $error,
+                'data' => $data,
+                'count' => $count,
+                'current_user_wallet' => $this->getCurrentUser()->wallet,
+            ];
+            echo json_encode($response);
+            return;
+        }
+
+        return $this->forwardNotFound();
     }
 }

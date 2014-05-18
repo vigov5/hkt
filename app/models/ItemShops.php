@@ -191,6 +191,8 @@ class ItemShops extends BModel
         }
     }
 
+    use PriceTrait;
+
     public function getSalePrice()
     {
         if ($this->item->isSetItem()) {
@@ -233,5 +235,10 @@ class ItemShops extends BModel
         ];
 
         return json_encode($obj);
+    }
+
+    public function canBeBought()
+    {
+        return $this->isOnSale() && $this->shop->isOnOpen();
     }
 }

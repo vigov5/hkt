@@ -22,11 +22,15 @@ class ControllerBase extends BController
         $this->flashSession();
     }
 
+    /**
+     * @return Users $current_user
+     */
     protected function getCurrentUser()
     {
         $current_user = $this->auth->getUser();
         $this->current_user = $current_user;
         $this->view->current_user = $current_user;
+        return $current_user;
     }
 
     /**
@@ -129,5 +133,15 @@ class ControllerBase extends BController
             $this->flash->$type($message);
             $this->removeFlashSession();
         }
+    }
+
+    public function forwardNotFound()
+    {
+        return $this->forward('index/notFound');
+    }
+
+    public function forwardUnderConstruction()
+    {
+        return $this->forward('index/underConstruction');
     }
 }

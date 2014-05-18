@@ -53,6 +53,7 @@ class ShopController extends ControllerBase
         }
         $this->view->shop = $shop;
         $this->view->item_shops = $shop->getAllOnSaleItems();
+        $this->view->invoices = $shop->getInvoicesByDay();
 
         $this->setPrevUrl("shop/view/$id");
     }
@@ -174,6 +175,56 @@ class ShopController extends ControllerBase
                     ];
                 }
             }
+            echo json_encode($response);
+        }
+
+        return;
+    }
+
+    public function buyAction()
+    {
+        if ($this->request->isAjax()) {
+            $status = true;
+            $this->view->disable();
+            $item_shop_id = $this->request->getPost('item_shop_id', 'int');
+            $item_sets_str = $this->request->getPost('item_sets');
+            $item_sets = json_decode($item_sets_str);
+            $amount = $this->request->getPost('amount', 'int');
+            $item_shop = ItemShops::findFirstById($item_shop_id);
+            $status = true;
+            $message = '';
+
+            if ($amount < 1 || !$item_shop) {
+                $status = false;
+                $message = 'Invalid Request';
+            }
+
+            foreach ($item_sets as $item_set) {
+                if (!ItemShops::exists($item_set)) {
+                    $status = false;
+                    $message = 'Set invalid';
+                    break;
+                }
+            }
+
+            if ($status && !$item_shop->canBeBought()) {
+                $status = false;
+                $message = 'Invalid Item';
+            }
+            if ($status && !$this->current_user->checkWallet($item_shop->getSalePrice() * $amount)) {
+                $status = false;
+                $message = 'Not Enough Money';
+            }
+            if ($status) {
+                $this->current_user->createInvoiceToShop($item_shop, $amount, $item_sets_str);
+                $message = 'Request Created';
+            }
+            $wallet = $this->current_user->wallet;
+            $response = [
+                'status' => $status ? 'success' : 'fail',
+                'message' => $message,
+                'wallet' => $wallet,
+            ];
             echo json_encode($response);
         }
 

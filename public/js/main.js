@@ -76,7 +76,6 @@ $(function() {
 
     $('.shop-sell-request').click(function (e) {
         var shop_id = $(this).attr('data-shop-id');
-        console.log(shop_id);
         $.ajax({
             type: "POST",
             url: "/shop/request",
@@ -104,16 +103,21 @@ $(function() {
 
         var item_shop = null;
         var sets = [];
-
+        var amount = $('#item-shop-amount').val();
+        if (isNaN(amount) || amount < 1) {
+            bootbox.alert('Invalid Amount.');
+            return;
+        }
         $('.single-item-select').each(function (index) {
             if ($(this).hasClass('img-selected')) {
+                item_shop_id = $(this).attr('data-item-shop-id');
                 item.push(this);
             }
         });
         $('.multi-item-select').each(function (index) {
             has_set = true;
             if ($(this).hasClass('img-selected')) {
-                item_sets.push(this);
+                item_sets.push($(this).attr('data-item-shop-id'));
             }
         });
         if (item.length != 1) {
@@ -128,22 +132,92 @@ $(function() {
             return;
         } else {
             for (i=0; i<item_sets.length; i++) {
-                var id = $(item_sets[i]).attr('data-item-shop-id');
-                sets.push(JSON.parse(localStorage.getItem("item-shop-"+id)));
+                sets.push(JSON.parse(localStorage.getItem("item-shop-" + item_sets[i])));
             }
         }
-        console.log(item_shop, sets);
+        item_shop.amount = amount;
         var message = createShopItemLayout(item_shop, sets);
-        createItemBuyConfirm(null, message);
+        var data = {
+            item_shop_id: item_shop_id,
+            amount: amount,
+            item_sets: JSON.stringify(item_sets)
+        }
+        createItemBuyConfirm(null, message, data);
     });
+
+    $('.btn-invoice-status').click(function() {
+        var invoice_id = $(this).attr('data-invoice-id');
+        var invoice_status = $(this).attr('data-invoice-status');
+        $.ajax({
+            type: "POST",
+            url: "/invoice/changestatus",
+            data: {
+                invoice_id: invoice_id,
+                status: invoice_status
+            }
+        }).success(function(message) {
+                var response = JSON.parse(message);
+                if(response.status == 'success') {
+                    changeInvoiceData(invoice_id, response.data);
+                    updateWallet(response.current_user_wallet);
+                } else {
+                    bootbox.alert(response.message);
+                }
+            })
+            .fail(function() {
+                alert('Reuqest sent Fail !!!');
+            });
+    })
+
+    $('.btn-invoice-status-all').click(function() {
+        var invoice_status = $(this).attr('data-invoice-status');
+        var invoices_id = [];
+        $('.btn-invoice-status' + '[data-invoice-status=' + invoice_status + ']').each(function (index) {
+            invoices_id.push($(this).attr('data-invoice-id'));
+        });
+        if (invoices_id.length > 0) {
+            $.ajax({
+                type: "POST",
+                url: "/invoice/changestatusall",
+                data: {
+                    invoices_id: invoices_id,
+                    status: invoice_status
+                }
+            }).success(function(message) {
+                var response = JSON.parse(message);
+                if(response.status == 'success') {
+                    var invoices = response.data;
+                    for (id in invoices) {
+                        changeInvoiceData(id, invoices[id]);
+                    }
+                    updateWallet(response.current_user_wallet);
+                } else {
+
+                }
+            })
+            .fail(function() {
+                alert('Reuqest sent Fail !!!');
+            });
+        }
+    })
 });
+
+function changeInvoiceData(invoice_id, data)
+{
+    var tr = $('tr' + '[data-invoice-id=' + invoice_id +']');
+    tr.find('.invoice-status').html(data.status_string);
+    tr.find('.invoice-updated-at').html(data.updated_at);
+    tr.find('.invoice-updated-by').html(data.updated_by);
+    if (data.status != 0) {
+        tr.find('.invoice-action').html('');
+    }
+}
 
 function addItemUserBtnListener(btn)
 {
     $(btn).click(function (e) {
         var item_user_id = $(this).attr('data-item-user-id');
         var status = $(this).attr('data-status');
-        console.log(item_user_id,status);
         $.ajax({
             type: "POST",
             url: "/itemuser/changestatus",
@@ -155,7 +229,6 @@ function addItemUserBtnListener(btn)
             var response = JSON.parse(message);
             if(response.status == 'success') {
                 var item_user = response.data;
-                console.log(item_user);
                 updateItemObj(item_user, 'addItemUserBtnListener', 'user');
             }
         })
@@ -170,7 +243,6 @@ function addItemShopBtnListener(btn)
     $(btn).click(function (e) {
         var item_shop_id = $(this).attr('data-item-shop-id');
         var status = $(this).attr('data-status');
-        console.log(item_shop_id,status);
         $.ajax({
             type: "POST",
             url: "/itemshop/changestatus",
@@ -182,7 +254,6 @@ function addItemShopBtnListener(btn)
             var response = JSON.parse(message);
             if(response.status == 'success') {
                 var item_shop = response.data;
-                console.log(item_shop);
                 updateItemObj(item_shop, 'addItemShopBtnListener', 'shop');
             }
         })
@@ -225,7 +296,7 @@ function updateItemObj(item_obj, callback, type)
     });
 }
 
-function createItemBuyConfirm(form, message) {
+function createItemBuyConfirm(form, message, data) {
     bootbox.dialog({
         message: message,
         title: '<strong><span class="text-primary">Are you really want to buy the following item ?</span></strong>',
@@ -234,15 +305,29 @@ function createItemBuyConfirm(form, message) {
                 label: "OK",
                 className: "btn-success",
                 callback: function() {
-                    form.submit();
+                    if (form != null) {
+                        form.submit();
+                    } else {
+                        $.ajax({
+                            type: "POST",
+                            url: "/shop/buy",
+                            data: data
+                        }).success(function(message) {
+                            var response = JSON.parse(message);
+                            updateWallet(response.wallet);
+                            bootbox.alert(response.message, function() {
+                                reload();
+                            });
+                        })
+                        .fail(function() {
+                            alert('Reuqest sent Fail !!!');
+                        });
+                    }
                 }
             },
             danger: {
                 label: "Cancel",
                 className: "btn-danger",
-                callback: function() {
-                    console.log('Cancel')
-                }
             }
         }
     });
@@ -286,9 +371,15 @@ function createShopItemLayout(item_object, sets) {
         '<div class="col-lg-6"><div class="row">Name: <strong><span class="text-danger">' + item_object.name + '</span></strong></div>' +
         '<div class="row">Seller: <strong><span class="text-danger">' + item_object.seller + '</span></strong></div>' +
         sets_html +
-        '<div class="row">Price: <strong><span class="text-danger">' + item_object.price  + '</span></strong></div></div>' +
+        '<div class="row">Amount: <strong><span class="text-danger">' + item_object.amount + '</span></strong></div>'+
+        '<div class="row">Price: <strong><span class="text-danger">' + item_object.price  * item_object.amount  + '</span></strong></div></div>' +
         '</div>';
     return html;
+}
+
+function updateWallet(wallet)
+{
+    $('.my-wallet').html(wallet);
 }
 
 function ImageSelector(element) {
@@ -328,4 +419,9 @@ ImageSelector.prototype.resetFormValue = function() {
 ImageSelector.prototype.removeAllSelected = function() {
     this.resetFormValue();
     $('.img-selected' + '[data-form=' + this.data_form +']').removeClass('img-selected');
+}
+
+function reload()
+{
+    location.reload();
 }

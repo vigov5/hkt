@@ -364,7 +364,7 @@ class Users extends BModel
             $this->wallet -= $amout;
             $this->save();
 
-            return true;
+            return $this->wallet;
         }
 
         return false;
@@ -387,6 +387,34 @@ class Users extends BModel
         $invoice->price = $price;
         $invoice->real_price = $item_count * $item_user->getRealPrice();
         if ($item_user->item->isNormalItem()) {
+            $this->minusWallet($price);
+        }
+        if (!$invoice->save()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param ItemShops $item_shop
+     * @param int $item_count
+     * @param string $set_items_id
+     * @return bool
+     */
+    public function createInvoiceToShop($item_shop, $item_count = 1, $set_items_id = '')
+    {
+        $invoice = new Invoices();
+        $invoice->from_user_id = $this->id;
+        $invoice->to_shop_id = $item_shop->shop_id;
+        $invoice->item_id = $item_shop->item_id;
+        $invoice->item_count = $item_count;
+        $invoice->hcoin_receive = $item_shop->getHCoinReceived();
+        $invoice->set_items_id = $set_items_id;
+        $price = $item_count * $item_shop->getSalePrice();
+        $invoice->price = $price;
+        $invoice->real_price = $item_count * $item_shop->getRealPrice();
+        if ($item_shop->item->isNormalItem()) {
             $this->minusWallet($price);
         }
         if (!$invoice->save()) {
@@ -507,7 +535,13 @@ class Users extends BModel
      */
     public function canAcceptInvoice($invoice)
     {
-        return $invoice->to_user_id == $this->id;
+        if ($invoice->to_user_id && $invoice->to_user_id == $this->id) {
+            return true;
+        }
+        if ($invoice->to_shop_id && $invoice->toShop) {
+            return $invoice->toShop->checkOwnerOrStaff($this);
+        }
+        return false;
     }
 
     /**
@@ -528,7 +562,7 @@ class Users extends BModel
     {
         $invoices = $this->getSentInvoices(['conditions' => 'status=' . Invoices::STATUS_SENT]);
         foreach ($invoices as $invoice) {
-            $invoice->beCanceled();
+            $invoice->beCanceled($this->id);
         }
 
         return count($invoices);
@@ -542,7 +576,7 @@ class Users extends BModel
     {
         $invoices = $this->getReceivedInvoices(['conditions' => 'status=' . Invoices::STATUS_SENT]);
         foreach ($invoices as $invoice) {
-            $invoice->beAccepted();
+            $invoice->beAccepted($this->id);
         }
 
         return count($invoices);
@@ -556,7 +590,7 @@ class Users extends BModel
     {
         $invoices = $this->getReceivedInvoices(['conditions' => 'status=' . Invoices::STATUS_SENT]);
         foreach ($invoices as $invoice) {
-            $invoice->beRejected();
+            $invoice->beRejected($this->id);
         }
 
         return count($invoices);

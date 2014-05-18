@@ -146,4 +146,9 @@ class BModel extends Model
             }
         }
     }
+
+    public static function exists($id)
+    {
+        return self::findFirstById($id);
+    }
 }

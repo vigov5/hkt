@@ -14,13 +14,6 @@ class ItemController extends ControllerBase
         $this->view->current_page = 'item';
     }
 
-    /**
-     * Index action
-     */
-    public function indexAction()
-    {
-    }
-
     public function specialAction($type = Items::TYPE_DEPOSIT)
     {
         if ($type != Items::TYPE_DEPOSIT && $type != Items::TYPE_WITHDRAW) {
