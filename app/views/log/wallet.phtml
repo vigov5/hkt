@@ -1,0 +1,13 @@
+<?php
+/**
+ * @var Users $current_user
+ * @var WalletLogs[] $logs
+ *
+ */
+?>
+<h2>Wallet Logs</h2>
+
+<?= $this->partial('log/_logs') ?>
+
+<?= $pagination->generatePagination() ?>
+

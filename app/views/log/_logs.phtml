@@ -1,0 +1,24 @@
+<?php
+/**
+ * @var Users $current_user
+ * @var WalletLogs[] $logs
+ */
+?>
+<table class="table table-bordered">
+    <th>Before</th>
+    <th>After</th>
+    <th>Invoice</th>
+    <th>Action</th>
+    <th>Date</th>
+
+    <?php foreach ($logs as $log): ?>
+        <tr>
+            <td><?= $log->before ?></td>
+            <td><?= $log->after ?> <span class="<?= $log->before < $log->after ? 'text-success' : 'text-warning' ?>">(<?= $log->after - $log->before ?>)</span></td>
+            <td><?= $log->invoice_id ?></td>
+            <td><?= $log->printAction() ?></td>
+            <td><?= $log->created_at ?></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+

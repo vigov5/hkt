@@ -52,9 +52,44 @@ class WalletLogs extends BModel
      */
     public $created_at;
 
+    const TYPE_SENT = 1;
+    const TYPE_RECEIVED = 2;
+
     const ACTION_CANCEL = 0;
     const ACTION_ACCEPT = 1;
     const ACTION_REJECT = 2;
+    const ACTION_REFUND = 3;
+
+    public static $action_value = [
+        self::ACTION_CANCEL => 'CANCELED',
+        self::ACTION_ACCEPT => 'ACCEPTED',
+        self::ACTION_REJECT => 'REJECTED',
+        self::ACTION_REFUND => 'REFUND',
+    ];
+
+    public function getActionValue()
+    {
+        if (isset(self::$action_value[$this->action])) {
+            return self::$action_value[$this->action];
+        }
+
+        return $this->action;
+    }
+
+    public function printAction()
+    {
+        $val = $this->getActionValue();
+        switch ($this->action) {
+            case self::ACTION_REFUND:
+                return "<span class='label label-info'>$val</span>";
+            case self::ACTION_ACCEPT:
+                return "<span class='label label-success'>$val</span>";
+            case self::ACTION_REJECT:
+                return "<span class='label label-danger'>$val</span>";
+            default:
+                return "<span class='label label-warning'>$val</span>";
+        }
+    }
 
     const TYPE_MONEY = 0;
     const TYPE_HCOIN = 1;
