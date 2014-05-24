@@ -147,7 +147,7 @@ class UserController extends ControllerBase
                     $reset_url =
                         'http://' . $_SERVER['SERVER_NAME'] . "/user/resetpassword/{$user->email}/{$user->secret_key}";
                     $this->mail->send(
-                        [$user->email => $user->username],
+                        $user->email,
                         'HKT Password Recovery',
                         'reset',
                         ['reset_url' => $reset_url]
@@ -165,7 +165,7 @@ class UserController extends ControllerBase
 
     public function resetPasswordAction($email = '', $secret_key = '')
     {
-        $user = Users::findFirst(['email' => $email]);
+        $user = Users::findFirstByEmail($email);
         if (!$user || $user->secret_key != $secret_key) {
             $this->response->redirect('');
         }

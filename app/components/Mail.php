@@ -42,35 +42,10 @@ class Mail extends Component
         // Settings
         $mail_settings = $this->config->mail;
 
-        $template = $this->getTemplate($name, $params);
-        // Create the message
-        $message = Swift_Message::newInstance()
-            ->setSubject($subject)
-            ->setTo($to)
-            ->setFrom([
-                $mail_settings->from_email => $mail_settings->from_name
-            ])
-            ->setBody($template, 'text/html');
-
-        if (!$this->transport) {
-            $this->transport = Swift_SmtpTransport::newInstance(
-                $mail_settings->smtp->server,
-                $mail_settings->smtp->port,
-                $mail_settings->smtp->security
-            )
-            ->setUsername($mail_settings->smtp->username)
-            ->setPassword($mail_settings->smtp->password);
-        }
-
-        // Create the Mailer using your created Transport
-        $mailer = Swift_Mailer::newInstance($this->transport);
-
-        try {
-            return $mailer->send($message);
-        } catch (\Phalcon\Exception $e) {
-            $p = new \Phalcon\Utils\PrettyExceptions();
-            $p->handle($e);
-            exit;
-        }
+        $message = $this->getTemplate($name, $params);
+        $headers =  "From: {$mail_settings->from_name} <{$mail_settings->from_email}> \r\n" . "X-Mailer: PHP/" . phpversion();
+        $headers .= 'MIME-Version: 1.0' . "\r\n";
+        $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+        mail($to, $subject, $message, $headers);
     }
 }

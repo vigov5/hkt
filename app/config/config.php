@@ -23,19 +23,12 @@ return new \Phalcon\Config([
         'defaultController' => 'index',
     ],
     'mail' => [
-        'from_name' => 'HKT TEAM',
-        'from_email' => 'admin@hkt.thangtd.com',
-        'smtp' => [
-            'server' => 'smtp.gmail.com',
-            'port' => 587,
-            'security' => 'tls',
-            'username' => 'framgia.email.tester@gmail.com',
-            'password' => 'framgia345',
-        ],
+        'from_name' => 'HKT TEAM - NO REPLY',
+        'from_email' => 'no-reply@hkt.thangtd.com',
     ],
     'facebook' => [
-        'appId' => '653649021339450',
-        'secret' => '255a594fea0f194f932b3f21c21f3e2a',
-        'scope' => 'basic_info,email'
+        'appId' => '298356136994396',
+        'secret' => 'b2a6a718fe3b6fccc4c9b1e29975ccae',
+        'scope' => 'public_profile,email'
     ],
 ]);
