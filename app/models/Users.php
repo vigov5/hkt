@@ -34,6 +34,12 @@ class Users extends BModel
 
     /**
      *
+     * @var string
+     */
+    public $display_name;
+
+    /**
+     *
      * @var integer
      */
     public $wallet;
@@ -55,6 +61,12 @@ class Users extends BModel
      * @var string
      */
     public $secret_key;
+
+    /**
+     *
+     * @var integer
+     */
+    public $register_type;
 
     /**
      *
@@ -86,6 +98,9 @@ class Users extends BModel
     const ROLE_ADMIN = 30;
     const ROLE_SUPER_ADMIN = 40;
 
+    const REGISTER_NORMAL_TYPE = 0;
+    const REGISTER_FACEBOOK_TYPE = 1;
+
     public static $user_roles = [
         self::ROLE_UNAUTHORIZED => 'Unauthorized User',
         self::ROLE_USER => 'Normal User',
@@ -101,6 +116,20 @@ class Users extends BModel
         }
 
         return $this->role;
+    }
+
+    public static $register_types = [
+        self::REGISTER_NORMAL_TYPE => 'NORMAL',
+        self::REGISTER_FACEBOOK_TYPE => 'FACEBOOK',
+    ];
+
+    public function getRegisterTypeValue()
+    {
+        if (isset(self::$register_types[$this->register_type])) {
+            return self::$register_types[$this->register_type];
+        }
+
+        return $this->register_type;
     }
 
     public static function getUpperRoles($base_role)
@@ -217,10 +246,12 @@ class Users extends BModel
             'username' => 'username',
             'password' => 'password',
             'email' => 'email',
+            'display_name' => 'display_name',
             'wallet' => 'wallet',
             'hcoin' => 'hcoin',
             'role' => 'role',
             'secret_key' => 'secret_key',
+            'register_type' => 'register_type',
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
             'deleted_at' => 'deleted_at',
@@ -233,7 +264,7 @@ class Users extends BModel
      */
     public function getSaveAttributesName()
     {
-        return ['username', 'email'];
+        return ['username', 'email', 'display_name'];
     }
 
     /**
@@ -753,5 +784,35 @@ class Users extends BModel
         }
 
         return true;
+    }
+
+    /**
+     * @return string Class base on User's role
+     */
+    public function getClassBaseOnRole()
+    {
+        switch ($this->role) {
+            case self::ROLE_SUPER_ADMIN:
+                return 'danger';
+            case self::ROLE_ADMIN:
+                return 'warning';
+            case self::ROLE_MODERATOR:
+                return 'primary';
+            case self::ROLE_USER:
+                return 'success';
+            default:
+                return 'default';
+        }
+    }
+
+    /**
+     * If user has display_name, return it. Otherwise, return username
+     * Also add class to change color base on role
+     * @return string Display Name
+     */
+    public function getUserDisplayName()
+    {
+        $name = $this->display_name ? $this->display_name : $this->username;
+        return '<span class="text-' . $this->getClassBaseOnRole() . '">' . $name . '</span>';
     }
 }

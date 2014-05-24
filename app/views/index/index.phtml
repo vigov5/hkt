@@ -1,1 +1,15 @@
-<h1> Hello world </h1>
+<?= $this->getContent(); ?>
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="text-center"> WELLCOME TO THE </h1>
+        <h1 class="text-center"> FRAMGIA'S HYAKKATEN </h1>
+        <ul>
+            <li><h3><a href="<?= $this->url->get('user/register') ?>">Register</a></h3></li>
+            <li><h3><a href="<?= $this->url->get('user/login') ?>">Login</a></h3></li>
+            <li><h3><a href="<?= $this->facebook->getLoginUrl(['scope' => $this->config->facebook->scope, 'redirect_uri' => $this->url->get('user/facebook')]) ?>">Login with Facebook</a></h3></li>
+            <li><h3><a href="<?= $this->url->get('user/forgotpassword') ?>">Forgot your password ?</a></h3></li>
+            <li><h3><a href="<?= $this->url->get('faq') ?>">FAQs</a></h3></li>
+            <li><h3><a href="<?= $this->url->get('contact') ?>">Contact</a></h3></li>
+        </ul>
+    </div>
+</div>

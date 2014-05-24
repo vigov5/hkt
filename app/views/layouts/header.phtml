@@ -73,7 +73,7 @@
                 <li class="dropdown <?= $current_page === 'user' ? 'active' : '' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="fa fa-user"></span>
-                        <?= $current_user->username ?> ! <b class="caret"></b>
+                        <?= $current_user->getUserDisplayName() ?> ! <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
                         <li>

@@ -31,13 +31,13 @@ $has_set = false;
             </tr>
             <tr>
                 <th class="success">Founder</th>
-                <td><?= $shop->user->username ?></td>
+                <td><?= $shop->user->getUserDisplayName() ?></td>
             </tr>
             <tr>
                 <th class="success">Staff</th>
                 <td>
                     <?php foreach ($shop->shopStaffs as $user): ?>
-                        <?= $user->username ?>
+                        <?= $user->getUserDisplayName() ?>
                     <?php endforeach ?>
                 </td>
             </tr>

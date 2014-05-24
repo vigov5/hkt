@@ -33,7 +33,7 @@ $count = 0;
 
         <tr class="" data-invoice-id="<?= $invoice->id ?>">
             <td class="invoice-order"><?= ++$count ?></td>
-            <td class="invoice-from-user"><?= $invoice->fromUser ? $invoice->fromUser->username : '' ?></td>
+            <td class="invoice-from-user"><?= $invoice->fromUser ? $invoice->fromUser->getUserDisplayName() : '' ?></td>
             <td class="invoice-item-name"><?= $invoice->item->name ?></td>
             <?php if (!empty($has_set)): ?>
                 <td class="invoice-item-set">
@@ -47,7 +47,7 @@ $count = 0;
             <td class="invoice-status"><?= $invoice->printStatus() ?></td>
             <td class="invoice-created-at"><?= $invoice->created_at ?></td>
             <td class="invoice-updated-at"><?= $invoice->updated_at ?></td>
-            <td class="invoice-updated-by"><?= $invoice->updated_by ? $invoice->updatedUser->username : '' ?></td>
+            <td class="invoice-updated-by"><?= $invoice->updated_by ? $invoice->updatedUser->getUserDisplayName() : '' ?></td>
             <td class="invoice-action">
                 <?php if((!isset($action) || !empty($action)) && $invoice->isStatusSent()): ?>
                     <button class="btn btn-primary btn-xs btn-action btn-invoice-status" data-invoice-id="<?= $invoice->id ?>" data-invoice-status="<?= Invoices::STATUS_ACCEPT ?>">Accept</button>

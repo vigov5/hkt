@@ -11,7 +11,7 @@
             <span class="row">
                 <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="item-name text-warning"><?= $shop->name ?></span></a>
             </span>
-            Manager: <?= $shop->user->username ?>
+            Manager: <?= $shop->user->getUserDisplayName() ?>
         </div>
         <?= $shop->imageView() ?>
     </div>

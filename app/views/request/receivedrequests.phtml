@@ -46,14 +46,14 @@ echo $this->getContent();
             ?>
 
             <tr class="active">
-                <td><?= $request->fromUser ? $request->fromUser->username : '' ?></td>
+                <td><?= $request->fromUser ? $request->fromUser->getUserDisplayName() : '' ?></td>
                 <td><?= $request->shop ? $request->shop->name : '' ?></td>
                 <td><?= $request->item ? $request->item->name : '' ?></td>
                 <td><?= $request->getTypeValue() ?></td>
                 <td><?= $request->printStatus() ?></td>
                 <td><?= $request->created_at ?></td>
                 <td><?= $request->updated_at ?></td>
-                <td><?= $request->updatedBy ? $request->updatedBy->username : ''  ?></td>
+                <td><?= $request->updatedBy ? $request->updatedBy->getUserDisplayName() : ''  ?></td>
                 <td>
                     <?php if($request->isStatusSent()): ?>
                         <a href="<?= $this->url->get("request/accept/{$request->id}"); ?>" class="btn btn-primary btn-xs btn-action" role="button">Accept</a>

@@ -26,7 +26,7 @@ echo $this->getContent(); ?>
             <tr>
                 <th class="success">Seller</th>
                 <td><?php foreach($item->saleUsers as $seller) {
-                        echo $seller->username . "<br/>";
+                        echo $seller->getUserDisplayName() . "<br/>";
                     } ?></td>
             </tr>
             <tr>
@@ -35,7 +35,7 @@ echo $this->getContent(); ?>
             </tr>
             <tr>
                 <th class="success"><?= $item->getAttributeLabel('created_by') ?></th>
-                <td><?= $item->user->username ?></td>
+                <td><?= $item->user->getUserDisplayName() ?></td>
             </tr>
             <tr>
                 <th class="success"><?= $item->getAttributeLabel('approved_by') ?></th>

@@ -3,15 +3,32 @@
 class UserController extends ControllerBase
 {
 
+    const USERS_PER_PAGE = 100;
     public function initialize()
     {
         parent::initialize();
         $this->view->current_page = 'user';
     }
 
-    public function indexAction()
+    public function indexAction($page = 1)
     {
+        $page = intval($page);
+        if ($page < 1) {
+            $page = 1;
+        }
+        $builder = $this->modelsManager->createBuilder()
+            ->from('Users')
+            ->orderBy('role desc');
 
+        $paginator = new Phalcon\Paginator\Adapter\QueryBuilder([
+            'builder' => $builder,
+            'limit' => self::USERS_PER_PAGE,
+            'page' => $page
+        ]);
+        $page = $paginator->getPaginate();
+
+        $this->view->pagination = new Pagination($page, '/user/index');
+        $this->view->users = $page->items;
     }
 
     public function facebookAction()
@@ -32,8 +49,10 @@ class UserController extends ControllerBase
         if (!$user) {
             $user = new Users();
             $user->assign([
-                    'username' => $facebook_user['username'],
+                    'display_name' => $facebook_user['username'],
+                    'username' => $facebook_user['email'],
                     'email' => $facebook_user['email'],
+                    'register_type' => Users::REGISTER_FACEBOOK_TYPE,
                     'password' => $this->security->hash(Phalcon\Text::random(Phalcon\Text::RANDOM_ALNUM, 8)),
                 ]
             );
@@ -154,8 +173,7 @@ class UserController extends ControllerBase
                     );
                     $this->forward('index');
                     $this->flash->success('Success! Please check your messages for an email reset password');
-
-                    return;
+                    $this->forward('index/index');
                 }
             }
         }

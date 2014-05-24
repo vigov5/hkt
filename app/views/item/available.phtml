@@ -33,11 +33,11 @@ echo $this->getContent();
             <tr>
                 <td><?= $item->name ?></td>
                 <td><?= $item->price ?></td>
-                <td><?= $item->user->username ?> </td>
+                <td><?= $item->user->getUserDisplayName() ?> </td>
                 <td><?= $item->created_at ?> </td>
                 <td>
                     <?php foreach($item->saleUsers as $user): ?>
-                        <?= $user->username . '  ' ?>
+                        <?= $user->getUserDisplayName() . '  ' ?>
                     <?php endforeach; ?>
                 </td>
                 <td>

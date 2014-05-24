@@ -29,7 +29,7 @@ $count = 0;
         ?>
 
         <tr class="" data-invoice-id="<?= $invoice->id ?>">
-            <td class="invoice-to-user"><?= ($invoice->to_user_id && $invoice->toUser) ? $invoice->toUser->username : '' ?></td>
+            <td class="invoice-to-user"><?= ($invoice->to_user_id && $invoice->toUser) ? $invoice->toUser->getUserDisplayName() : '' ?></td>
             <td class="invoice-to-shop"><?= ($invoice->to_shop_id && $invoice->toShop) ? $invoice->toShop->name : '' ?></td>
             <td class="invoice-item"><?= $invoice->item->name ?></td>
             <td class="invoice-item-set">

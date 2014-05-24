@@ -1,0 +1,13 @@
+<?php
+/**
+ * @var Users[] $users
+ *
+ */
+?>
+<h2>Framgia Hyakkaten Users List</h2>
+<?= $pagination->generatePagination() ?>
+
+<?= $this->partial('user/_list') ?>
+
+<?= $pagination->generatePagination() ?>
+
