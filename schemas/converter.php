@@ -9,11 +9,13 @@
 function convert_user($user)
 {
     $hkt_user = [
-        $user[1],
+        $user[2],
         $user[3],
         $user[2],
+        $user[1],
         $user[4],
         10,
+        1,
         "'" . sha1(microtime()) . sha1(mt_rand()) . "'",
         "'" . date('Y-m-d H:i:s') . "'",
     ];
@@ -47,7 +49,7 @@ foreach ($matches[1] as $user_str) {
     $users[] = '(' . implode(',', $user) . ')';
 }
 
-$str = "INSERT INTO `users` (`username`, `password`, `email`, `wallet`, `role`, `secret_key`, `created_at`) VALUES \n";
+$str = "INSERT INTO `users` (`username`, `password`, `email`, `display_name`, `wallet`, `role`, `register_type`, `secret_key`, `created_at`) VALUES \n";
 $str .= implode(",\n", $users);
 file_put_contents('data_users.sql', $str);
 

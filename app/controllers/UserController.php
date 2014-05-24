@@ -49,7 +49,7 @@ class UserController extends ControllerBase
         if (!$user) {
             $user = new Users();
             $user->assign([
-                    'display_name' => $facebook_user['username'],
+                    'display_name' => $facebook_user['name'],
                     'username' => $facebook_user['email'],
                     'email' => $facebook_user['email'],
                     'register_type' => Users::REGISTER_FACEBOOK_TYPE,
