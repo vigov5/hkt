@@ -70,6 +70,12 @@ class Users extends BModel
 
     /**
      *
+     * @var integer
+     */
+    public $place;
+
+    /**
+     *
      * @var string
      */
     public $created_at;
@@ -101,12 +107,20 @@ class Users extends BModel
     const REGISTER_NORMAL_TYPE = 0;
     const REGISTER_FACEBOOK_TYPE = 1;
 
+    const PLACE_13_FLOOR = 0;
+    const PLACE_31_FLOOR = 1;
+
     public static $user_roles = [
         self::ROLE_UNAUTHORIZED => 'Unauthorized User',
         self::ROLE_USER => 'Normal User',
         self::ROLE_MODERATOR => 'Moderator',
         self::ROLE_ADMIN => 'Administrator',
         self::ROLE_SUPER_ADMIN => 'Super Administrator',
+    ];
+
+    public static $place_value = [
+        self::PLACE_13_FLOOR => '13th Floor',
+        self::PLACE_31_FLOOR => '31st Floor',
     ];
 
     public function getRoleValue()
@@ -130,6 +144,15 @@ class Users extends BModel
         }
 
         return $this->register_type;
+    }
+
+    public function getPlaceValue()
+    {
+        if (isset(self::$place_value[$this->place])) {
+            return self::$place_value[$this->place];
+        }
+
+        return $this->place;
     }
 
     public static function getUpperRoles($base_role)
@@ -252,6 +275,7 @@ class Users extends BModel
             'role' => 'role',
             'secret_key' => 'secret_key',
             'register_type' => 'register_type',
+            'place' => 'place',
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
             'deleted_at' => 'deleted_at',
@@ -413,7 +437,7 @@ class Users extends BModel
         $invoice->to_user_id = $item_user->user_id;
         $invoice->item_id = $item_user->item_id;
         $invoice->item_count = $item_count;
-        $invoice->hcoin_receive = $item_user->getHCoinReceived();
+        $invoice->hcoin_receive = $item_count * $item_user->getHCoinReceived();
         $price = $item_count * $item_user->getSalePrice();
         $invoice->price = $price;
         $invoice->real_price = $item_count * $item_user->getRealPrice();
@@ -440,7 +464,7 @@ class Users extends BModel
         $invoice->to_shop_id = $item_shop->shop_id;
         $invoice->item_id = $item_shop->item_id;
         $invoice->item_count = $item_count;
-        $invoice->hcoin_receive = $item_shop->getHCoinReceived();
+        $invoice->hcoin_receive = $item_count * $item_shop->getHCoinReceived();
         $invoice->set_items_id = $set_items_id;
         $price = $item_count * $item_shop->getSalePrice();
         $invoice->price = $price;
@@ -847,5 +871,23 @@ class Users extends BModel
     {
         $this->display_name = $display_name;
         $this->save();
+    }
+
+    /**
+     * Change user's place
+     * @param int $place
+     */
+    public function changePlace($place)
+    {
+        $this->place = $place;
+        $this->save();
+    }
+
+    /**
+     * @return string User view link
+     */
+    public function getViewLink()
+    {
+        return '<a class="no-underline" href="' . "/user/view/{$this->id}" . '">' . $this->getUserDisplayName() . '</a>';
     }
 }

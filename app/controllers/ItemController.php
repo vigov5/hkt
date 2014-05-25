@@ -218,7 +218,7 @@ class ItemController extends ControllerBase
         }
 
         $this->view->shop = $shop;
-        $this->view->item_shops = $shop->itemShops;
+        $this->view->item_shops = $shop->getItemShops(['order' => 'status']);
     }
 
     public function requestAction()

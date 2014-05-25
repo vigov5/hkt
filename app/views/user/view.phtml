@@ -35,6 +35,20 @@ echo $this->getContent(); ?>
                 <td><?= $user->getRoleValue() ?></td>
             </tr>
             <tr>
+                <th class="success"><?= $user->getAttributeLabel('place') ?></th>
+                <td>
+                    <?php if ($current_user->id == $user->id || $current_user->isRoleOver(Users::ROLE_ADMIN)): ?>
+                        <div class="btn-group-xs">
+                            <?php foreach(Users::$place_value as $key => $value): ?>
+                                <button class="btn <?= $user->place == $key ? "btn-danger" : "" ?> btn-change-user-place" data-user-place="<?= $key ?>"  data-user-id="<?= $user->id ?>"><?= $value ?></button>
+                            <?php endforeach ?>
+                        </div>
+                    <?php else: ?>
+                        <?= $user->getPlaceValue(); ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
                 <th class="success"><?= $user->getAttributeLabel('created_at') ?></th>
                 <td><?= $user->created_at ?></td>
             </tr>

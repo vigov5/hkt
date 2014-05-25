@@ -269,6 +269,38 @@ class UserController extends ControllerBase
         $this->forwardNotFound();
     }
 
+    public function changePlaceAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $place = $this->request->getPost('place', 'int');
+            $user_id = $this->request->getPost('user_id', 'int');
+            if (!isset(Users::$place_value[$place])) {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Invalid Place',
+                ];
+            } else {
+                $user = Users::findFirstById($user_id);
+                if ($user_id != $this->current_user->id && !$this->current_user->isRoleOver(Users::ROLE_ADMIN) && !$user) {
+                    $response = [
+                        'status' => 'fail',
+                        'message' => 'Invalid User',
+                    ];
+                } else {
+                    $user->changePlace($place);
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Place changed!',
+                    ];
+                }
+            }
+            echo json_encode($response);
+            return ;
+        }
+        $this->forwardNotFound();
+    }
+
     public function favoriteAction()
     {
         $this->forwardUnderConstruction();

@@ -226,9 +226,48 @@ $(function() {
                 });
             }
         });
-    })
+    });
+
+    $('.btn-change-user-place').click(function() {
+        console.log("OK");
+        var place_name = $(this).html();
+        var place = $(this).attr('data-user-place');
+        var user_id = $(this).attr('data-user-id');
+        if ($(this).hasClass('btn-danger')) {
+            bootbox.alert('Your place is currently ' + place_name);
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "/user/changeplace",
+                data: {
+                    user_id: user_id,
+                    place: place
+                }
+            }).success(function(message) {
+                var response = JSON.parse(message);
+                if(response.status == 'success') {
+                    bootbox.alert(response.message);
+                    changeUserPlace(place);
+                }
+            })
+            .fail(function() {
+                alert('Reuqest sent Fail !!!');
+            });
+        }
+        console.log(place, place_name);
+    });
 
 });
+
+function changeUserPlace(place)
+{
+    $('.btn-change-user-place').each(function (index) {
+        $(this).removeClass('btn-danger');
+        if ($(this).attr('data-user-place') == place) {
+            $(this).addClass('btn-danger');
+        }
+    })
+}
 
 function changeDisplayName(name)
 {
@@ -332,7 +371,7 @@ function updateItemObj(item_obj, callback, type)
 function createItemBuyConfirm(form, message, data) {
     bootbox.dialog({
         message: message,
-        title: '<strong><span class="text-primary">Are you really want to buy the following item ?</span></strong>',
+        title: '<strong><span class="text-primary">Do you really want to buy the following item ?</span></strong>',
         buttons: {
             success: {
                 label: "OK",

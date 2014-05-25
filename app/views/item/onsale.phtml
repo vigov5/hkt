@@ -20,7 +20,7 @@ echo $this->getContent();
                 <div class="caption">
                     <h3><span class="item-name text-success"><?= $item_user->item->name ?></span></h3>
                     <p><strong>Price: </strong><span class="item-price"><?= $item_user->item->getSalePrice($item_user->user_id) ?></span> |
-                        <strong>Seller: </strong><span class="item-seller"><?= $item_user->user->getUserDisplayName() ?></span>
+                        <strong>Seller: </strong><span class="item-seller"><?= $item_user->user->getViewLink() ?></span>
                     </p>
                     <?= Tag::form(['item/buy', 'method' => 'post', 'class' => 'form-inline']) ?>
                         <div class="form-group">

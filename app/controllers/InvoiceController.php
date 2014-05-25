@@ -182,7 +182,7 @@ class InvoiceController extends ControllerBase
                     $error = $invoice->changeStatus($status, $this->current_user);
                     if (!$error) {
                         $data = [
-                            'updated_by' => $invoice->updatedUser->username,
+                            'updated_by' => $invoice->updatedUser->getViewLink(),
                             'updated_at' => $invoice->updated_at,
                             'status' => $invoice->status,
                             'status_string' => $invoice->printStatus(),

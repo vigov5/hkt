@@ -26,7 +26,7 @@ echo $this->getContent(); ?>
             <tr>
                 <th class="success">Seller</th>
                 <td><?php foreach($item->saleUsers as $seller) {
-                        echo $seller->getUserDisplayName() . "<br/>";
+                        echo $seller->getViewLink() . "<br/>";
                     } ?></td>
             </tr>
             <tr>
@@ -71,7 +71,7 @@ echo $this->getContent(); ?>
     <h3 class="text-primary">
         Total <?= $num ?> <?= $num > 1 ? 'Invoices' : 'Invoice' ?> today
     </h3>
-    <?= $this->partial('invoice/_invoices_list', ['invoices' => $invoices]); ?>
+    <?= $this->partial('invoice/_received_list', ['invoices' => $invoices]); ?>
 <?php else: ?>
     <h3 class="text-warning">
         No invoice today

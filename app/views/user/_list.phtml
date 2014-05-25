@@ -16,11 +16,12 @@ $is_role_over = $current_user->isRoleOver(Users::ROLE_MODERATOR);
         <th>HCoin</th>
     <?php endif; ?>
     <th>Register Type</th>
+    <th>Place</th>
     <th>Created</th>
 
     <?php foreach ($users as $user): ?>
         <tr>
-            <td><a class="no-underline" href="<?= $this->url->get('user/view/' . $user->id) ?>"><?= $user->getUserDisplayName() ?></a></td>
+            <td><?= $user->getViewLink() ?></td>
             <td><?= $user->username ?></td>
             <td><?= $user->email ?></td>
             <td><?= $user->getRoleValue() ?></td>
@@ -29,6 +30,7 @@ $is_role_over = $current_user->isRoleOver(Users::ROLE_MODERATOR);
                 <td><?= $user->hcoin ?></td>
             <?php endif; ?>
             <td><?= $user->getRegisterTypeValue() ?></td>
+            <td><?= $user->getPlaceValue() ?></td>
             <td><?= $user->created_at ?></td>
         </tr>
     <?php endforeach; ?>
