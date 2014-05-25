@@ -7,6 +7,7 @@ return new \Phalcon\Config([
         'username'    => 'hkt',
         'password'    => 'hkt',
         'dbname'      => 'hyakkaten',
+        'charset'     => 'utf8',
     ],
     'application' => [
         'baseDir'           => __DIR__ . '/../../base/',

@@ -207,6 +207,7 @@ class ItemController extends ControllerBase
     public function myAction()
     {
         $this->view->item_users = $this->current_user->itemUsers;
+        $this->view->current_page = 'user';
     }
 
     public function shopAction($shop_id)

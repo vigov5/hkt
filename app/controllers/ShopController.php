@@ -15,6 +15,7 @@ class ShopController extends ControllerBase
     {
         $this->view->own_shops = $this->current_user->ownShops;
         $this->view->shops = $this->current_user->shops;
+        $this->view->current_page = 'user';
     }
 
     public function openAction($page = 1)

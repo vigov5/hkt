@@ -128,3 +128,7 @@ footer {
 .btn-action {
     text-decoration: none !important;
 }
+
+.no-underline {
+    text-decoration: none !important;
+}

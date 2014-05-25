@@ -40,6 +40,7 @@ class RequestController extends ControllerBase
         $this->view->pagination = new Pagination($page, "/request/sentrequests/$type");
         $this->view->requests = $page->items;
         $this->view->type = $type;
+        $this->view->current_page = 'user';
     }
 
     public function receivedRequestsAction($type = 'restricted', $page = 1)
@@ -67,6 +68,7 @@ class RequestController extends ControllerBase
         $this->view->pagination = new Pagination($page, "/request/receivedrequests/$type");
         $this->view->requests = $page->items;
         $this->view->type = $type;
+        $this->view->current_page = 'user';
     }
 
     public function cancelAction($request_id)

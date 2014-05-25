@@ -29,6 +29,7 @@ class UserController extends ControllerBase
 
         $this->view->pagination = new Pagination($page, '/user/index');
         $this->view->users = $page->items;
+        $this->view->current_page = 'users';
     }
 
     public function facebookAction()
@@ -227,6 +228,50 @@ class UserController extends ControllerBase
             }
         }
         $this->view->form = $form;
+    }
+
+    public function viewAction($id = null)
+    {
+        if (!$id) {
+            $user = $this->current_user;
+        } else {
+            $user = Users::findFirstById($id);
+            if (!$user) {
+                $user = $this->current_user;
+            }
+        }
+
+        $this->view->user = $user;
+    }
+
+    public function changeDisplayNameAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $user_id = $this->request->getPost('user_id', 'int');
+            $display_name = $this->request->getPost('display_name', 'striptags');
+            if ($user_id != $this->current_user->id) {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Invalid User',
+                ];
+            } else {
+                $this->current_user->changeDisplayName($display_name);
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Display name changed!',
+                    'display_name' => $this->current_user->getUserDisplayName(),
+                ];
+            }
+            echo json_encode($response);
+            return ;
+        }
+        $this->forwardNotFound();
+    }
+
+    public function favoriteAction()
+    {
+        $this->forwardUnderConstruction();
     }
 }
 

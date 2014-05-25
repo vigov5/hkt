@@ -1,4 +1,4 @@
-INSERT INTO `users` (`username`, `password`, `email`, `display_name`, `wallet`, `role`, `register_type`, `secret_key`, `created_at`) VALUES 
+INSERT INTO `users` (`username`, `password`, `email`, `display_name`, `wallet`, `role`, `register_type`, `secret_key`, `created_at`) VALUES
 ('tmhn89@gmail.com','979aab1b91ee2827594c8d8eec81ff642dd5254b','tmhn89@gmail.com','Trương Mỹ Hải Ninh',630000,10,1,'0d41ae16f250838d56093c69bff8a03f7ec63d9e4d0c830029eb8372a7bb617650bb4218bdb74bb4','2014-05-24 21:21:40'),
 ('hungit@framgia.com','3607f2784526d9747b911f62e8481a0cad4bd43d','hungit@framgia.com','hùng b4by',0,10,1,'7010ffb35ef49a2b5c208d819a2d09e4eb462f951c41760d23ec44789384e88cdc5d276b3d7038e5','2014-05-24 21:21:40'),
 ('super@man.com','3607f2784526d9747b911f62e8481a0cad4bd43d','super@man.com','Siêu nhân',0,10,1,'3fe916daae4aba342468130a2e9665558bbbf1d82ee5b0878819ef04c0f988f7a071b4181ef9d7dc','2014-05-24 21:21:40'),
@@ -123,4 +123,4 @@ INSERT INTO `users` (`username`, `password`, `email`, `display_name`, `wallet`, 
 ('dinhhoanglong91@gmail.com','3b8ac1554dee6f2a32eacb192d54ee1d01f09536','dinhhoanglong91@gmail.com','Hoang Long',0,10,1,'81e406f67e371da5808ede21f52a2f82e637ffeec1aa91b4bec80def48ae4c90ce1b4753be1dfc4d','2014-05-24 21:21:40'),
 ('kyo.cnb07@gmail.com','f42a044ff155dcf04b7d8cc5c680aa93c9d89ee2','kyo.cnb07@gmail.com','Bọ Cạp Đen',0,10,1,'bf4c1390297db723d68ce6572553623a8bd5b8a0537d234bf47d1a0c4c8dd8d02043d44fe590fd19','2014-05-24 21:21:40'),
 ('othi83@yahoo.co.uk','91302f513540bdfce9f32c11d3091b129d0f1dd9','othi83@yahoo.co.uk','Alphongso Maria',0,10,1,'2307278306324df155bf330a0ec6151d2179de3aedb138d1fe3b6782840b912316fa92b834260dcb','2014-05-24 21:21:40'),
-('matluuly20002001@gmail.com','64f5f7d4222cc05d6b862bebcabd20a0a89f927d','matluuly20002001@gmail.com','Thom Nguyen',0,10,1,'e4ac0e82a9e03333157678906be48d6f237d18142f3c27c8e7e976dbb75a66c0beda9b62ac5ea691','2014-05-24 21:21:40')
+('matluuly20002001@gmail.com','64f5f7d4222cc05d6b862bebcabd20a0a89f927d','matluuly20002001@gmail.com','Thom Nguyen',0,10,1,'e4ac0e82a9e03333157678906be48d6f237d18142f3c27c8e7e976dbb75a66c0beda9b62ac5ea691','2014-05-24 21:21:40');

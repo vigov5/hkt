@@ -1,0 +1,60 @@
+<?php use Phalcon\Tag;
+
+/**
+ * @var Users $current_user
+ * @var Users $user
+ */
+echo $this->getContent(); ?>
+
+<div class="row">
+    <div class="col-lg-4 col-xs-12">
+        <img class="img-thumbnail img-responsive" src="<?= $user->getGravatar() ?>" alt="" />
+    </div>
+    <div class="col-lg-8 col-xs-12">
+        <table class="table table-hover">
+            <tr>
+                <th class="success"><?= $user->getAttributeLabel('display_name') ?></th>
+                <td>
+                    <span class="user-display-name"><?= $user->getUserDisplayName() ?></span>
+                    <?php if ($user->id === $current_user->id): ?>
+                        <button class="btn btn-primary btn-xs btn-user-display-name" data-user-id="<?= $user->id ?>">Change Display Name</button>
+                    <?php endif; ?>
+                </td>
+
+            </tr>
+            <tr>
+                <th class="success"><?= $user->getAttributeLabel('username') ?></th>
+                <td><?= $user->username ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $user->getAttributeLabel('email') ?></th>
+                <td><?= $user->email ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $user->getAttributeLabel('role') ?></th>
+                <td><?= $user->getRoleValue() ?></td>
+            </tr>
+            <tr>
+                <th class="success"><?= $user->getAttributeLabel('created_at') ?></th>
+                <td><?= $user->created_at ?></td>
+            </tr>
+            <?php if ($user->id === $current_user->id): ?>
+                <tr>
+                    <th class="success"><?= $user->getAttributeLabel('wallet') ?></th>
+                    <td>
+                        <?= $user->wallet ?>
+                        <a href="<?= $this->url->get('log/wallet')?>">View Wallet logs</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="success"><?= $user->getAttributeLabel('hcoin') ?></th>
+                    <td>
+                        <?= $user->hcoin ?>
+                        <a href="<?= $this->url->get('log/hcoin')?>">View Hcoin logs</a>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        </table>
+    </div>
+</div>
+<hr>

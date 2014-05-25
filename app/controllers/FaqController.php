@@ -18,7 +18,7 @@ class FaqController extends ControllerBase
     {
         $faqs = Faqs::find([
             'conditions' => "lang = $lang",
-            'order' => 'priority desc, id asc',
+            'order' => 'priority, id asc',
         ]);
         $this->view->faqs = $faqs;
     }

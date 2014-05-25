@@ -12,6 +12,7 @@
     <p><?= $faq->answer ?></p>
     <?php if($current_user && $current_user->isRoleOver(Users::ROLE_ADMIN)):?>
         <a href="<?= $this->url->get("faq/update/{$faq->id}"); ?>" class="btn btn-info btn-sm" role="button">Edit</a>
+        (Priority: <?= $faq->priority ?>)
     <?php endif; ?>
 </div>
 <?php endforeach; ?>

@@ -34,6 +34,7 @@ class LogController extends ControllerBase
         $page = $paginator->getPaginate();
         $this->view->pagination = new Pagination($page, "/log/wallet");
         $this->view->logs = $page->items;
+        $this->view->current_page = 'wallet';
     }
 
     public function hcoinAction($page = 1)
@@ -57,6 +58,7 @@ class LogController extends ControllerBase
 
         $this->view->pagination = new Pagination($page, "/log/hcoin");
         $this->view->logs = $page->items;
+        $this->view->current_page = 'hcoin';
     }
 }
 

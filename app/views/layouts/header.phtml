@@ -48,32 +48,25 @@
                         </li>
                     </ul>
                 </li>
+                <li class="<?= $current_page === 'users' ? 'active' : '' ?>">
+                    <a href="<?= $this->url->get('user') ?>">
+                        <span class="fa fa-users"></span> Users
+                    </a>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown <?= $current_page === 'setting' ? 'active' : '' ?>">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <?php if ($current_user->role >= Users::ROLE_ADMIN): ?>
+                <li class="<?= $current_page === 'setting' ? 'active' : '' ?>">
+                    <a href="<?= $this->url->get('setting') ?>">
                         <span class="fa fa-cog"></span>
-                        Setting (<?= $current_user->getRoleValue() ?>) <b class="caret"></b>
+                        Setting (<?= $current_user->getRoleValue() ?>) </b>
                     </a>
-                    <ul class="dropdown-menu">
-                        <?php if ($current_user->role >= Users::ROLE_ADMIN): ?>
-                        <li>
-                            <a href="<?= $this->url->get('setting') ?>">
-                                Admin Setting
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<?= $this->url->get('setting') ?>">
-                                Users
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                    </ul>
                 </li>
+                <?php endif; ?>
                 <li class="dropdown <?= $current_page === 'user' ? 'active' : '' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="fa fa-user"></span>
-                        <?= $current_user->getUserDisplayName() ?> ! <b class="caret"></b>
+                        <span class="user-display-name"><?= $current_user->getUserDisplayName() ?></span> ! <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
                         <li>
@@ -87,6 +80,13 @@
                         </li>
                         <li>
                             <a href="<?= $this->url->get('shop/my') ?>">My Shops</a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url->get('user/favorite') ?>">My Favorite</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="<?= $this->url->get('user/view') ?>">My Profile Page</a>
                         </li>
                         <li>
                             <a href="<?= $this->url->get('user/changepassword') ?>">Change Password</a>

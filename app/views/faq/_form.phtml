@@ -2,7 +2,7 @@
 <?php
     echo $form->start($link);
     echo $form->selectStatic('lang',  Faqs::$lang_value);
-    echo $form->numericField('priority', ['value' => 0]);
+    echo $form->numericField('priority');
     echo $form->textField('question');
     echo $form->textArea('answer', ['rows' => 10]);
     echo $form->submitButton($button);

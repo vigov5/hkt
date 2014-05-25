@@ -167,7 +167,7 @@ $(function() {
             .fail(function() {
                 alert('Reuqest sent Fail !!!');
             });
-    })
+    });
 
     $('.btn-invoice-status-all').click(function() {
         var invoice_status = $(this).attr('data-invoice-status');
@@ -199,8 +199,41 @@ $(function() {
                 alert('Reuqest sent Fail !!!');
             });
         }
+    });
+
+    $('.btn-user-display-name').click(function() {
+        var user_id = $(this).attr('data-user-id');
+        bootbox.prompt("Input your Display Name!", function(result) {
+            if (result === null || result.length == 0) {
+
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/user/changedisplayname",
+                    data: {
+                        user_id: user_id,
+                        display_name: result
+                    }
+                }).success(function(message) {
+                    var response = JSON.parse(message);
+                    if(response.status == 'success') {
+                        bootbox.alert(response.message);
+                        changeDisplayName(response.display_name);
+                    }
+                })
+                .fail(function() {
+                    alert('Reuqest sent Fail !!!');
+                });
+            }
+        });
     })
+
 });
+
+function changeDisplayName(name)
+{
+    $('.user-display-name').html(name);
+}
 
 function changeInvoiceData(invoice_id, data)
 {
