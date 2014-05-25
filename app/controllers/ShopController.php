@@ -231,4 +231,9 @@ class ShopController extends ControllerBase
 
         return;
     }
+
+    public function invoicesAction($shop_id)
+    {
+        $this->forwardUnderConstruction();
+    }
 }

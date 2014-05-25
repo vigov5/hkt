@@ -67,6 +67,7 @@ class UserController extends ControllerBase
             }
         } else {
             $this->auth->authUserById($user->id);
+            $this->auth->saveSuccessLogin($user);
 
             return $this->response->redirect('item/onsale');
         }
@@ -302,6 +303,11 @@ class UserController extends ControllerBase
     }
 
     public function favoriteAction()
+    {
+        $this->forwardUnderConstruction();
+    }
+
+    public function donateAction()
     {
         $this->forwardUnderConstruction();
     }
