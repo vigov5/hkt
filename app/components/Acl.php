@@ -30,7 +30,7 @@ class Acl extends Component
      * @var array
      */
     private $_public_resources = [
-        'index' => ['index', 'notFound', 'about', 'contact'],
+        'index' => ['index', 'notFound', 'about', 'contact', 'underConstruction'],
         'user'  => ['login', 'logout', 'facebook', 'register', 'forgotpassword', 'resetpassword'],
         'faq' => ['index'],
         'contact' => ['index'],

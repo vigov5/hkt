@@ -173,9 +173,8 @@ class UserController extends ControllerBase
                         'reset',
                         ['reset_url' => $reset_url]
                     );
-                    $this->forward('index');
                     $this->flash->success('Success! Please check your messages for an email reset password');
-                    $this->forward('index/index');
+                    return $this->forward('index/index');
                 }
             }
         }
