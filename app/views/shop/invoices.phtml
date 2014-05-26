@@ -1,0 +1,41 @@
+<?php
+use Phalcon\Tag;
+echo $this->getContent();
+/**
+ * @var Users $current_user
+ * @var Shops $shop
+ * @var Invoices[] $invoices
+ * @var string $date
+ */
+
+$can_edit_shop = $current_user->canEditShop($shop);
+$action = $shop->checkOwnerOrStaff($current_user);
+$prev = $shop->getPreviousInvoiceDate($date);
+$next = $shop->getNextInvoiceDate($date);
+?>
+
+<h2 class="text-center"> <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="item-name text-warning"><?= $shop->name ?></span></a>'s Invoices </h2>
+<div class="row">
+    <span class="pull-left">
+        <?php if ($prev): ?>
+            <a href="<?= $this->url->get("shop/invoices/$shop->id/$prev") ?>"><?= "<< $prev" ?></a>
+        <?php endif; ?>
+    </span>
+    <span class="pull-right">
+        <?php if ($next): ?>
+            <a href="<?= $this->url->get("shop/invoices/$shop->id/$next") ?>"><?= "$next >>" ?></a>
+        <?php endif; ?>
+    </span>
+</div>
+<div class="panel panel-warning">
+    <div class="panel-heading">
+        <?= $date ?>
+        <?php if (!empty($action)): ?>
+            <div class="btn-group-xs pull-right">
+                <button class="btn btn-primary btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_ACCEPT ?>">Accept All</button>
+                <button class="btn btn-danger btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_REJECT ?>">Reject All</button>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?= $this->partial('invoice/_received_list', ['invoices' => $invoices, 'action' => $action, 'has_set' => true]); ?>
+</div>

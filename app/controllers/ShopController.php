@@ -232,8 +232,17 @@ class ShopController extends ControllerBase
         return;
     }
 
-    public function invoicesAction($shop_id)
+    public function invoicesAction($shop_id, $date = null)
     {
-        $this->forwardUnderConstruction();
+        if (!$date || !DateHelper::isValidDate($date)) {
+            $date = DateHelper::today();
+        }
+        $shop = Shops::findFirstById($shop_id);
+        if (!$shop || !$this->current_user->canEditShop($shop)) {
+            return $this->forwardNotFound();
+        }
+        $this->view->date = $date;
+        $this->view->shop = $shop;
+        $this->view->invoices = $shop->getInvoicesByDay($date);
     }
 }

@@ -307,8 +307,8 @@ class Shops extends BModel
      */
     public function getInvoicesByDay($date = null)
     {
-        if (!$date) {
-            $date = date(Config::DATE_FORMAT);
+        if (!$date || !DateHelper::isValidDate($date)) {
+            $date = DateHelper::today();
         }
 
         $start = $date . ' 00:00:00';
@@ -329,5 +329,33 @@ class Shops extends BModel
     {
         $this->sales += $money;
         return $this->save();
+    }
+
+    public function getPreviousInvoiceDate($date)
+    {
+        if (!$date || !DateHelper::isValidDate($date)) {
+            $date = DateHelper::today();
+        }
+
+        $date_time = $date . ' 00:00:00';
+        $invoice = Invoices::findFirst("to_shop_id = {$this->id} AND created_at < '$date_time'");
+        if ($invoice) {
+            return DateHelper::dateOnly($invoice->created_at);
+        }
+        return null;
+    }
+
+    public function getNextInvoiceDate($date)
+    {
+        if (!$date || !DateHelper::isValidDate($date)) {
+            $date = DateHelper::today();
+        }
+
+        $date_time = $date . ' 23:59:59';
+        $invoice = Invoices::findFirst("to_shop_id = {$this->id} AND created_at > '$date_time'");
+        if ($invoice) {
+            return DateHelper::dateOnly($invoice->created_at);
+        }
+        return null;
     }
 }
