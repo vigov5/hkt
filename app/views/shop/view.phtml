@@ -106,12 +106,12 @@ $has_set = false;
         <hr>
         <div class="row">
         <?php foreach ($set as $item_shop): ?>
-            <div class="col-sm-6 col-md-4 col-lg-3">
-                <div class="thumbnail multi-item-select" style="max-height: 200px" data-form="item_set" data-item-shop-id="<?= $item_shop->id ?>">
-                    <div class="thumbnail-detail">
+            <div class="col-sm-4 col-md-2">
+                <div class="thumbnail multi-item-select" data-form="item_set" data-item-shop-id="<?= $item_shop->id ?>">
+                    <div class="thumbnail-detail-small">
                         <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name text-warning"><?= $item_shop->item->name ?></span></a>
                     </div>
-                    <?= $item_shop->item->imageView() ?>
+                    <img src="<?= $item_shop->item->getImageLink() ?>" class="multi-item-select-img">
                 </div>
             </div>
             <script type="text/javascript">
