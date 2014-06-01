@@ -49,8 +49,9 @@ $count = 0;
             <td class="invoice-status"><?= $invoice->printStatus() ?></td>
             <td class="invoice-created-at"><?= $invoice->created_at ?></td>
             <td class="invoice-updated-at"><?= $invoice->updated_at ?></td>
-            <td class="invoice-updated-by"><?= $invoice->updated_by ? $invoice->updatedUser->getViewLink() : '' ?></td>
-            <td class="invoice-action">
+            <td class="invoice-updated-by"><?= $invoice->updated_by ? $invoice->updatedBy->getViewLink() : '' ?></td>
+            <td class="">
+                <span class="invoice-action">
                 <?php if((!isset($action) || !empty($action)) && $invoice->isStatusSent()): ?>
                     <button class="btn btn-primary btn-xs btn-action btn-invoice-status" data-invoice-id="<?= $invoice->id ?>" data-invoice-status="<?= Invoices::STATUS_ACCEPT ?>">Accept</button>
                     <button class="btn btn-danger btn-xs btn-action btn-invoice-status" data-invoice-id="<?= $invoice->id ?>" data-invoice-status="<?= Invoices::STATUS_REJECT ?>">Reject</button>
@@ -58,6 +59,8 @@ $count = 0;
                 <?php if($current_user->id == $invoice->from_user_id && $invoice->isStatusSent()): ?>
                     <button class="btn btn-danger btn-xs btn-action btn-invoice-status" data-invoice-id="<?= $invoice->id ?>" data-invoice-status="<?= Invoices::STATUS_CANCEL ?>">Cancel</button>
                 <?php endif; ?>
+                </span>
+                <a href="/invoice/view/<?= $invoice->id ?>" class="btn btn-info btn-xs btn-info" role="button">View</a>
             </td>
         </tr>
     <?php endforeach; ?>

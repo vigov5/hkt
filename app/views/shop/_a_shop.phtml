@@ -5,7 +5,9 @@
  */
 ?>
 
-<div class="col-md-6 col-lg-4">
+<?php if (!isset($no_container_div)): ?>
+    <div class="col-md-6 col-lg-4">
+<?php endif; ?>
     <div class="thumbnail">
         <div class="thumbnail-detail">
             <span class="row">
@@ -15,4 +17,6 @@
         </div>
         <?= $shop->imageView() ?>
     </div>
-</div>
+<?php if (!isset($no_container_div)): ?>
+    </div>
+<?php endif; ?>

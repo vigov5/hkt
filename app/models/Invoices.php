@@ -170,7 +170,7 @@ class Invoices extends BModel
         parent::initialize();
         $this->belongsTo('item_id', 'Items', 'id', ['alias' => 'item']);
         $this->belongsTo('from_user_id', 'Users', 'id', ['alias' => 'fromUser']);
-        $this->belongsTo('updated_by', 'Users', 'id', ['alias' => 'updatedUser']);
+        $this->belongsTo('updated_by', 'Users', 'id', ['alias' => 'updatedBy']);
         $this->belongsTo('to_user_id', 'Users', 'id', ['alias' => 'toUser']);
         $this->belongsTo('to_shop_id', 'Shops', 'id', ['alias' => 'toShop']);
     }
@@ -320,6 +320,10 @@ class Invoices extends BModel
         return $error;
     }
 
+    /**
+     * Get set of an invoice
+     * @return ItemShops[]
+     */
     public function getSetItems()
     {
         $result = [];

@@ -1,11 +1,8 @@
-<?php use Phalcon\Tag; ?>
-<div class="col-sm-6 col-md-4 col-lg-3">
-    <div class="thumbnail">
-        <div class="thumbnail-detail"><span class="item-name"><?= $item->name ?></span> (<span class='item-price'><?= $item->price ?></span>)
-            <a href="<?= $this->url->get("item/view/{$item_user->item_id}"); ?>" class="btn btn-info btn-sm" role="button">View</a>
-        </div>
-        <?= $item->imageView() ?>
+<div class="thumbnail">
+    <div class="thumbnail-detail"><span class="item-name"><?= $item->name ?></span> (<span class='item-price'><?= $item->price ?></span>)
+        <a href="<?= $this->url->get("item/view/{$item->id}"); ?>" class="btn btn-info btn-sm" role="button">View</a>
     </div>
+    <?= $item->imageView() ?>
 </div>
 
 

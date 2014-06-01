@@ -182,7 +182,7 @@ class InvoiceController extends ControllerBase
                     $error = $invoice->changeStatus($status, $this->current_user);
                     if (!$error) {
                         $data = [
-                            'updated_by' => $invoice->updatedUser->getViewLink(),
+                            'updated_by' => $invoice->updatedBy->getViewLink(),
                             'updated_at' => $invoice->updated_at,
                             'status' => $invoice->status,
                             'status_string' => $invoice->printStatus(),
@@ -227,7 +227,7 @@ class InvoiceController extends ControllerBase
                         if (!$error) {
                             $data[$invoice_id] = [
                                 'id' => $invoice_id,
-                                'updated_by' => $invoice->updatedUser->username,
+                                'updated_by' => $invoice->updatedBy->username,
                                 'updated_at' => $invoice->updated_at,
                                 'status' => $invoice->status,
                                 'status_string' => $invoice->printStatus(),
@@ -248,5 +248,15 @@ class InvoiceController extends ControllerBase
         }
 
         return $this->forwardNotFound();
+    }
+
+    public function viewAction($id)
+    {
+        $invoice = Invoices::findFirstById($id);
+        if (!$invoice) {
+            return $this->forwardNotFound();
+        }
+
+        $this->view->invoice = $invoice;
     }
 }
