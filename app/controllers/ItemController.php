@@ -99,10 +99,10 @@ class ItemController extends ControllerBase
                     $request = $this->current_user->createNewItemRequest($item);
                 }
 
-                if ($this->current_user->canAccessNoDestinationRequests()) {
+                if ($this->current_user->isRoleOver(Users::ROLE_MODERATOR)) {
                     $request->beAccepted($this->current_user->id);
                 }
-                $this->flash->success('item was created successfully');
+                $this->flash->success('Item was created successfully');
 
                 return $this->forward('item/view', ['id' => $item->id]);
             } else {

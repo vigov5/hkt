@@ -83,10 +83,10 @@ class ShopController extends ControllerBase
 
             if ($shop->save()) {
                 $request = $this->current_user->createNewShopRequest($shop);
-                if ($this->current_user->canAccessNoDestinationRequests()) {
+                if ($this->current_user->isRoleOver(Users::ROLE_MODERATOR)) {
                     $request->beAccepted($this->current_user->id);
                 }
-                $this->flash->success('shop was created successfully');
+                $this->flash->success('Shop was created successfully');
 
                 return $this->forward('shop/view', ['id' => $shop->id]);
             } else {
