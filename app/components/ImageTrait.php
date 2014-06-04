@@ -8,7 +8,7 @@
 trait ImageTrait
 {
     private $_image_field = 'img';
-    private $_no_image = 'img/no_image.png';
+    private $_no_image = '/img/no_image.png';
 
     public function imageView($params=[])
     {

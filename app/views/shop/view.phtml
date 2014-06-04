@@ -86,7 +86,7 @@ $has_set = false;
             <div class="col-sm-6 col-md-4 col-lg-3">
                 <div class="thumbnail single-item-select" data-form="item" data-item-shop-id="<?= $item_shop->id ?>">
                     <div class="thumbnail-detail">
-                        <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name text-warning"><?= $item_shop->item->name ?></span></a>
+                        <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name"><?= $item_shop->item->name ?></span></a>
                     </div>
                     <?= $item_shop->item->imageView() ?>
                 </div>
@@ -109,7 +109,7 @@ $has_set = false;
             <div class="col-sm-4 col-md-2">
                 <div class="thumbnail multi-item-select" data-form="item_set" data-item-shop-id="<?= $item_shop->id ?>">
                     <div class="thumbnail-detail-small">
-                        <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name text-warning"><?= $item_shop->item->name ?></span></a>
+                        <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name "><?= $item_shop->item->name ?></span></a>
                     </div>
                     <img src="<?= $item_shop->item->getImageLink() ?>" class="multi-item-select-img">
                 </div>
