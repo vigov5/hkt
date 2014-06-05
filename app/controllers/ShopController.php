@@ -54,7 +54,19 @@ class ShopController extends ControllerBase
         }
         $this->view->shop = $shop;
         $this->view->item_shops = $shop->getAllOnSaleItems();
-        $this->view->invoices = $shop->getInvoicesByDay();
+        $invoices = $shop->getInvoicesByDay();
+
+        $invoices_filter = [];
+        if ($invoices) {
+            foreach (Users::$place_value as $place => $place_name) {
+                $invoices_filter[$place] = array_filter($invoices, function ($invoice) use ($place) {
+                    return $invoice->fromUser->place == $place;
+                });
+            }
+        }
+
+        $this->view->invoices = $invoices;
+        $this->view->invoices_filter = $invoices_filter;
 
         $this->setPrevUrl("shop/view/$id");
     }

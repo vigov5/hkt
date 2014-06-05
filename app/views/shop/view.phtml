@@ -86,7 +86,7 @@ $has_set = false;
             <div class="col-sm-6 col-md-4 col-lg-3">
                 <div class="thumbnail single-item-select" data-form="item" data-item-shop-id="<?= $item_shop->id ?>">
                     <div class="thumbnail-detail">
-                        <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name text-warning"><?= $item_shop->item->name ?></span></a>
+                        <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name"><?= $item_shop->item->name ?></span></a>
                     </div>
                     <?= $item_shop->item->imageView() ?>
                 </div>
@@ -109,7 +109,7 @@ $has_set = false;
             <div class="col-sm-4 col-md-2">
                 <div class="thumbnail multi-item-select" data-form="item_set" data-item-shop-id="<?= $item_shop->id ?>">
                     <div class="thumbnail-detail-small">
-                        <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name text-warning"><?= $item_shop->item->name ?></span></a>
+                        <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name "><?= $item_shop->item->name ?></span></a>
                     </div>
                     <img src="<?= $item_shop->item->getImageLink() ?>" class="multi-item-select-img">
                 </div>
@@ -134,15 +134,20 @@ $has_set = false;
 
 <hr>
 <h2 class="text-success"> Today Invoices </h2>
-<div class="panel panel-warning">
-    <div class="panel-heading">
-        Received Invoices
-        <?php if (!empty($action)): ?>
-            <div class="btn-group-xs pull-right">
-                <button class="btn btn-primary btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_ACCEPT ?>">Accept All</button>
-                <button class="btn btn-danger btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_REJECT ?>">Reject All</button>
+
+<?php foreach(Users::$place_value as $place => $place_name): ?>
+    <?php if (!empty($invoices_filter[$place])): ?>
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                Received Invoices from <?= $place_name ?>
+                <?php if (!empty($action)): ?>
+                    <div class="btn-group-xs pull-right">
+                        <button class="btn btn-primary btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_ACCEPT ?>">Accept All</button>
+                        <button class="btn btn-danger btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_REJECT ?>">Reject All</button>
+                    </div>
+                <?php endif; ?>
             </div>
-        <?php endif; ?>
-    </div>
-    <?= $this->partial('invoice/_received_list', ['invoices' => $invoices, 'action' => $action, 'has_set' => $has_set]); ?>
-</div>
+            <?= $this->partial('invoice/_received_list', ['invoices' => $invoices_filter[$place], 'action' => $action, 'has_set' => $has_set, 'short' => true]); ?>
+        </div>
+    <?php endif; ?>
+<?php endforeach; ?>

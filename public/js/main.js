@@ -422,9 +422,6 @@ function createItemLayout(item_object) {
 
 function createShopItemLayout(item_object, sets) {
     var img = item_object.img;
-    if (item_object.img.indexOf('http') != 0) {
-        img = '/' + img;
-    }
     var sets_html = '';
     if (sets.length != 0) {
         sets_html = '<div class="row">Sets: <strong><span class="text-danger">';

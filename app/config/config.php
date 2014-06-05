@@ -19,7 +19,7 @@ return new \Phalcon\Config([
         'componentsDir'     => __DIR__ . '/../../app/components/',
         'libraryDir'        => __DIR__ . '/../../app/library/',
         'cacheDir'          => __DIR__ . '/../../app/cache/',
-        'baseUri'           => 'http://'.$_SERVER['SERVER_NAME'].'/',
+        'baseUri'           => isset($_SERVER['SERVER_NAME']) ? 'http://'.$_SERVER['SERVER_NAME'].'/' : '',
         'homeUrl'           => '/',
         'defaultController' => 'index',
     ],
