@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var Users $current_user
+ * @var ContactForm $form
+ */
+?>
 <h1>Contact</h1>
 <hr>
 <div class="row">
@@ -30,9 +36,10 @@
 
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="text-primary">
+                <h2 class="text-primary">
                     Feel free to contact us
-                </h3>
+                </h2>
+                <?= $this->getContent(); ?>
             </div>
             <div class="panel-body">
                 <!-- CONTACT FORM -->
@@ -40,17 +47,19 @@
                     <fieldset>
                         <?php if (!isset($current_user)): ?>
                             <div class="form-group">
-                                <label for="name">Name</label><input class="form-control" type="text" name="name" value="">
+                                <label for="email">E-Mail</label>
+                                <?= $form->render('email', ['class' => 'form-control']) ?>
                             </div>
-                            <div class="form-group">
-                                <label for="email">E-Mail</label><input class="form-control" type="text" name="email" value=""><br>
-                            </div>
-                        <?php endif; ?>
+                        <?php else: ?>
+                            <?= $form->render('email', ['value' => $current_user->email, 'hidden' => true]) ?>
+                        <?php endif ?>
                         <div class="form-group">
-                            <label for="subject">Subject</label><input class="form-control" type="text" name="subject" value=""><br>
+                            <label for="subject">Subject</label>
+                            <?= $form->render('subject', ['class' => 'form-control']) ?>
                         </div>
                         <div class="form-group">
-                            <label for="message">Comments</label><textarea class="form-control" name="message" rows="5" cols="25"></textarea><br>
+                            <label for="content">Content</label>
+                            <?= $form->render('content', ['class' => 'form-control', 'rows' => 5, 'cols' => 25]) ?>
                         </div>
                         <div class="form-group">
                             <label for="submit">&nbsp;</label><input class="btn btn-md btn-info" type="submit" name="submit" value="Send Message">

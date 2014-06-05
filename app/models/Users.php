@@ -234,6 +234,10 @@ class Users extends BModel
             ])
         );
 
+        if ($this->username != $this->email) {
+            $this->validate(new UsernameValidator(['field' => 'username']));
+        }
+
         if ($this->validationHasFailed() == true) {
             return false;
         }

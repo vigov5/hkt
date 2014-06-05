@@ -16,6 +16,23 @@ class ContactController extends ControllerBase
      */
     public function indexAction()
     {
-        return $this->forwardUnderConstruction();
+        $form = new ContactForm();
+        if ($this->request->isPost()) {
+            if ($form->isValid($this->request->getPost()) == false) {
+                foreach ($form->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
+            } else {
+                $contact = new Contacts();
+                $contact->email = $this->request->getPost('email', 'email');
+                $contact->subject = $this->request->getPost('subject', 'striptags');
+                $contact->content = $this->request->getPost('content', 'striptags');
+                $contact->status = 0;
+                $contact->save();
+                $this->flash->success('Your message has been sent to the Administrators');
+                $form->clear();
+            }
+        }
+        $this->view->form = $form;
     }
 }

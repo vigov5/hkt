@@ -19,78 +19,78 @@ class SignUpForm extends Form
         $name = new Text('username');
         $name->setLabel('Username');
 
-        $name->addValidators(array(
-            new PresenceOf(array(
+        $name->addValidators([
+            new PresenceOf([
                 'message' => 'The name is required'
-            ))
-        ));
+            ]),
+        ]);
         $this->add($name);
 
         // Email
         $email = new Text('email');
         $email->setLabel('Email');
-        $email->addValidators(array(
-            new PresenceOf(array(
+        $email->addValidators([
+            new PresenceOf([
                 'message' => 'The e-mail is required'
-            )),
-            new Email(array(
+            ]),
+            new Email([
                 'message' => 'The e-mail is not valid'
-            ))
-        ));
+            ]),
+        ]);
         $this->add($email);
 
         // Password
         $password = new Password('password');
         $password->setLabel('Password');
-        $password->addValidators(array(
-            new PresenceOf(array(
+        $password->addValidators([
+            new PresenceOf([
                 'message' => 'The password is required'
-            )),
-            new StringLength(array(
+            ]),
+            new StringLength([
                 'min' => 8,
                 'messageMinimum' => 'Password is too short. Minimum 8 characters'
-            )),
-            new Confirmation(array(
+            ]),
+            new Confirmation([
                 'message' => 'Password doesn\'t match confirmation',
                 'with' => 'confirm_password'
-            ))
-        ));
+            ])
+        ]);
         $this->add($password);
 
         // Confirm Password
         $confirm_password = new Password('confirm_password');
         $confirm_password->setLabel('Confirm Password');
-        $confirm_password->addValidators(array(
-            new PresenceOf(array(
+        $confirm_password->addValidators([
+            new PresenceOf([
                 'message' => 'The confirmation password is required'
-            ))
-        ));
+            ])
+        ]);
         $this->add($confirm_password);
 
         // Terms
-        $terms = new Check('terms', array(
+        $terms = new Check('terms', [
             'value' => 'yes'
-        ));
+        ]);
         $terms->setLabel('Accept terms and conditions');
-        $terms->addValidator(new Identical(array(
+        $terms->addValidator(new Identical([
             'value' => 'yes',
             'message' => 'Terms and conditions must be accepted'
-        )));
+        ]));
 
         $this->add($terms);
 
         // CSRF
         $csrf = new Hidden('csrf');
-        $csrf->addValidator(new Identical(array(
+        $csrf->addValidator(new Identical([
             'value' => $this->security->getSessionToken(),
             'message' => 'CSRF validation failed'
-        )));
+        ]));
         $this->add($csrf);
 
         // Sign Up
-        $this->add(new Submit('Sign Up', array(
+        $this->add(new Submit('Sign Up', [
             'class' => 'btn btn-success'
-        )));
+        ]));
     }
 
     /**
