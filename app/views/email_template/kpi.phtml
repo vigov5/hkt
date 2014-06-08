@@ -1,0 +1,37 @@
+<?php
+/**
+ * @var GameKpis $kpi
+ */
+?>
+<tbody>
+	<tr>
+		<td style="padding:40px 0  0 0;">
+			<p style="color:#000;font-size: 16px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:normal;">
+
+				<h2 style="font-size: 14px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">Framgia Hyakkaten KPI - <?= $kpi->day ?></h2>
+
+				<p style="font-size: 13px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
+                    Date: <?= $kpi->day ?> <br>
+                    Total Users: <?= $kpi->total_users ?> <br>
+                    New Users: <?= $kpi->new_users ?> <br>
+                    Loggedin Users; <?= $kpi->login_users ?> <br>
+                    Deposit Users: <?= $kpi->deposit_users ?> <br>
+                    Withdraw Users: <?= $kpi->withdraw_users ?> <br>
+                    Purchase Users: <?= $kpi->purchase_users ?> <br>
+                    Deposit Amount: <?= $kpi->deposit ?> <br>
+                    Withdraw Amount: <?= $kpi->withdraw ?> <br>
+                    Purchase Amount: <?= $kpi->purchase ?> <br>
+                    Hcoin: <?= $kpi->hcoin ?> <br>
+                    Created At: <?= $kpi->created_at ?> <br>
+                    Updated At: <?= $kpi->updated_at ?> <br>
+                <br>
+                <br>
+				</p>
+                ------------------
+				FRAMGIA HKT TEAM !
+				<br>
+			</p>
+		</td>
+	</tr>
+</tbody>
+

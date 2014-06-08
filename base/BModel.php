@@ -147,8 +147,13 @@ class BModel extends Model
         }
     }
 
+    /**
+     * Check existance
+     * @param $id
+     * @return bool
+     */
     public static function exists($id)
     {
-        return self::findFirstById($id);
+        return self::findFirst($id) ? true : false;
     }
 }

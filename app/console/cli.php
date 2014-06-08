@@ -1,6 +1,8 @@
 <?php
 
 use Phalcon\DI\FactoryDefault\CLI as CliDI,
+    Phalcon\Mvc\View,
+    Phalcon\Mvc\View\Engine\Volt as VoltEngine,
     Phalcon\CLI\Console as ConsoleApp,
     Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter,
     Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;

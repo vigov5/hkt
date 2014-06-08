@@ -28,7 +28,6 @@ class Mail extends Component
     }
 
     /**
-     * Sends e-mails via Gmail based on predefined templates
      *
      * @param array $to
      * @param string $subject
@@ -46,6 +45,12 @@ class Mail extends Component
         $headers =  "From: {$mail_settings->from_name} <{$mail_settings->from_email}> \r\n" . "X-Mailer: PHP/" . phpversion();
         $headers .= 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-        mail($to, $subject, $message, $headers);
+        if (is_array($to)) {
+            foreach ($to as $to_email) {
+                mail($to_email, $subject, $message, $headers);
+            }
+        } else {
+            mail($to, $subject, $message, $headers);
+        }
     }
 }

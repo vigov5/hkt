@@ -344,6 +344,25 @@ CREATE TABLE `contacts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `game_kpis` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `day` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `total_users` int(11),
+  `new_users` int(11),
+  `login_users` int(11),
+  `deposit_users` int(11),
+  `withdraw_users` int(11),
+  `purchase_users` int(11),
+  `deposit` int(11),
+  `withdraw` int(11),
+  `purchase` int(11),
+  `hcoin` int(11),
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `day_UNIQUE` (`day`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
