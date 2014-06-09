@@ -38,6 +38,12 @@ class Invoices extends BModel
      *
      * @var integer
      */
+    public $item_type;
+
+    /**
+     *
+     * @var integer
+     */
     public $item_count;
 
     /**
@@ -144,6 +150,7 @@ class Invoices extends BModel
             'to_user_id' => 'to_user_id',
             'to_shop_id' => 'to_shop_id',
             'item_id' => 'item_id',
+            'item_type' => 'item_type',
             'item_count' => 'item_count',
             'price' => 'price',
             'real_price' => 'real_price',

@@ -407,7 +407,7 @@ function createItemBuyConfirm(form, message, data) {
 
 function createItemLayout(item_object) {
     var img = item_object.img;
-    if (item_object.img.indexOf('http') != 0) {
+    if (item_object.img.indexOf('http') != 0 && item_object.img.indexOf('/') != 0) {
         img = '/' + img;
     }
     var html = '<div class="row">' +

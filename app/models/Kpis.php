@@ -3,7 +3,7 @@
 
 
 
-class GameKpis extends BModel
+class Kpis extends BModel
 {
 
     /**

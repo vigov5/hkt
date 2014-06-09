@@ -85,6 +85,7 @@ CREATE TABLE `invoices` (
   `to_user_id` int(11) DEFAULT NULL,
   `to_shop_id` int(11) DEFAULT NULL,
   `item_id` int(11) NOT NULL,
+  `item_type` int(11) DEFAULT 1,
   `item_count` int(11) NOT NULL DEFAULT '1',
   `price` int(11) DEFAULT '0',
   `real_price` int(11) DEFAULT '0',
@@ -344,7 +345,7 @@ CREATE TABLE `contacts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `game_kpis` (
+CREATE TABLE `kpis` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `day` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   `total_users` int(11),

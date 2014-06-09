@@ -54,6 +54,9 @@ class Acl extends Component
         'faq' => [
             'create' => Users::ROLE_ADMIN,
             'update' => Users::ROLE_ADMIN,
+        ],
+        'invoice' => [
+            'special' => Users::ROLE_ADMIN,
         ]
     ];
 

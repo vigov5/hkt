@@ -440,6 +440,7 @@ class Users extends BModel
         $invoice->from_user_id = $this->id;
         $invoice->to_user_id = $item_user->user_id;
         $invoice->item_id = $item_user->item_id;
+        $invoice->item_type = $item_user->item->type;
         $invoice->item_count = $item_count;
         $invoice->hcoin_receive = $item_count * $item_user->getHCoinReceived();
         $price = $item_count * $item_user->getSalePrice();
@@ -467,6 +468,7 @@ class Users extends BModel
         $invoice->from_user_id = $this->id;
         $invoice->to_shop_id = $item_shop->shop_id;
         $invoice->item_id = $item_shop->item_id;
+        $invoice->item_type = $item_shop->item->type;
         $invoice->item_count = $item_count;
         $invoice->hcoin_receive = $item_count * $item_shop->getHCoinReceived();
         $invoice->set_items_id = $set_items_id;
@@ -599,6 +601,9 @@ class Users extends BModel
         }
         if ($invoice->to_shop_id && $invoice->toShop) {
             return $invoice->toShop->checkOwnerOrStaff($this);
+        }
+        if ($this->isRoleOver(self::ROLE_ADMIN) && ($invoice->item->isDepositItem() || $invoice->item->isWithdrawItem())) {
+            return true;
         }
         return false;
     }

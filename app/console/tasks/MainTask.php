@@ -1,6 +1,6 @@
 <?php
 
-class GameTask extends \Phalcon\CLI\Task
+class MainTask extends \Phalcon\CLI\Task
 {
     public function KpiAction($date = null)
     {
@@ -38,9 +38,9 @@ class GameTask extends \Phalcon\CLI\Task
             $hcoin += $invoice->hcoin_receive;
         }
 
-        $kpi = GameKpis::findFirstByDay($day);
+        $kpi = Kpis::findFirstByDay($day);
         if (!$kpi) {
-            $kpi = new GameKpis();
+            $kpi = new Kpis();
         }
         $kpi->day = $day;
         $kpi->total_users = $total_users;

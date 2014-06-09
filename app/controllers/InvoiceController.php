@@ -27,12 +27,11 @@ class InvoiceController extends ControllerBase
                 );
         }
         $this->setPrevUrl("invoice/sentinvoices/$type/$page");
-        $paginator = new \Phalcon\Paginator\Adapter\Model(
-            array(
+        $paginator = new \Phalcon\Paginator\Adapter\Model([
                 'data' => $invoices,
                 'limit' => self::INVOICES_PER_PAGE,
                 'page' => $page,
-            )
+            ]
         );
         $page = $paginator->getPaginate();
         $this->view->pagination = new Pagination($page, "/invoice/sentinvoices/$type");
@@ -57,15 +56,47 @@ class InvoiceController extends ControllerBase
                 );
         }
         $this->setPrevUrl("invoice/receivedinvoices/$type/$page");
-        $paginator = new \Phalcon\Paginator\Adapter\Model(
-            array(
+        $paginator = new \Phalcon\Paginator\Adapter\Model([
                 'data' => $invoices,
                 'limit' => self::INVOICES_PER_PAGE,
                 'page' => $page,
-            )
+            ]
         );
         $page = $paginator->getPaginate();
         $this->view->pagination = new Pagination($page, "/invoice/receivedinvoices/$type");
+        $this->view->invoices = $page->items;
+        $this->view->type = $type;
+    }
+
+    public function specialAction($type = 'restricted', $page = 1)
+    {
+        $page = intval($page);
+        if ($page < 1) {
+            $page = 1;
+        }
+        if ($type === 'all') {
+            $invoices = Invoices::find([
+                    'conditions' => 'item_type = ' . Items::TYPE_DEPOSIT . ' or item_type = ' . Items::TYPE_WITHDRAW,
+                    'order' => 'id desc'
+                ]
+            );
+        } else {
+            $type = 'restricted';
+            $invoices = Invoices::find([
+                        'conditions' => '(item_type = ' . Items::TYPE_DEPOSIT . ' or item_type = ' . Items::TYPE_WITHDRAW . ') and status=' . Invoices::STATUS_SENT,
+                        'order' => 'id desc'
+                    ]
+                );
+        }
+        $this->setPrevUrl("invoice/special/$type/$page");
+        $paginator = new \Phalcon\Paginator\Adapter\Model([
+                'data' => $invoices,
+                'limit' => self::INVOICES_PER_PAGE,
+                'page' => $page,
+            ]
+        );
+        $page = $paginator->getPaginate();
+        $this->view->pagination = new Pagination($page, "/invoice/special/$type");
         $this->view->invoices = $page->items;
         $this->view->type = $type;
     }

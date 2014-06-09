@@ -1,0 +1,28 @@
+<?php
+/**
+ * @var Users $current_user
+ * @var Invoices[] $invoices
+ *
+ */
+echo $this->getContent();
+?>
+<div class="panel panel-warning">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        Deposit or Withdraw Invoices
+            <?php if($type != 'all'): ?>
+                <a href="<?= $this->url->get("invoice/special/all"); ?>" class="btn btn-success btn-xs" role="button">All</a>
+                <div class="btn-group-xs pull-right">
+                    <button class="btn btn-primary btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_ACCEPT ?>">Accept All</button>
+                    <button class="btn btn-danger btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_REJECT ?>">Reject All</button>
+                </div>
+            <?php else: ?>
+            <a href="<?= $this->url->get("invoice/special/restricted"); ?>" class="btn btn-success btn-xs" role="button">Only Sent</a>
+        <?php endif; ?>
+    </div>
+
+    <?= $this->partial('invoice/_received_list', ['invoices' => $invoices]); ?>
+</div>
+
+<?= $pagination->generatePagination() ?>
+
