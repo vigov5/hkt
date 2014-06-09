@@ -48,11 +48,13 @@
                         </li>
                     </ul>
                 </li>
-                <li class="<?= $current_page === 'users' ? 'active' : '' ?>">
-                    <a href="<?= $this->url->get('user') ?>">
-                        <span class="fa fa-users"></span> Users
-                    </a>
-                </li>
+                <?php if ($current_user->isRoleOver(Users::ROLE_MODERATOR)): ?>
+                    <li class="<?= $current_page === 'users' ? 'active' : '' ?>">
+                        <a href="<?= $this->url->get('user') ?>">
+                            <span class="fa fa-users"></span> Users
+                        </a>
+                    </li>
+                <?php endif; ?>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <?php if ($current_user->role >= Users::ROLE_ADMIN): ?>

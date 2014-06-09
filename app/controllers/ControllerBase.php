@@ -81,7 +81,7 @@ class ControllerBase extends BController
             // Check if the user have permission to the current option
             if (!$this->acl->isAllowed($identity['role'], $controller_name, $action_name)) {
 
-                $this->flash->error('You don\'t have access to this module: ' . $controller_name . ':' . $action_name);
+//                $this->flash->error('You don\'t have access to this module: ' . $controller_name . ':' . $action_name);
 
                 $dispatcher->forward(array(
                         'controller' => 'index',

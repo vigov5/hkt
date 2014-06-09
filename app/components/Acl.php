@@ -79,7 +79,7 @@ class Acl extends Component
             return false;
         }
         $controller_resource = $this->_private_resources[$controller_name];
-        return in_array($action_name, $controller_resource);
+        return array_key_exists($action_name, $controller_resource);
     }
 
     /**
