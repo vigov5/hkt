@@ -131,8 +131,10 @@ class UserController extends ControllerBase
 
                 $user->assign([
                         'username' => $this->request->getPost('username', 'striptags'),
+                        'display_name' => $this->request->getPost('username', 'striptags'),
                         'email' => $this->request->getPost('email'),
                         'password' => $this->security->hash($this->request->getPost('password')),
+                        'register_type' => Users::REGISTER_NORMAL_TYPE,
                     ]
                 );
                 if ($user->save()) {
