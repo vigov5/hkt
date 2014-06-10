@@ -10,7 +10,9 @@ class IndexController extends ControllerBase
 
     public function indexAction()
     {
-
+        if ($this->current_user) {
+            return $this->forward('shop/open');
+        }
     }
 
     public function notFoundAction()

@@ -56,7 +56,7 @@ class MainTask extends \Phalcon\CLI\Task
         $kpi->save();
 
         $mail = new Mail();
-        $users = Users::find('role = ' . Users::ROLE_SUPER_ADMIN)->toArray();
+        $users = Users::find('role >= ' . Users::ROLE_ADMIN)->toArray();
         $emails = array_column($users, 'email');
         $mail->send($emails, 'KPI Information', 'kpi', ['kpi' => $kpi]);
     }

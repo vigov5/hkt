@@ -188,7 +188,7 @@ class ItemController extends ControllerBase
             $this->redirectToPrevUrl();
             return;
         }
-        if (!$this->current_user->checkWallet($amount * $item_user->getSalePrice())) {
+        if (!$item_user->item->isDepositItem() && !$this->current_user->checkWallet($amount * $item_user->getSalePrice())) {
             $this->setFlashSession('error', 'Sorry !!! You do not have enough money !!!');
             $this->redirectToPrevUrl();
             return;

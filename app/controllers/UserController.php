@@ -69,7 +69,7 @@ class UserController extends ControllerBase
             $this->auth->authUserById($user->id);
             $this->auth->saveSuccessLogin($user);
 
-            return $this->response->redirect('item/onsale');
+            return $this->response->redirect('shop/open');
         }
     }
 
