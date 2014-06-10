@@ -43,7 +43,7 @@ class ItemController extends ControllerBase
     public function viewAction($id)
     {
         $id = intval($id);
-        $item = Items::findFirstByid($id);
+        $item = Items::findFirst($id);
         if (!$item) {
             $this->flash->error('item was not found');
 
@@ -72,7 +72,7 @@ class ItemController extends ControllerBase
         }
         $shop = null;
         if ($shop_id) {
-            $shop = Shops::findFirstById($shop_id);
+            $shop = Shops::findFirst($shop_id);
             if (!$shop || !$shop->checkOwnerOrStaff($this->current_user)) {
                 $this->flash->success('Invalid Shop');
                 return $this->forward('shop/open');
@@ -121,7 +121,7 @@ class ItemController extends ControllerBase
      */
     public function updateAction($id)
     {
-        $item = Items::findFirstByid($id);
+        $item = Items::findFirst($id);
         if (!$item) {
             $this->flash->error('item was not found');
 
@@ -165,7 +165,7 @@ class ItemController extends ControllerBase
             $amount = 1;
         }
 
-        $item_user = ItemUsers::findFirstByid($item_user_id);
+        $item_user = ItemUsers::findFirst($item_user_id);
         if (!$item_user) {
             $this->setFlashSession('error', 'Item does not exist');
             $this->redirectToPrevUrl();
@@ -212,7 +212,7 @@ class ItemController extends ControllerBase
 
     public function shopAction($shop_id)
     {
-        $shop = Shops::findFirstById($shop_id);
+        $shop = Shops::findFirst($shop_id);
         if (!$shop || !$shop->checkOwnerOrStaff($this->current_user)) {
             return $this->forward('index/notFound');
         }
@@ -226,7 +226,7 @@ class ItemController extends ControllerBase
         if ($this->request->isAjax()) {
             $this->view->disable();
             $item_id = $this->request->getPost('item_id', 'int');
-            $item = Items::findFirstById($item_id);
+            $item = Items::findFirst($item_id);
             if (!$item || !$this->current_user->canCreateBuyItemRequest($item)) {
                 $response = [
                     'status' => 'fail',

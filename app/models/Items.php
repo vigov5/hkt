@@ -318,8 +318,20 @@ class Items extends BModel
         return $this->price;
     }
 
+    /**
+     * @param string $text
+     * @return string Return View Link Button
+     */
     public function createViewLink($text = 'View')
     {
         return '<a href="/item/view/' . $this->id . '" class="btn btn-info btn-sm btn-action" role="button">' . $text . '</a>';
+    }
+
+    /**
+     * @return string Item view link
+     */
+    public function getViewLink()
+    {
+        return '<a class="no-underline" href="' . "/item/view/{$this->id}" . '">' . $this->name . '</a>';
     }
 }

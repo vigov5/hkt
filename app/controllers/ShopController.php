@@ -46,7 +46,7 @@ class ShopController extends ControllerBase
     public function viewAction($id)
     {
         $id = intval($id);
-        $shop = Shops::findFirstByid($id);
+        $shop = Shops::findFirst($id);
         if (!$shop) {
             $this->flash->error('shop was not found');
 
@@ -115,7 +115,7 @@ class ShopController extends ControllerBase
      */
     public function updateAction($id)
     {
-        $shop = Shops::findFirstByid($id);
+        $shop = Shops::findFirst($id);
         if (!$shop || !$this->current_user->canEditShop($shop)) {
             $this->flash->error('Shop Unavailable');
 
@@ -148,7 +148,7 @@ class ShopController extends ControllerBase
 
     public function changeStatusAction($shop_id, $status)
     {
-        $shop = Shops::findFirstByid($shop_id);
+        $shop = Shops::findFirst($shop_id);
         if (!$shop || !$this->current_user->canEditShop($shop)) {
             $this->flash->error('Shop Unavailable');
             return $this->forward('shop');
@@ -169,7 +169,7 @@ class ShopController extends ControllerBase
         if ($this->request->isAjax()) {
             $this->view->disable();
             $shop_id = $this->request->getPost('shop_id', 'int');
-            $shop = Shops::findFirstById($shop_id);
+            $shop = Shops::findFirst($shop_id);
             if (!$shop || $shop->checkOwnerOrStaff($this->current_user)) {
                 $response = [
                     'status' => 'fail',
@@ -203,7 +203,7 @@ class ShopController extends ControllerBase
             $item_sets_str = $this->request->getPost('item_sets');
             $item_sets = json_decode($item_sets_str);
             $amount = $this->request->getPost('amount', 'int');
-            $item_shop = ItemShops::findFirstById($item_shop_id);
+            $item_shop = ItemShops::findFirst($item_shop_id);
             $status = true;
             $message = '';
 
@@ -249,7 +249,7 @@ class ShopController extends ControllerBase
         if (!$date || !DateHelper::isValidDate($date)) {
             $date = DateHelper::today();
         }
-        $shop = Shops::findFirstById($shop_id);
+        $shop = Shops::findFirst($shop_id);
         if (!$shop || !$this->current_user->canEditShop($shop)) {
             return $this->forwardNotFound();
         }

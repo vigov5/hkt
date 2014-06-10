@@ -36,7 +36,7 @@ $count = 0;
         <tr class="" data-invoice-id="<?= $invoice->id ?>">
             <td class="invoice-order"><?= ++$count ?></td>
             <td class="invoice-from-user"><?= $invoice->fromUser ? $invoice->fromUser->getViewLink() : '' ?></td>
-            <td class="invoice-item-name"><?= $invoice->item->name ?></td>
+            <td class="invoice-item-name"><?= $invoice->item->getViewLink() ?></td>
             <?php if (!empty($has_set)): ?>
                 <td class="invoice-item-set">
                     <?php foreach ($invoice->getSetItems() as $item_shop): ?>

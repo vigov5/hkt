@@ -338,7 +338,7 @@ class Invoices extends BModel
             $item_shop_ids = json_decode($this->set_items_id);
             if (is_array($item_shop_ids)) {
                 foreach ($item_shop_ids as $item_shop_id) {
-                    $item_shop = ItemShops::findFirstById($item_shop_id);
+                    $item_shop = ItemShops::findFirst($item_shop_id);
                     if ($item_shop) {
                         $result[] = $item_shop;
                     }

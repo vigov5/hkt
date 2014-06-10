@@ -22,7 +22,7 @@ class ItemuserController extends ControllerBase
                     'message' => 'Status Invalid',
                 ];
             } else {
-                $item_user = ItemUsers::findFirstById($item_user_id);
+                $item_user = ItemUsers::findFirst($item_user_id);
                 if ($item_user || $this->current_user->canEditItemuser($item_user)) {
                     $item_user->beForced($status);
 
@@ -57,7 +57,7 @@ class ItemuserController extends ControllerBase
 
     public function updateAction($id)
     {
-        $item_user = ItemUsers::findFirstByid($id);
+        $item_user = ItemUsers::findFirst($id);
         if (!$item_user || !$this->current_user->canEditItemuser($item_user)) {
             return $this->forward('index/notfound');
         }

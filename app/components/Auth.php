@@ -147,7 +147,7 @@ class Auth extends Component
         $user_id = $this->cookies->get('RMU')->getValue();
         $cookie_token = $this->cookies->get('RMT')->getValue();
 
-        $user = Users::findFirstById($user_id);
+        $user = Users::findFirst($user_id);
         if ($user) {
 
             $userAgent = $this->request->getUserAgent();
@@ -250,7 +250,7 @@ class Auth extends Component
      */
     public function authUserById($id)
     {
-        $user = Users::findFirstById($id);
+        $user = Users::findFirst($id);
         if ($user == false) {
             throw new Exception('The user does not exist');
         }
@@ -273,7 +273,7 @@ class Auth extends Component
     {
         $identity = $this->session->get('auth-identity');
         if (isset($identity['id'])) {
-            $user = Users::findFirstById($identity['id']);
+            $user = Users::findFirst($identity['id']);
             if ($user == false) {
                 throw new Exception('The user does not exist');
             }

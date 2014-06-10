@@ -208,7 +208,7 @@ class InvoiceController extends ControllerBase
             ) {
                 $error = 'Invalid Status ' . $status;
             } else {
-                $invoice = Invoices::findFirstById($invoice_id);
+                $invoice = Invoices::findFirst($invoice_id);
                 if ($invoice && $invoice->isStatusSent()) {
                     $error = $invoice->changeStatus($status, $this->current_user);
                     if (!$error) {
@@ -252,7 +252,7 @@ class InvoiceController extends ControllerBase
             } else {
                 foreach ($invoices_id as $invoice_id) {
                     $count++;
-                    $invoice = Invoices::findFirstById($invoice_id);
+                    $invoice = Invoices::findFirst($invoice_id);
                     if ($invoice && $invoice->isStatusSent()) {
                         $error = $invoice->changeStatus($status, $this->current_user);
                         if (!$error) {
@@ -283,7 +283,7 @@ class InvoiceController extends ControllerBase
 
     public function viewAction($id)
     {
-        $invoice = Invoices::findFirstById($id);
+        $invoice = Invoices::findFirst($id);
         if (!$invoice) {
             return $this->forwardNotFound();
         }

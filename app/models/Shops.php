@@ -331,6 +331,10 @@ class Shops extends BModel
         return $this->save();
     }
 
+    /**
+     * @param string $date
+     * @return null|string Previous Date that have invoice
+     */
     public function getPreviousInvoiceDate($date)
     {
         if (!$date || !DateHelper::isValidDate($date)) {
@@ -345,6 +349,10 @@ class Shops extends BModel
         return null;
     }
 
+    /**
+     * @param string $date
+     * @return null|string Next Date that have invoice
+     */
     public function getNextInvoiceDate($date)
     {
         if (!$date || !DateHelper::isValidDate($date)) {
@@ -357,5 +365,13 @@ class Shops extends BModel
             return DateHelper::dateOnly($invoice->created_at);
         }
         return null;
+    }
+
+    /**
+     * @return string Shop view link
+     */
+    public function getViewLink()
+    {
+        return '<a class="no-underline" href="' . "/shop/view/{$this->id}" . '">' . $this->name . '</a>';
     }
 }

@@ -48,6 +48,11 @@
                         </li>
                     </ul>
                 </li>
+                <li class="<?= $current_page === 'favorite' ? 'active' : '' ?>">
+                    <a href="<?= $this->url->get('user/favorite') ?>">
+                        <span class="fa fa-bookmark"></span> Favorites
+                    </a>
+                </li>
                 <?php if ($current_user->isRoleOver(Users::ROLE_MODERATOR)): ?>
                     <li class="<?= $current_page === 'users' ? 'active' : '' ?>">
                         <a href="<?= $this->url->get('user') ?>">
@@ -77,14 +82,12 @@
                         <li>
                             <a href="<?= $this->url->get('request/receivedrequests/restricted') ?>">Received Request</a>
                         </li>
+                        <li class="divider"></li>
                         <li>
                             <a href="<?= $this->url->get('item/my') ?>">My Sale Items</a>
                         </li>
                         <li>
                             <a href="<?= $this->url->get('shop/my') ?>">My Shops</a>
-                        </li>
-                        <li>
-                            <a href="<?= $this->url->get('user/favorite') ?>">My Favorite</a>
                         </li>
                         <li class="divider"></li>
                         <li>
@@ -110,6 +113,7 @@
                         <li>
                             <a href="<?= $this->url->get('item/special/2') ?>">Withdraw</a>
                         </li>
+                        <li class="divider"></li>
                         <li>
                             <a href="<?= $this->url->get('invoice/sentinvoices/restricted') ?>">Sent Invoices</a>
                         </li>

@@ -41,19 +41,19 @@ echo $this->getContent();
         <?php foreach ($requests as $request): ?>
             <?php
             /**
-             * @var Invoices $request
+             * @var Requests $request
              */
             ?>
 
             <tr class="active">
-                <td><?= $request->fromUser ? $request->fromUser->getUserDisplayName() : '' ?></td>
-                <td><?= $request->shop ? $request->shop->name : '' ?></td>
-                <td><?= $request->item ? $request->item->name : '' ?></td>
+                <td><?= $request->fromUser ? $request->fromUser->getViewLink() : '' ?></td>
+                <td><?= $request->shop ? $request->shop->getViewLink() : '' ?></td>
+                <td><?= $request->item ? $request->item->getViewLink() : '' ?></td>
                 <td><?= $request->getTypeValue() ?></td>
                 <td><?= $request->printStatus() ?></td>
                 <td><?= $request->created_at ?></td>
                 <td><?= $request->updated_at ?></td>
-                <td><?= $request->updatedBy ? $request->updatedBy->getUserDisplayName() : ''  ?></td>
+                <td><?= $request->updatedBy ? $request->updatedBy->getViewLink() : ''  ?></td>
                 <td>
                     <?php if($request->isStatusSent()): ?>
                         <a href="<?= $this->url->get("request/accept/{$request->id}"); ?>" class="btn btn-primary btn-xs btn-action" role="button">Accept</a>

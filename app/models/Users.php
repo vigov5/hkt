@@ -446,11 +446,16 @@ class Users extends BModel
         $price = $item_count * $item_user->getSalePrice();
         $invoice->price = $price;
         $invoice->real_price = $item_count * $item_user->getRealPrice();
+        $wallet_before = $this->wallet;
         if ($item_user->item->isNormalItem()) {
             $this->minusWallet($price);
         }
+        $wallet_after = $this->wallet;
         if (!$invoice->save()) {
             return false;
+        }
+        if ($wallet_before != $wallet_after) {
+            WalletLogs::createNew($this->id, $wallet_before, $wallet_after, $invoice->id, WalletLogs::ACTION_CREATE);
         }
 
         return true;
@@ -475,11 +480,16 @@ class Users extends BModel
         $price = $item_count * $item_shop->getSalePrice();
         $invoice->price = $price;
         $invoice->real_price = $item_count * $item_shop->getRealPrice();
+        $wallet_before = $this->wallet;
         if ($item_shop->item->isNormalItem()) {
             $this->minusWallet($price);
         }
+        $wallet_after = $this->wallet;
         if (!$invoice->save()) {
             return false;
+        }
+        if ($wallet_before != $wallet_after) {
+            WalletLogs::createNew($this->id, $wallet_before, $wallet_after, $invoice->id, WalletLogs::ACTION_CREATE);
         }
 
         return true;
@@ -694,7 +704,7 @@ class Users extends BModel
      */
     public function canCreateBuyItemRequest($item)
     {
-        if (!$item->isAvailable()) {
+        if (!$item->isAvailable() || !$item->isNormalItem()) {
             return false;
         }
         $request = $this->getSentRequests("item_id = {$item->id} AND type = " . Requests::TYPE_USER_SELL_ITEM . ' AND (status = ' . Requests::STATUS_ACCEPT . ' OR status = ' . Requests::STATUS_SENT . ')');

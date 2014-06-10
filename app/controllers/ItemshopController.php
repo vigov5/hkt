@@ -22,7 +22,7 @@ class ItemshopController extends ControllerBase
                     'message' => 'Status Invalid',
                 ];
             } else {
-                $item_shop = ItemShops::findFirstById($item_shop_id);
+                $item_shop = ItemShops::findFirst($item_shop_id);
                 if ($item_shop || $this->current_user->canEditShop($item_shop->shop)) {
                     $item_shop->beForced($status);
 
@@ -57,7 +57,7 @@ class ItemshopController extends ControllerBase
 
     public function updateAction($id)
     {
-        $item_shop = ItemShops::findFirstByid($id);
+        $item_shop = ItemShops::findFirst($id);
         if (!$item_shop || !$this->current_user->canEditShop($item_shop->shop)) {
             return $this->forward('index/notfound');
         }

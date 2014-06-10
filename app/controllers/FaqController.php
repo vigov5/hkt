@@ -55,7 +55,7 @@ class FaqController extends ControllerBase
      */
     public function updateAction($id)
     {
-        $faq = Faqs::findFirstByid($id);
+        $faq = Faqs::findFirst($id);
         if (!$faq) {
             $this->flash->error('Faq was not found');
 

@@ -40,13 +40,13 @@ echo $this->getContent();
             ?>
 
             <tr class="active">
-                <td><?= $request->toUser ? $request->toUser->getUserDisplayName() : '' ?></td>
-                <td><?= ($request->item_id && $request->item) ? $request->item->name : '' ?></td>
+                <td><?= $request->toUser ? $request->toUser->getViewLink() : '' ?></td>
+                <td><?= ($request->item_id && $request->item) ? $request->item->getViewLink() : '' ?></td>
                 <td><?= $request->getTypeValue() ?></td>
                 <td><?= $request->printStatus() ?></td>
                 <td><?= $request->created_at ?></td>
                 <td><?= $request->updated_at ?></td>
-                <td><?= $request->updatedBy ? $request->updatedBy->getUserDisplayName() : ''  ?></td>
+                <td><?= $request->updatedBy ? $request->updatedBy->getViewLink() : ''  ?></td>
                 <td>
                     <?php if($request->isStatusSent()): ?>
                         <a href="<?= $this->url->get("request/cancel/{$request->id}"); ?>" class="btn btn-danger btn-xs btn-action" role="button">Cancel</a>

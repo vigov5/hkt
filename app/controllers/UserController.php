@@ -237,7 +237,7 @@ class UserController extends ControllerBase
         if (!$id) {
             $user = $this->current_user;
         } else {
-            $user = Users::findFirstById($id);
+            $user = Users::findFirst($id);
             if (!$user) {
                 $user = $this->current_user;
             }
@@ -283,7 +283,7 @@ class UserController extends ControllerBase
                     'message' => 'Invalid Place',
                 ];
             } else {
-                $user = Users::findFirstById($user_id);
+                $user = Users::findFirst($user_id);
                 if ($user_id != $this->current_user->id && !$this->current_user->isRoleOver(Users::ROLE_ADMIN) && !$user) {
                     $response = [
                         'status' => 'fail',

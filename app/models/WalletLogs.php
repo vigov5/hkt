@@ -56,12 +56,15 @@ class WalletLogs extends BModel
     const TYPE_RECEIVED = 2;
 
     const ACTION_CANCEL = 0;
-    const ACTION_ACCEPT = 1;
-    const ACTION_REJECT = 2;
-    const ACTION_REFUND = 3;
+    const ACTION_CREATE = 1;
+    const ACTION_ACCEPT = 2;
+    const ACTION_REJECT = 3;
+    const ACTION_REFUND = 4;
+
 
     public static $action_value = [
         self::ACTION_CANCEL => 'CANCELED',
+        self::ACTION_CREATE => 'CREATED',
         self::ACTION_ACCEPT => 'ACCEPTED',
         self::ACTION_REJECT => 'REJECTED',
         self::ACTION_REFUND => 'REFUND',
@@ -80,6 +83,8 @@ class WalletLogs extends BModel
     {
         $val = $this->getActionValue();
         switch ($this->action) {
+            case self::ACTION_CREATE:
+                return "<span class='label label-primary'>$val</span>";
             case self::ACTION_REFUND:
                 return "<span class='label label-info'>$val</span>";
             case self::ACTION_ACCEPT:
