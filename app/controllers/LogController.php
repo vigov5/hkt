@@ -15,14 +15,22 @@ class LogController extends ControllerBase
         return $this->forwardUnderConstruction();
     }
 
-    public function walletAction($page = 1)
+    public function walletAction($user_id = 0, $page = 1)
     {
+        if (!$this->current_user->isRoleOver(Users::ROLE_ADMIN)) {
+            $user = $this->current_user;
+        } else {
+            $user = Users::findFirstById($user_id);
+            if (!$user) {
+                $user = $this->current_user;
+            }
+        }
         if ($page < 1) {
             $page = 1;
         }
         $builder = $this->modelsManager->createBuilder()
             ->from('WalletLogs')
-            ->where('user_id = ' . $this->current_user->id)
+            ->where('user_id = ' . $user->id)
             ->andWhere('type = ' . WalletLogs::TYPE_MONEY)
             ->orderBy('id desc');
 
@@ -32,19 +40,28 @@ class LogController extends ControllerBase
             'page' => $page
         ));
         $page = $paginator->getPaginate();
-        $this->view->pagination = new Pagination($page, "/log/wallet");
+        $this->view->pagination = new Pagination($page, "/log/wallet/$user->id");
         $this->view->logs = $page->items;
         $this->view->current_page = 'wallet';
+        $this->view->user = $user;
     }
 
-    public function hcoinAction($page = 1)
+    public function hcoinAction($user_id = 0, $page = 1)
     {
+        if (!$this->current_user->isRoleOver(Users::ROLE_ADMIN)) {
+            $user = $this->current_user;
+        } else {
+            $user = Users::findFirstById($user_id);
+            if (!$user) {
+                $user = $this->current_user;
+            }
+        }
         if ($page < 1) {
             $page = 1;
         }
         $builder = $this->modelsManager->createBuilder()
             ->from('WalletLogs')
-            ->where('user_id = ' . $this->current_user->id)
+            ->where('user_id = ' . $user->id)
             ->andWhere('type = ' . WalletLogs::TYPE_HCOIN)
             ->orderBy('id desc');
 
@@ -56,9 +73,10 @@ class LogController extends ControllerBase
 
         $page = $paginator->getPaginate();
 
-        $this->view->pagination = new Pagination($page, "/log/hcoin");
+        $this->view->pagination = new Pagination($page, "/log/hcoin/$user->id");
         $this->view->logs = $page->items;
         $this->view->current_page = 'hcoin';
+        $this->view->user = $user;
     }
 }
 

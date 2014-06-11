@@ -342,7 +342,10 @@ class Shops extends BModel
         }
 
         $date_time = $date . ' 00:00:00';
-        $invoice = Invoices::findFirst("to_shop_id = {$this->id} AND created_at < '$date_time'");
+        $invoice = Invoices::findFirst([
+            'conditions' => "to_shop_id = {$this->id} AND created_at < '$date_time'",
+            'order' => 'id desc'
+        ]);
         if ($invoice) {
             return DateHelper::dateOnly($invoice->created_at);
         }

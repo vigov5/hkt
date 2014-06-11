@@ -9,7 +9,6 @@ echo $this->getContent();
 
 $can_edit_shop = $current_user->canEditShop($shop);
 $action = $shop->checkOwnerOrStaff($current_user);
-$has_set = false;
 ?>
 
 <h2 class="text-primary"><?= $shop->name ?></h2>
@@ -96,7 +95,6 @@ $has_set = false;
             </script>
         <?php elseif($item_shop->item->isSetItem()): ?>
             <?php
-                $has_set = true;
                 $set[] = $item_shop;
             ?>
         <?php endif; ?>
@@ -147,7 +145,7 @@ $has_set = false;
                     </div>
                 <?php endif; ?>
             </div>
-            <?= $this->partial('invoice/_received_list', ['invoices' => $invoices_filter[$place], 'action' => $action, 'has_set' => $has_set, 'short' => true]); ?>
+            <?= $this->partial('invoice/_received_list', ['invoices' => $invoices_filter[$place], 'action' => $action, 'has_set' => true, 'short' => true, 'index' => true]); ?>
         </div>
     <?php endif; ?>
 <?php endforeach; ?>

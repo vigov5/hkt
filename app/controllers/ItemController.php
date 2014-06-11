@@ -7,6 +7,7 @@ class ItemController extends ControllerBase
 {
 
     const ITEM_PER_PAGE = 20;
+    const INVOICES_PER_PAGE = 50;
 
     public function initialize()
     {
@@ -263,5 +264,33 @@ class ItemController extends ControllerBase
         $page = $paginator->getPaginate();
         $this->view->pagination = new Pagination($page, '/item/available');
         $this->view->items = $page->items;
+    }
+
+    public function invoicesAction($item_id, $page = 1)
+    {
+        $page = intval($page);
+        if ($page < 1) {
+            $page = 1;
+        }
+        $item = Items::findFirstById($item_id);
+        if (!$item || !$this->current_user->canEditItem($item)) {
+            return $this->forwardNotFound();
+        }
+
+        $builder = $this->modelsManager->createBuilder()
+            ->from('Invoices')
+            ->where('item_id = ' . $item->id)
+            ->orderBy('id desc');
+
+        $paginator = new Phalcon\Paginator\Adapter\QueryBuilder([
+            'builder' => $builder,
+            'limit' => self::INVOICES_PER_PAGE,
+            'page' => $page
+        ]);
+
+        $page = $paginator->getPaginate();
+        $this->view->pagination = new Pagination($page, "/item/invoices/$item_id");
+        $this->view->invoices = $page->items;
+        $this->view->item = $item;
     }
 }

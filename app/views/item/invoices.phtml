@@ -1,0 +1,16 @@
+<?php
+use Phalcon\Tag;
+echo $this->getContent();
+/**
+ * @var Users $current_user
+ * @var Items $item
+ * @var Invoices[] $invoices
+ */
+?>
+
+<h2 class="text-center"><?= $item->getViewLink() ?>'s Invoices </h2>
+<div class="panel panel-warning">
+    <?= $this->partial('invoice/_received_list', ['invoices' => $invoices]); ?>
+</div>
+
+<?= $pagination->generatePagination() ?>

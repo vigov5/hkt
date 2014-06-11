@@ -8,7 +8,9 @@ $count = 0;
 <table class="table table-striped table-hover">
     <thead>
     <tr>
-        <th>#</th>
+        <?php if (!empty($index)): ?>
+            <th>#</th>
+        <?php endif; ?>
         <th>User</th>
         <th>Item</th>
         <?php if (!empty($has_set)): ?>
@@ -34,7 +36,9 @@ $count = 0;
         ?>
 
         <tr class="" data-invoice-id="<?= $invoice->id ?>">
-            <td class="invoice-order"><?= ++$count ?></td>
+            <?php if (!empty($index)): ?>
+                <td class="invoice-order"><?= ++$count ?></td>
+            <?php endif; ?>
             <td class="invoice-from-user"><?= $invoice->fromUser ? $invoice->fromUser->getViewLink() : '' ?></td>
             <td class="invoice-item-name"><?= $invoice->item->getViewLink() ?></td>
             <?php if (!empty($has_set)): ?>
@@ -54,7 +58,7 @@ $count = 0;
             <?php endif; ?>
             <td class="">
                 <span class="invoice-action">
-                <?php if((!isset($action) || !empty($action)) && $invoice->isStatusSent()): ?>
+                <?php if(!empty($action) && $invoice->isStatusSent()): ?>
                     <button class="btn btn-primary btn-xs btn-action btn-invoice-status" data-invoice-id="<?= $invoice->id ?>" data-invoice-status="<?= Invoices::STATUS_ACCEPT ?>">Accept</button>
                     <button class="btn btn-danger btn-xs btn-action btn-invoice-status" data-invoice-id="<?= $invoice->id ?>" data-invoice-status="<?= Invoices::STATUS_REJECT ?>">Reject</button>
                 <?php endif; ?>

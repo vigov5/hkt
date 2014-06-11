@@ -1,11 +1,12 @@
 <?php
 /**
  * @var Users $current_user
+ * @var Users $user
  * @var WalletLogs[] $logs
  *
  */
 ?>
-<h2>Wallet Logs</h2>
+<h2><?= $user->getViewLink() ?>'s Wallet Logs</h2>
 
 <?= $this->partial('log/_logs') ?>
 

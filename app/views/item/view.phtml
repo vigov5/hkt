@@ -55,6 +55,7 @@ echo $this->getContent(); ?>
                     <div class="btn-group-xs">
                         <?php if ($current_user->canEditItem($item)): ?>
                             <a href="<?= $this->url->get("item/update/{$item->id}")?>" class="btn btn-warning btn-action"><i class="fa fa-edit"></i> Edit </a>
+                            <a href="<?= $this->url->get("item/invoices/{$item->id}")?>" class="btn btn-info btn-action"> View all invoices </a>
                         <?php endif; ?>
                         <?php if ($current_user->canCreateBuyItemRequest($item)): ?>
                             <button class='btn btn-primary btn-action item-sell-request' id="item-sell-request-<?= $item->id ?>" data-item-id='<?= $item->id ?>'>Request Sell This Item</button>

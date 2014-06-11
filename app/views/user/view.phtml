@@ -52,19 +52,19 @@ echo $this->getContent(); ?>
                 <th class="success"><?= $user->getAttributeLabel('created_at') ?></th>
                 <td><?= $user->created_at ?></td>
             </tr>
-            <?php if ($user->id === $current_user->id): ?>
+            <?php if ($user->id === $current_user->id || $current_user->isRoleOver(Users::ROLE_ADMIN)): ?>
                 <tr>
                     <th class="success"><?= $user->getAttributeLabel('wallet') ?></th>
                     <td>
                         <?= $user->wallet ?>
-                        <a href="<?= $this->url->get('log/wallet')?>">View Wallet logs</a>
+                        <a href="<?= $this->url->get("log/wallet/$user->id")?>">View Wallet logs</a>
                     </td>
                 </tr>
                 <tr>
                     <th class="success"><?= $user->getAttributeLabel('hcoin') ?></th>
                     <td>
                         <?= $user->hcoin ?>
-                        <a href="<?= $this->url->get('log/hcoin')?>">View Hcoin logs</a>
+                        <a href="<?= $this->url->get("log/hcoin/$user->id")?>">View Hcoin logs</a>
                     </td>
                 </tr>
             <?php endif; ?>
