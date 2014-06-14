@@ -10,10 +10,8 @@
 <?php endif; ?>
     <div class="thumbnail">
         <div class="thumbnail-detail">
-            <span class="row">
-                <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="item-name text-warning"><?= $shop->name ?></span></a>
-            </span>
-            Manager: <?= $shop->user->getUserDisplayName() ?>
+            <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="item-name text-warning"><?= $shop->name ?></span></a><br/>
+            Manager: <?= $shop->user->getViewLink() ?>
         </div>
         <?= $shop->imageView() ?>
     </div>

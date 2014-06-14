@@ -19,7 +19,7 @@ echo $this->getContent();
         <?php endif; ?>
     </div>
 
-    <?= $this->partial('invoice/_received_list', ['invoices' => $invoices]); ?>
+    <?= $this->partial('invoice/_received_list', ['invoices' => $invoices, 'action' => true]); ?>
 </div>
 
 <?= $pagination->generatePagination() ?>
