@@ -229,7 +229,6 @@ $(function() {
     });
 
     $('.btn-change-user-place').click(function() {
-        console.log("OK");
         var place_name = $(this).html();
         var place = $(this).attr('data-user-place');
         var user_id = $(this).attr('data-user-id');
@@ -257,6 +256,52 @@ $(function() {
         console.log(place, place_name);
     });
 
+    //Like Button
+    $('.btn-like').click(function () {
+        var me = $(this);
+        var target_type = me.attr('data-target-type');
+        var target_id = me.attr('data-target-id');
+
+        $.ajax({
+            type: "POST",
+            url: "/user/like",
+            data: {
+                target_type: target_type,
+                target_id: target_id
+            }
+        }).success(function(message) {
+            var response = JSON.parse(message);
+                console.log(response);
+            if(response.status != 'success') {
+                bootbox.alert(response.message);
+            } else {
+                if (me.hasClass('like')) {
+                    me.removeClass('like').addClass('unlike');
+                } else {
+                    me.removeClass('unlike').addClass('like');
+                }
+            }
+        })
+        .fail(function() {
+            alert('Reuqest sent Fail !!!');
+        });
+    });
+
+    // Favorite Notification
+    $('.fav-noti').change(function() {
+        var favorite_id = $(this).attr('data-favorite-id');
+        $.ajax({
+            type: "POST",
+            url: "/favorite/changenotification",
+            data: {
+                favorite_id: favorite_id
+            }
+        }).success(function(message) {
+            })
+            .fail(function() {
+                alert('Reuqest sent Fail !!!');
+            });
+    });
 });
 
 function changeUserPlace(place)

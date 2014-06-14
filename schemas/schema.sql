@@ -345,6 +345,17 @@ CREATE TABLE `contacts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `favorites` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `target_id` int(11) NOT NULL,
+  `target_type` tinyint DEFAULT 1,
+  `views` int(11) default 0,
+  `receive_notification` tinyint default 1,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `kpis` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `day` varchar(128) COLLATE utf8_unicode_ci NOT NULL,

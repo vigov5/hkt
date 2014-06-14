@@ -5,7 +5,6 @@
  * @var Users $user
  */
 echo $this->getContent(); ?>
-
 <div class="row">
     <div class="col-lg-4 col-xs-12">
         <img class="img-thumbnail img-responsive" src="<?= $user->getGravatar() ?>" alt="" />
@@ -19,6 +18,7 @@ echo $this->getContent(); ?>
                     <?php if ($user->id === $current_user->id): ?>
                         <button class="btn btn-primary btn-xs btn-user-display-name" data-user-id="<?= $user->id ?>">Change Display Name</button>
                     <?php endif; ?>
+                    <?= ViewHelper::likeButton($user, $favorite) ?>
                 </td>
 
             </tr>

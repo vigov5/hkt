@@ -65,8 +65,16 @@ class ShopController extends ControllerBase
             }
         }
 
+        $favorite = $this->current_user->getFavorite($shop);
+        if ($favorite) {
+            $favorite->increaseViews();
+            $this->view->favorite = true;
+        } else {
+            $this->view->favorite = false;
+        }
         $this->view->invoices = $invoices;
         $this->view->invoices_filter = $invoices_filter;
+
 
         $this->setPrevUrl("shop/view/$id");
     }

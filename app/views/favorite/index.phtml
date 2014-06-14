@@ -1,0 +1,34 @@
+<?php
+/**
+ * @var Favorites[] $favorites
+ *
+ */
+?>
+<h2> Your Favorites List</h2>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Registered At</th>
+        <th>#</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($favorites as $favorite): ?>
+        <tr>
+            <td><?= $favorite->getViewLink() ?></td>
+            <td><?= $favorite->getTargetClass($favorite->target_type) ?></td>
+            <td><?= $favorite->created_at ?></td>
+            <td>
+                <div class="checkbox">
+                    <label>
+                        <input class='fav-noti' type="checkbox" data-favorite-id="<?= $favorite->id ?>" <?= $favorite->receive_notification ? 'checked' : '' ?>>
+                        Receive Email Notification
+                    </label>
+                </div>
+             </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>

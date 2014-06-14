@@ -13,7 +13,9 @@ echo $this->getContent(); ?>
         <table class="table table-hover">
             <tr>
                 <th class="success"><?= $item->getAttributeLabel('name') ?></th>
-                <td><?= $item->name ?></td>
+                <td><?= $item->name ?>
+                    <?= ViewHelper::likeButton($item, $favorite) ?>
+                </td>
             </tr>
             <tr>
                 <th class="success"><?= $item->getAttributeLabel('type') ?></th>

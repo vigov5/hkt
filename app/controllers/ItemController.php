@@ -57,6 +57,15 @@ class ItemController extends ControllerBase
                 'order' => 'created_at desc, to_user_id'
             ]
         );
+
+        $favorite = $this->current_user->getFavorite($item);
+        if ($favorite) {
+            $favorite->increaseViews();
+            $this->view->favorite = true;
+        } else {
+            $this->view->favorite = false;
+        }
+
         $this->view->item = $item;
         $this->setPrevUrl("item/view/$id");
     }

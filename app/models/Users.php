@@ -260,6 +260,7 @@ class Users extends BModel
         $this->hasManyToMany('id', 'UserShops', 'user_id', 'shop_id', 'Shops', 'id', ['alias' => 'shops']);
         $this->hasMany('id', 'WalletLogs', 'user_id', ['alias' => 'walletLogs']);
         $this->hasMany('id', 'UserShops', 'user_id');
+        $this->hasMany('id', 'Favorites', 'user_id');
         $this->hasMany('id', 'Shops', 'created_by', ['alias' => 'ownShops']);
     }
 
@@ -908,5 +909,72 @@ class Users extends BModel
     public function getViewLink()
     {
         return '<a class="no-underline" href="' . "/user/view/{$this->id}" . '">' . $this->getUserDisplayName() . '</a>';
+    }
+
+    /**
+     * Check whether user can register a target as favorite or not
+     * At the moment, return true in all cases
+     * @param $target
+     * @return bool
+     */
+    public function canRegisterFavorite($target = null)
+    {
+        return true;
+    }
+
+    /**
+     * Register a favorite (a shop, an item, or an user)
+     * @param int $target_id
+     * @param int $target_type
+     * @return bool
+     */
+    public function registerFavorite($target_id, $target_type)
+    {
+        $favorite = new Favorites();
+        $favorite->assign([
+            'user_id' => $this->id,
+            'target_id' => $target_id,
+            'target_type' => $target_type,
+            'views' => 0,
+            'receive_notification' => Favorites::NOTIFICATION_YES,
+        ]);
+        return $favorite->save();
+    }
+
+    /**
+     * Get Favorite by target and target type
+     * @param BModel|int $target
+     * @param null|int $target_type
+     * @return null|Favorites
+     */
+    public function getFavorite($target, $target_type = null)
+    {
+        $target_id = null;
+        if ($target instanceof Shops || $target instanceof Items || $target instanceof Users) {
+            $target_id = $target->id;
+            $target_type = Favorites::getTargetType($target);
+        } elseif (is_numeric($target)) {
+            $target_id = $target;
+        }
+        if (is_numeric($target_id) && is_numeric($target_type)) {
+            return Favorites::findFirst("user_id = $this->id AND target_id = $target_id AND target_type = $target_type");
+        }
+        return null;
+    }
+
+    /**
+     * Get Favorites list of the user
+     * @param int $limit
+     * @return Favorites|[] Favorites list
+     */
+    public function getFavoriteList($limit = 0)
+    {
+        if ($limit) {
+            $this->getFavorites([
+                'order' => 'views desc',
+                'limit' => $limit,
+            ]);
+        }
+        return $this->getFavorites(['order' => 'views desc']);
     }
 }

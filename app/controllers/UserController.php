@@ -242,7 +242,13 @@ class UserController extends ControllerBase
                 $user = $this->current_user;
             }
         }
-
+        $favorite = $this->current_user->getFavorite($user);
+        if ($favorite) {
+            $favorite->increaseViews();
+            $this->view->favorite = true;
+        } else {
+            $this->view->favorite = false;
+        }
         $this->view->user = $user;
     }
 
@@ -303,14 +309,43 @@ class UserController extends ControllerBase
         $this->forwardNotFound();
     }
 
-    public function favoriteAction()
-    {
-        $this->forwardUnderConstruction();
-    }
-
     public function donateAction()
     {
         $this->forwardUnderConstruction();
     }
+
+    public function likeAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $response = [];
+            $target_id = $this->request->getPost('target_id', 'int');
+            $target_type = $this->request->getPost('target_type', 'int');
+            $fav = $this->current_user->getFavorite($target_id, $target_type);
+            if ($fav) {
+                $fav->delete();
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Unliked!',
+                ];
+            } else {
+                $target_class = Favorites::getTargetClass($target_type);
+                if ($target_class) {
+                    $target = $target_class::findFirstById($target_id);
+                    if ($target && $this->current_user->canRegisterFavorite($target)) {
+                        $this->current_user->registerFavorite($target_id, $target_type);
+                        $response = [
+                            'status' => 'success',
+                            'message' => 'Liked!',
+                        ];
+                    }
+                }
+            }
+            echo json_encode($response);
+            return;
+        }
+        $this->forwardNotFound();
+    }
+
 }
 

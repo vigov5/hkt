@@ -239,3 +239,26 @@ footer {
 .item-name {
     color: white;
 }
+
+.like {
+    width: 30px;
+    height: 30px;
+    background: url('../img/like.png') no-repeat;
+}
+
+.like:hover {
+    cursor: pointer;
+    cursor: hand;
+}
+
+.unlike {
+    width: 30px;
+    height: 30px;
+    background: url('../img/like.png') no-repeat;
+    opacity: 0.4;
+}
+
+.unlike:hover {
+    cursor: pointer;
+    cursor: hand;
+}
