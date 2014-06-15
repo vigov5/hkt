@@ -56,8 +56,48 @@ class MainTask extends \Phalcon\CLI\Task
         $kpi->save();
 
         $mail = new Mail();
-        $users = Users::find('role >= ' . Users::ROLE_ADMIN)->toArray();
-        $emails = array_column($users, 'email');
+        $emails = Users::getAdminEmails();
         $mail->send($emails, 'KPI Information', 'kpi', ['kpi' => $kpi]);
+    }
+
+    public function invoiceAction()
+    {
+        $datetime = DateHelper::now();
+        $before = DateHelper::minute_before(5, $datetime);
+        $invoices = Invoices::find(["created_at > '$before'"]);
+        $special_invoices = [];
+        $normal_invoices = [];
+        foreach ($invoices as $invoice) {
+            if ($invoice->isSpecialInvoice()) {
+                $special_invoices[] = $invoice;
+            } else {
+                $normal_invoices[] = $invoice;
+            }
+        }
+        $mail = new Mail();
+        if (count($special_invoices)) {
+            $emails = Users::getAdminEmails();
+            $mail->send($emails, 'Special Invoices Received', 'special_invoice', ['count' => count($special_invoices)]);
+        }
+
+        /* Send email to shop's staff. Underconstruction
+        if (count($normal_invoices)) {
+            $shops = [];
+            $users = [];
+            foreach($normal_invoices as $invoice) {
+                if ($invoice->to_shop_id) {
+                    $shop_id = $invoice->to_shop_id;
+                    if (isset($shops[$shop_id])) {
+                        $shops[] = $shop_id;
+                    }
+                } elseif ($invoice->to_user_id) {
+                    $user_id = $invoice->to_user_id;
+                    if (isset($users[$user_id])) {
+                        $users[] = $user_id;
+                    }
+                }
+            }
+        }
+        */
     }
 }

@@ -347,4 +347,13 @@ class Invoices extends BModel
         }
         return $result;
     }
+
+    /**
+     * Check whether this is a special invoice or not
+     * @return bool
+     */
+    public function isSpecialInvoice()
+    {
+        return ($this->item_type == Items::TYPE_DEPOSIT || $this->item_type == Items::TYPE_WITHDRAW);
+    }
 }

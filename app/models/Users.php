@@ -977,4 +977,14 @@ class Users extends BModel
         }
         return $this->getFavorites(['order' => 'views desc']);
     }
+
+    /**
+     * Get admin Emails array
+     * @return array
+     */
+    public static function getAdminEmails()
+    {
+        $users = Users::find('role >= ' . Users::ROLE_ADMIN)->toArray();
+        return array_column($users, 'email');
+    }
 }

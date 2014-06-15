@@ -35,6 +35,14 @@ class DateHelper
         return date(self::$day_format, strtotime("+{$day_num} days", strtotime($date)));
     }
 
+    public static function minute_before($minutes, $datetime = null)
+    {
+        if (!$datetime) {
+            $datetime = self::now();
+        }
+        return date(self::$format, strtotime("-{$minutes} minutes", strtotime($datetime)));
+    }
+
     public static function dateOnly($date_time)
     {
         return date(self::$day_format, strtotime($date_time));
