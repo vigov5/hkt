@@ -205,6 +205,9 @@ class Shops extends BModel
         if ($this->status != $status) {
             $this->status = $status;
             $this->save();
+            if ($status == self::STATUS_OPEN || ($status == self::STATUS_NORMAL && $this->isOnOpen())) {
+                Console::sendShopOpenNotification($this->id);
+            }
         }
     }
 
@@ -250,6 +253,10 @@ class Shops extends BModel
         return $shops;
     }
 
+    /**
+     * Check whether the shop is open or not
+     * @return bool
+     */
     public function isOnOpen()
     {
         if ($this->status == self::STATUS_OPEN) {
@@ -262,6 +269,11 @@ class Shops extends BModel
         return false;
     }
 
+    /**
+     * Get all items of shop that are being on sale
+     * @param null $type
+     * @return ItemShops[]
+     */
     public function getAllOnSaleItems($type = null)
     {
         if (!$this->isOnOpen()) {

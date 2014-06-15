@@ -1,0 +1,35 @@
+<?php
+/**
+ * @var Favorites $favorite
+ * @var Shops $shop
+ */
+?>
+<tbody>
+	<tr>
+		<td style="padding:40px 0  0 0;">
+			<p style="color:#000;font-size: 16px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:normal;">
+
+				<h2 style="font-size: 14px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
+                <span style="color:red"><?= $shop->name ?></span>
+                has recently been opened at <?= $datetime ?>!</h2>
+                <br>
+				<p style="font-size: 13px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
+                    Let's take a look at <span style="color:red"><?= $shop->name ?></span> . There may be some interesting things for you to buy.
+                <br>
+				</p>
+                <br>
+                ------------------
+                <p style="font-size: 11px;line-height:20px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
+                You received this email because you added <span style="color:red"><?= $shop->name ?></span> to your favorites list, and checked the "receive notification" option.<br>
+                To unsubscribe from this email, please go to your favorite list to edit your configuration.
+                <br>
+                </p>
+                ------------------<br>
+                <a href="http://hkt.thangtd.com">http://hkt.thangtd.com</a><br>
+				FRAMGIA HKT TEAM !
+				<br>
+			</p>
+		</td>
+	</tr>
+</tbody>
+

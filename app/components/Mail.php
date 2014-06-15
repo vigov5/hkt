@@ -44,12 +44,14 @@ class Mail extends Component
         $message = $this->getTemplate($name, $params);
         $headers =  "From: {$mail_settings->from_name} <{$mail_settings->from_email}> \r\n" . "X-Mailer: PHP/" . phpversion();
         $headers .= 'MIME-Version: 1.0' . "\r\n";
-        $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+        $headers .= 'Content-type: text/html; charset=utf8' . "\r\n";
         if (is_array($to)) {
             foreach ($to as $to_email) {
+                EmailLogs::createNew($to_email, $subject);
                 mail($to_email, $subject, $message, $headers);
             }
         } else {
+            EmailLogs::createNew($to, $subject);
             mail($to, $subject, $message, $headers);
         }
     }

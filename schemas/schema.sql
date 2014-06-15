@@ -356,6 +356,14 @@ CREATE TABLE `favorites` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `email_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(128) NOT NULL,
+  `subject` varchar(256) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `kpis` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `day` varchar(128) COLLATE utf8_unicode_ci NOT NULL,

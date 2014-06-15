@@ -64,6 +64,15 @@ class Favorites extends BModel
         );
     }
 
+    /**
+     * Initialize method for model.
+     */
+    public function initialize()
+    {
+        parent::initialize();
+        $this->belongsTo('user_id', 'Users', 'id', ['alias' => 'user']);
+    }
+
     const TYPE_SHOP = 1;
     const TYPE_ITEM = 2;
     const TYPE_USER = 3;
@@ -162,5 +171,16 @@ class Favorites extends BModel
             $this->receive_notification = self::NOTIFICATION_YES;
         }
         return $this->save();
+    }
+
+    /**
+     * Get list users who want to receive notification from a target
+     * @param Users|Items|Shops $target
+     * @return Favorites[]
+     */
+    public static function getSubscribers($target)
+    {
+        $target_type = self::getTargetType($target);
+        return Favorites::find("target_id=$target->id AND target_type= $target_type AND receive_notification=" . self::NOTIFICATION_YES);
     }
 }

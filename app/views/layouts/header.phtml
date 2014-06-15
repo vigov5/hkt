@@ -3,12 +3,7 @@
  * @var Users $current_user
  *
  */
-if ($current_user) {
-    $favorites = $current_user->getFavoriteList(10);
-} else {
-    $favorites = [];
-}
-
+$favorites = $current_user ? $current_user->getFavoriteList(10) : [];
 ?>
 <div class="navbar navbar-default navbar-fixed-top bs-docs-nav" role="banner">
     <div class="container">
@@ -62,12 +57,14 @@ if ($current_user) {
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <?php foreach ($favorites as $favorite): ?>
-                                <li>
-                                    <?= $favorite->getViewLink() ?>
-                                </li>
-                            <?php endforeach; ?>
-                            <li class="divider"></li>
+                            <?php if (count($favorites)): ?>
+                                <?php foreach ($favorites as $favorite): ?>
+                                    <li>
+                                        <?= $favorite->getViewLink() ?>
+                                    </li>
+                                <?php endforeach; ?>
+                                <li class="divider"></li>
+                            <?php endif ?>
                             <li>
                                 <a href="<?= $this->url->get('favorite') ?>">
                                     <span class="fa fa-bookmark"></span> Favorites List
