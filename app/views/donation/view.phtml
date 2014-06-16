@@ -1,0 +1,13 @@
+<?php use Phalcon\Tag;
+
+/**
+ * @var Users $current_user
+ */
+echo $this->getContent(); ?>
+
+<h2>Donation <?= $donation->id ?></h2>
+<?php if ($donation->toUser->id != $current_user->id): ?>
+You donated to <?= $donation->toUser->getViewLink() ?> <?= $donation->hcoin_amount ?> HCoin.
+<?php else: ?>
+You received <?= $donation->hcoin_amount?> HCoins from <?= $donation->fromUser->getViewLink() ?>.
+<?php endif; ?>

@@ -5,22 +5,25 @@
  */
 ?>
 <table class="table table-bordered">
+    <th>ID</th>
+    <th>Sender/Recipient</th>
     <th>Before</th>
     <th>After</th>
-    <th>Invoice</th>
-    <th>Donation</th>
     <th>Action</th>
     <th>Date</th>
 
     <?php foreach ($logs as $log): ?>
         <tr>
+            <td><a href="<?= $this->url->get("donation/view/$log->donation_id") ?>"><?= $log->donation_id ?></a></td>
+            <?php if ($log->donation->from_user_id == $current_user->id): ?>
+            <td><?= $log->donation->toUser->getViewLink() ?></td>
+            <?php else: ?>
+            <td><?= $log->donation->fromUser->getViewLink() ?></td>
+            <?php endif; ?>
             <td><?= $log->before ?></td>
             <td><?= $log->after ?> <span class="<?= $log->before < $log->after ? 'text-success' : 'text-warning' ?>">(<?= $log->after - $log->before ?>)</span></td>
-            <td><a href="<?= $this->url->get("invoice/view/$log->invoice_id") ?>"><?= $log->invoice_id ?></a></td>
-            <td><a href="<?= $this->url->get("donation/view/$log->donation_id") ?>"><?= $log->donation_id ?></a></td>
             <td><?= $log->printAction() ?></td>
             <td><?= $log->created_at ?></td>
         </tr>
     <?php endforeach; ?>
 </table>
-

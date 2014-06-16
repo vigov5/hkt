@@ -18,6 +18,9 @@
         <?= Tag::javascriptInclude('js/bootstrap.min.js'); ?>
         <?= Tag::javascriptInclude('js/bootbox.min.js'); ?>
         <?= Tag::javascriptInclude('js/main.js'); ?>
+        <?php if (isset($current_page) && $current_page == 'donate') : ?>
+        <?= Tag::javascriptInclude('js/bootstrap3-typeahead.min.js'); ?>
+        <?php endif; ?>
         <div class="container container-main">
             <?= $this->getContent() ?>
         </div>
