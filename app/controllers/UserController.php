@@ -4,6 +4,7 @@ class UserController extends ControllerBase
 {
 
     const USERS_PER_PAGE = 100;
+    const LOGS_PER_PAGE = 50;
     public function initialize()
     {
         parent::initialize();
@@ -309,11 +310,6 @@ class UserController extends ControllerBase
         $this->forwardNotFound();
     }
 
-    public function donateAction()
-    {
-        $this->forwardUnderConstruction();
-    }
-
     public function likeAction()
     {
         if ($this->request->isAjax()) {
@@ -343,6 +339,78 @@ class UserController extends ControllerBase
             }
             echo json_encode($response);
             return;
+        }
+    }
+
+    public function donateAction($page = 1)
+    {
+        $form = new DonateCoinForm($this->current_user);
+        if ($this->request->isPost()) {
+            if (!$form->isValid($this->request->getPost())) {
+                foreach ($form->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
+            } else {
+                $target_user = Users::findFirstById($this->request->getPost('target_user_id', 'int'));
+                if (!$target_user || $target_user->id == $this->current_user->id) {
+                    $this->flash->error('Invalid User !');
+                    Phalcon\Tag::resetInput();
+                } else {
+                    $amount = $this->request->getPost('amount', 'int');
+                    if($this->current_user->makeHCoinDonation($target_user, $amount)) {
+                        $this->mail->send(
+                            $target_user->email,
+                            'HCoin Donation Received !',
+                            'donation',
+                            ['amount' => $amount, 'sender' => $this->current_user->display_name]
+                        );
+                        $this->flash->success('Donation Success !');
+                    } else {
+                        $this->flash->error('Error in processing Donation!');
+                    }
+                }
+            }
+        }
+
+        if ($page < 1) {
+            $page = 1;
+        }
+        $builder = $this->modelsManager->createBuilder()
+            ->from('WalletLogs')
+            ->where('donation_id <> 0')
+            ->andWhere('user_id = ' . $this->current_user->id)
+            ->andWhere('type = ' . WalletLogs::TYPE_HCOIN)
+            ->orderBy('id desc');
+
+        $paginator = new Phalcon\Paginator\Adapter\QueryBuilder([
+            'builder' => $builder,
+            'limit' => self::LOGS_PER_PAGE,
+            'page' => $page
+        ]);
+        $page = $paginator->getPaginate();
+        $this->view->pagination = new Pagination($page, "/user/donate");
+        $this->view->logs = $page->items;
+        $this->view->form = $form;
+        $this->view->current_page = 'donate';
+    }
+
+    public function allAction()
+    {
+        if ($this->request->isAjax()) {
+            $all_users = Users::find(['columns' => 'id, username, display_name']);
+
+            $usernames = [];
+            foreach ($all_users as $user) {
+                if ($user->id != $this->current_user->id) {
+                    $usernames[] = [
+                        'user_id' => $user->id,
+                        'full_name' => sprintf("%s (%s)", $user->display_name, $user->username)
+                    ];
+                }
+            }
+            $this->view->disable();
+            echo json_encode($usernames);
+            return ;
         }
         $this->forwardNotFound();
     }

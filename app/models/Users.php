@@ -253,6 +253,8 @@ class Users extends BModel
         $this->hasMany('id', 'Items', 'created_by');
         $this->hasMany('id', 'Invoices', 'to_user_id', ['alias' => 'receivedInvoices']);
         $this->hasMany('id', 'Invoices', 'from_user_id', ['alias' => 'sentInvoices']);
+        $this->hasMany('id', 'CoinDonations', 'to_user_id', ['alias' => 'receivedDonations']);
+        $this->hasMany('id', 'CoinDonations', 'from_user_id', ['alias' => 'sentDonations']);
         $this->hasMany('id', 'Requests', 'to_user_id', ['alias' => 'receivedRequests']);
         $this->hasMany('id', 'Requests', 'from_user_id', ['alias' => 'sentRequests']);
         $this->hasMany('id', 'ItemUsers', 'user_id');
@@ -456,7 +458,7 @@ class Users extends BModel
             return false;
         }
         if ($wallet_before != $wallet_after) {
-            WalletLogs::createNew($this->id, $wallet_before, $wallet_after, $invoice->id, WalletLogs::ACTION_CREATE);
+            WalletLogs::createNew($this->id, $wallet_before, $wallet_after, $invoice->id, nulll, WalletLogs::ACTION_CREATE);
         }
 
         return true;
@@ -490,7 +492,7 @@ class Users extends BModel
             return false;
         }
         if ($wallet_before != $wallet_after) {
-            WalletLogs::createNew($this->id, $wallet_before, $wallet_after, $invoice->id, WalletLogs::ACTION_CREATE);
+            WalletLogs::createNew($this->id, $wallet_before, $wallet_after, $invoice->id, null, WalletLogs::ACTION_CREATE);
         }
 
         return true;
@@ -578,6 +580,20 @@ class Users extends BModel
         $this->hcoin += $amount;
         $this->save();
         return $this->hcoin;
+    }
+
+    /**
+     * @param int $amount
+     * @return bool
+     */
+    public function minusHCoin($amount)
+    {
+        if ($amount > 0 && $this->hcoin >= $amount) {
+            $this->hcoin -= $amount;
+            $this->save();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -986,5 +1002,40 @@ class Users extends BModel
     {
         $users = Users::find('role >= ' . Users::ROLE_ADMIN)->toArray();
         return array_column($users, 'email');
+    }
+
+    public function makeHCoinDonation($target_user, $amount){
+        $sender_hcoin_before = $this->hcoin;
+        $recipient_hcoin_before = $target_user->hcoin;
+        if($this->minusHCoin($amount)) {
+            $target_user->increaseHCoin($amount);
+            $donation = new CoinDonations();
+            $donation->from_user_id = $this->id;
+            $donation->to_user_id = $target_user->id;
+            $donation->hcoin_amount = $amount;
+            if (!$donation->save()) {
+                return false;
+            }
+            $sender_hcoin_after = $this->hcoin;
+            $recipient_hcoin_after = $target_user->hcoin;
+            WalletLogs::createNew(
+                $this->id,
+                $sender_hcoin_before,
+                $sender_hcoin_after,
+                null, $donation->id,
+                WalletLogs::ACTION_SENT,
+                WalletLogs::TYPE_HCOIN
+            );
+             WalletLogs::createNew(
+                $target_user->id,
+                $recipient_hcoin_before,
+                $recipient_hcoin_after,
+                null, $donation->id,
+                WalletLogs::ACTION_RECEIVED,
+                WalletLogs::TYPE_HCOIN
+            );
+            return true;
+        }
+        return false;
     }
 }

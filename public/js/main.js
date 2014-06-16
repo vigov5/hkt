@@ -312,8 +312,59 @@ $(function() {
             });
         }
     },null,true);
+    
+    $('#donate-coin-btn').click(function (e) {
+        e.preventDefault();
+        var form = $('#donate-coin-btn').closest('form');
+        var target_user_id = parseInt(form.find('#target_user_id').attr('value'));
+        var target_user = form.find('#target_user').val();
+        var amount = parseInt(form.find('#amount').val());
+        if (target_user == "" || target_user_id == 0 || isNaN(target_user_id) || amount <= 0 || isNaN(amount)) {
+            bootbox.alert(' Please re-check your input');
+        } else {
+            var message = "Do you really want to donate " + amount + " HCoins to " + target_user + " ?";
+            var data = {
+                target_user_id: target_user_id,
+                target_user: target_user,
+                amount: amount
+            }
+            createDonateCoinConfirm(form, message, data);
+        }
+    });
 
 });
+
+function createDonateCoinConfirm(form, message, data) {
+    bootbox.dialog({
+        message: message,
+        title: '<strong><span class="text-primary">Are you sure ?</span></strong>',
+        buttons: {
+            success: {
+                label: "OK",
+                className: "btn-success",
+                callback: function() {
+                    if (form != null) {
+                        form.submit();
+                    } else {
+                        $.ajax({
+                            type: "POST",
+                            url: "/user/donate",
+                            data: data
+                        }).success(function(message) {
+                        })
+                        .fail(function() {
+                            alert('Donation fail :(');
+                        });
+                    }
+                }
+            },
+            danger: {
+                label: "Cancel",
+                className: "btn-danger",
+            }
+        }
+    });
+}
 
 function changeUserPlace(place)
 {
