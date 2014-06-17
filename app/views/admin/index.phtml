@@ -1,0 +1,50 @@
+<?php
+/**
+ * @var Users $current_user
+ * @var Users[] $users
+ */
+?>
+
+<h3>Current HKT Status</h3>
+<hr>
+<div class="row">
+    <div class="col-sm-6 col-lg-3">
+        Total users: <span class="text-primary"><?= $total_user ?></span>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        Total users wallet: <span class="text-primary"><?= $total_wallet ?></span>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        Total users hcoin: <span class="text-primary"><?= $total_hcoin ?></span>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        Total success invoices: <span class="text-primary"><?= $total_success_invoices ?></span>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        Total success invoices amount: <span class="text-primary"><?= $total_success_invoices_amount ?></span>
+    </div>
+</div>
+<br>
+<br>
+
+<h3>Administrator Status</h3>
+<hr>
+<h4>Deposit (<?= $deposit_total ?>) </h4>
+<div class="row">
+    <?php foreach ($deposits as $deposit): ?>
+        <?php $user = Users::findFirst($deposit->updated_by) ?>
+        <div class="col-sm-6 col-lg-3">
+            <?= $user->getViewLink() ?>: <span class="text-primary"><?= $deposit->sumatory ?></span>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+<h4>Withdraw (<?= $withdraw_total ?>)</h4>
+<div class="row">
+    <?php foreach ($withdraws as $withdraw): ?>
+        <?php $user = Users::findFirst($withdraw->updated_by) ?>
+        <div class="col-sm-6 col-lg-3">
+            <?= $user->getViewLink() ?>: <span class="text-primary"><?= $withdraw->sumatory ?></span>
+        </div>
+    <?php endforeach; ?>
+</div>

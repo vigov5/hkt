@@ -57,7 +57,11 @@ class Acl extends Component
         ],
         'invoice' => [
             'special' => Users::ROLE_ADMIN,
+        ],
+        'admin' => [
+            'index' => Users::ROLE_ADMIN,
         ]
+
     ];
 
 

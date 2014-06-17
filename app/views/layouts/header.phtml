@@ -145,6 +145,9 @@ $favorites = $current_user ? $current_user->getFavoriteList(10) : [];
                             <li>
                                 <a href="<?= $this->url->get('invoice/special/restricted') ?>">Special Invoices</a>
                             </li>
+                            <li>
+                                <a href="<?= $this->url->get('admin') ?>">Administrator Page</a>
+                            </li>
                         <?php endif; ?>
                         <li class="divider"></li>
                         <li>
