@@ -3,7 +3,7 @@
     <?= $this->getContent(); ?>
     <h2>Create new Item
         <?php if ($shop): ?>
-            for <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="item-name text-warning"><?= $shop->name ?></span></a>
+            for <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="text-warning"><?= $shop->name ?></span></a>
         <?php endif ?>
     </h2>
     <hr>

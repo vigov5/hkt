@@ -5,7 +5,7 @@ echo Tag::javascriptInclude('js/moment.min.js');
 echo Tag::javascriptInclude('js/bootstrap-datetimepicker.min.js');?>
 <div class="row">
     <?= $this->getContent(); ?>
-    <h2>Update <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="item-name text-warning"><?= $shop->name ?></span></a></h2>
+    <h2>Update <a href="<?= $this->url->get("shop/view/{$shop->id}"); ?>"><span class="text-warning"><?= $shop->name ?></span></a></h2>
     <hr>
     <?php $this->partial('shop/_form', ['link' => "shop/update/$shop->id", 'button' => 'Save']) ?>
 </div>

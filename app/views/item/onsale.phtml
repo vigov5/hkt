@@ -18,7 +18,7 @@ echo $this->getContent();
             <div class="thumbnail">
                 <?= $item_user->item->imageView() ?>
                 <div class="caption">
-                    <h3><span class="item-name text-success"><?= $item_user->item->name ?></span></h3>
+                    <h3><span class="text-success"><?= $item_user->item->name ?></span></h3>
                     <p><strong>Price: </strong><span class="item-price"><?= $item_user->item->getSalePrice($item_user->user_id) ?></span> |
                         <strong>Seller: </strong><span class="item-seller"><?= $item_user->user->getViewLink() ?></span>
                     </p>
