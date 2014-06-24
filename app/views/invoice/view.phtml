@@ -46,14 +46,13 @@ echo $this->getContent(); ?>
                 <th>Updated At</th>
                 <td><?= $invoice->updated_at ?></td>
             </tr>
-            <tr>
-                <th>Set</th>
-                <td>
-                    <?php foreach($invoice->getSetItems() as $item_shop): ?>
-                        <div class="col-sm-6 col-md-4"><?= $this->partial('item/_an_item', ['item' => $item_shop->item]) ?></div>
-                    <?php endforeach; ?>
-                </td>
-            </tr>
         </table>
+        <div class="isotype-container">
+            <?php foreach($invoice->getSetItems() as $item_shop): ?>
+                <div class="col-sm-6 col-md-4 isotype-item"><?= $this->partial('item/_an_item', ['item' => $item_shop->item]) ?></div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    </td>
     </div>
 </div>

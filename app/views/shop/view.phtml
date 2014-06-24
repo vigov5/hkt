@@ -83,10 +83,10 @@ $action = $shop->checkOwnerOrStaff($current_user);
 <?php else: ?>
     <?php $set = []; ?>
     <h2 class="text-warning"> On Sale </h2>
-    <div class="row">
+    <div class="row isotype-container">
     <?php foreach ($item_shops as $item_shop): ?>
         <?php if ($item_shop->item->isNormalItem()): ?>
-            <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="col-sm-6 col-md-4 col-lg-3 isotype-item">
                 <div class="thumbnail single-item-select" data-form="item" data-item-shop-id="<?= $item_shop->id ?>">
                     <div class="thumbnail-detail">
                         <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name"><?= $item_shop->item->name . ' (' . $item_shop->getSalePrice() . ')' ?></span></a>
@@ -106,9 +106,9 @@ $action = $shop->checkOwnerOrStaff($current_user);
     </div>
     <?php if (count($set)): ?>
         <hr>
-        <div class="row">
+        <div class="row isotype-container">
         <?php foreach ($set as $item_shop): ?>
-            <div class="col-sm-4 col-md-2">
+            <div class="col-sm-4 col-md-2 isotype-item">
                 <div class="thumbnail multi-item-select" data-form="item_set" data-item-shop-id="<?= $item_shop->id ?>">
                     <div class="thumbnail-detail-small">
                         <a href="<?= $this->url->get("item/view/{$item_shop->item->id}"); ?>"><span class="item-name "><?= $item_shop->item->name ?></span></a>

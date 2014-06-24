@@ -302,6 +302,17 @@ $(function() {
                 alert('Reuqest sent Fail !!!');
             });
     });
+
+    //Isotype
+    var container = $('.isotype-container');
+    container.waitForImages(function() {
+        if(container.length) {
+            container.isotope({
+                itemSelector : '.isotype-item'
+            });
+        }
+    },null,true);
+
 });
 
 function changeUserPlace(place)

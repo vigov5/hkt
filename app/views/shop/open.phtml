@@ -12,7 +12,7 @@ echo $this->getContent();
 <?php if(count($shops)): ?>
     <h1>Open Shops </h1>
     <hr>
-    <div class="row">
+    <div class="row isotype-container" style="position:relative">
         <?php foreach($shops as $shop): ?>
             <?= $this->partial('shop/_a_shop', ['shop' => $shop]); ?>
         <?php endforeach ?>

@@ -7,7 +7,7 @@ echo $this->getContent();
  */
 ?>
 <h2>Owned Shops</h2>
-<div class="row">
+<div class="row isotype-container">
     <?php if (!$own_shops || $own_shops->count() == 0): ?>
         <h3>No shops</h3>
     <?php else: ?>
@@ -18,7 +18,7 @@ echo $this->getContent();
 </div>
 <hr>
 <h2>Managing Shops</h2>
-<div class="row">
+<div class="row isotype-container">
     <?php if (!$shops || $shops->count() == 0): ?>
         <h3>No shops</h3>
     <?php else: ?>

@@ -12,9 +12,9 @@ echo $this->getContent();
 <hr>
 
 <?php if(count($item_users)): ?>
-<div class="row">
+<div class="row isotype-container">
     <?php foreach($item_users as $item_user): ?>
-        <div class="col-sm-6 col-md-4">
+        <div class="col-sm-6 col-md-4 isotype-item">
             <div class="thumbnail">
                 <?= $item_user->item->imageView() ?>
                 <div class="caption">
