@@ -255,6 +255,8 @@ class Users extends BModel
         $this->hasMany('id', 'Invoices', 'from_user_id', ['alias' => 'sentInvoices']);
         $this->hasMany('id', 'CoinDonations', 'to_user_id', ['alias' => 'receivedDonations']);
         $this->hasMany('id', 'CoinDonations', 'from_user_id', ['alias' => 'sentDonations']);
+        $this->hasMany('id', 'MoneyTransfers', 'to_user_id', ['alias' => 'receivedTransfers']);
+        $this->hasMany('id', 'MoneyTransfers', 'from_user_id', ['alias' => 'sentTransfers']);
         $this->hasMany('id', 'Requests', 'to_user_id', ['alias' => 'receivedRequests']);
         $this->hasMany('id', 'Requests', 'from_user_id', ['alias' => 'sentRequests']);
         $this->hasMany('id', 'ItemUsers', 'user_id');
@@ -1037,5 +1039,98 @@ class Users extends BModel
             return true;
         }
         return false;
+    }
+
+    public function canTransferMoney($target_user, $amount, $fee_bearer) {
+        $transfer = new MoneyTransfers();
+        if ($this->id == $target_user->id) return false;
+        if ($amount < 0) return false;
+        if ($amount > $transfer->getChargedAmount($amount, $fee_bearer)) return false;
+
+        return true;
+    }
+
+    public function createMoneyTransfer($target_user, $amount, $fee_bearer){
+        $sender_wallet_before = $this->wallet;
+        $recipient_wallet_before = $target_user->wallet;
+
+        $transfer = new MoneyTransfers();
+        $transfer->from_user_id = $this->id;
+        $transfer->to_user_id = $target_user->id;
+        $transfer->transfer_amount = $transfer->getTransferedAmount($amount, $fee_bearer);
+        $transfer->charged_amount = $transfer->getChargedAmount($amount, $fee_bearer);
+        $transfer->status = MoneyTransfers::STATUS_CREATE;
+        $transfer->fee_bearer = $fee_bearer;
+        $transfer->nonce = CryptoHelper::generateRandomString();
+        if (!$transfer->save()) {
+            return false;
+        }
+
+        $auth = CryptoHelper::calculateHMAC($transfer->nonce, $transfer->getEncodeData($transfer->nonce));
+
+        if ($fee_bearer == MoneyTransfers::SENDER_FEE) {
+            $handler = "You pay the transfer fee";
+        } elseif ($fee_bearer == MoneyTransfers::RECIPIENT_FEE) {
+            $handler = "Recipient pay the transfer fee";
+        }
+        
+        $confirm_url = 'http://' . $_SERVER['SERVER_NAME'] . "/user/confirm_transfer/{$transfer->id}/{$auth}";
+        $mail = new Mail();
+        $mail->send(
+            $this->email,
+            '[HKT] Money Transfer Confirmation',
+            'transfer_confirm',
+            [
+                'recipient' => $target_user->display_name,
+                'amount' => $amount,
+                'handler' => $handler,
+                'created_at' => date('Y-m-d H:i:s'),
+                'confirm_url' => $confirm_url,
+                'expire_time' => MoneyTransfers::EXPIRE_TIME / 60
+            ]
+        );
+        die(var_dump($confirm_url));
+        
+        return true;
+    }
+
+    public function processMoneyTransfer($transfer, $new_status){
+        if ($new_status == MoneyTransfers::STATUS_TRANSFER) {
+            $sender_wallet_before = $this->wallet;
+            $recipient_wallet_before = $transfer->toUser->wallet;
+            if($this->minusWallet($transfer->charged_amount)) {
+                $transfer->toUser->increaseWallet($transfer->transfer_amount);
+                $transfer->status = $new_status;
+                if (!$transfer->save()) {
+                    return false;
+                }
+                $sender_wallet_after = $this->wallet;
+                $recipient_wallet_after = $transfer->toUser->wallet;
+                WalletLogs::createNew(
+                    $this->id,
+                    $sender_wallet_before,
+                    $sender_wallet_after,
+                    null, $transfer->id,
+                    WalletLogs::ACTION_SENT,
+                    WalletLogs::TYPE_MONEY
+                );
+                WalletLogs::createNew(
+                    $transfer->toUser->id,
+                    $recipient_wallet_before,
+                    $recipient_wallet_after,
+                    null, $transfer->id,
+                    WalletLogs::ACTION_RECEIVED,
+                    WalletLogs::TYPE_MONEY
+                );
+            }
+         } else if ($new_status == MoneyTransfers::STATUS_CANCEL) {
+            $transfer->status = $new_status;
+            if (!$transfer->save()) {
+                return false;
+            }
+         } else {
+            return false;
+         }
+         return true;
     }
 }

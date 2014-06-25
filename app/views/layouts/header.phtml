@@ -135,6 +135,10 @@ $favorites = $current_user ? $current_user->getFavoriteList(10) : [];
                         </li>
                         <li class="divider"></li>
                         <li>
+                            <a href="<?= $this->url->get('user/transfer') ?>">Transfer</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
                             <a href="<?= $this->url->get('invoice/sentinvoices/restricted') ?>">Sent Invoices</a>
                         </li>
                         <li>

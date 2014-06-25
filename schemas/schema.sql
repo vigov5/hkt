@@ -394,6 +394,21 @@ CREATE TABLE `coin_donations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+DROP TABLE IF EXISTS `money_transfers`;
+CREATE TABLE `money_transfers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_user_id` int(11) NOT NULL,
+  `to_user_id` int(11) NOT NULL,
+  `transfer_amount` int(11) DEFAULT NULL,
+  `charged_amount` int(11) DEFAULT NULL,
+  `fee_bearer` tinyint(4) NOT NULL COMMENT '1: SENDER, 2: RECIPIENT',
+  `status` tinyint(4) NOT NULL COMMENT '1: CREATED, 2: TRANSFERED, 3: CANCELED, 4: EXPIRED',
+  `nonce` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

@@ -33,5 +33,37 @@ trait PriceTrait {
         }
         return $this->getSalePrice();
     }
+
+    /**
+     * Get the real charged amount of this transfer
+     * If sender hander the fee, the total amount will include the fee beside the transfer amount
+     * @param int $amount
+     * @param int $fee_bearer
+     * @return float|int
+     */
+    public function getChargedAmount($amount, $fee_bearer)
+    {
+        if ($fee_bearer == MoneyTransfers::SENDER_FEE) {
+            $rate = Setting::getTransferRate();
+            return floor($amount * (100 + $rate) / 100);
+        }
+        return $amount;
+    }
+
+    /**
+     * Get the real amount will be transfered
+     * If recipient hander the fee, the real amount will be substracted the fee
+     * @param int $amount
+     * @param int $fee_bearer
+     * @return float|int
+     */
+    public function getTransferedAmount($amount, $fee_bearer)
+    {
+        if ($fee_bearer == MoneyTransfers::RECIPIENT_FEE) {
+            $rate = Setting::getTransferRate();
+            return floor($amount * (100 - $rate) / 100);
+        }
+        return $amount;
+    }
 }
 

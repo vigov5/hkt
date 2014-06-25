@@ -394,6 +394,118 @@ class UserController extends ControllerBase
         $this->view->current_page = 'donate';
     }
 
+    public function transferAction($page = 1)
+    {
+        $form = new TransferMoneyForm($this->current_user);
+        if ($this->request->isPost()) {
+            if (!$form->isValid($this->request->getPost())) {
+                foreach ($form->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
+            } else {
+                $target_user = Users::findFirstById($this->request->getPost('target_user_id', 'int'));
+                if (!$target_user || $target_user->id == $this->current_user->id) {
+                    $this->flash->error('Invalid User !');
+                    Phalcon\Tag::resetInput();
+                }
+            }
+        }
+
+        if ($page < 1) {
+            $page = 1;
+        }
+        $builder = $this->modelsManager->createBuilder()
+            ->from('WalletLogs')
+            ->where('donation_id <> 0')
+            ->andWhere('user_id = ' . $this->current_user->id)
+            ->andWhere('type = ' . WalletLogs::TYPE_MONEY)
+            ->orderBy('id desc');
+
+        $paginator = new Phalcon\Paginator\Adapter\QueryBuilder([
+            'builder' => $builder,
+            'limit' => self::LOGS_PER_PAGE,
+            'page' => $page
+        ]);
+        //$page = $paginator->getPaginate();
+        //$this->view->pagination = new Pagination($page, "/user/donate");
+        //$this->view->logs = $page->items;
+        $this->view->form = $form;
+        $this->view->current_page = 'donate';
+    }
+
+    public function create_transferAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $target_user_id = $this->request->getPost('target_user_id', 'int');
+            $target_user = Users::findFirstById($target_user_id);
+            $fee_bearer = $this->request->getPost('fee_bearer', 'int');
+            $amount = $this->request->getPost('amount', 'int');
+            if (!$target_user || !$amount || !$this->current_user->canTransferMoney($target_user, $amount, $fee_bearer)) {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Cannot create money transfer !',
+                ];
+            } else {
+                if($this->current_user->createMoneyTransfer($target_user, $amount, $fee_bearer)) {
+                    $response = [
+                        'status' => 'success',
+                        'message' => "Transfer has been created ! Please check your email ({$this->current_user->email}) to confirm the transfer."
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'fail',
+                        'message' => 'Cannot create money transfer !'
+                    ];
+                }
+            }
+            echo json_encode($response);
+        }
+        return ;
+    }
+
+    public function confirm_transferAction($id = null, $auth = null){
+        $valid_transfer = false;
+        if (!$id || !$auth) {
+            $this->forwardNotFound();
+        }
+        $form = new ConfirmTransferMoneyForm();
+        $transfer = MoneyTransfers::findFirstById($id);
+        if ($transfer && $transfer->isProcessing() && $transfer->from_user_id == $this->current_user->id &&
+            $transfer->isValidConfirmation($auth) && !$transfer->isTransferExpired()) {
+            $valid_transfer = true;
+        } else{
+            $valid_transfer = false;
+        }
+        
+        if ($this->request->isPost()) {
+            if (!$form->isValid($this->request->getPost())) {
+                foreach ($form->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
+            } else {
+                $data = $this->request->getPost('data');
+                if (gettype($data) == 'array') {
+                    if (array_key_exists('process', $data)) {
+                        $this->current_user->processMoneyTransfer($transfer, MoneyTransfers::STATUS_TRANSFER);
+                    } else if (array_key_exists('cancel', $data)) {
+                        $this->current_user->processMoneyTransfer($transfer, MoneyTransfers::STATUS_CANCEL);
+                    } else {
+                        $this->flash->error('Error in processing request');
+                    }
+                } else {
+                    $this->flash->error('Error in processing request');
+                }
+            }
+        }
+        
+        $this->view->auth = $auth;
+        $this->view->valid_transfer = $valid_transfer;
+        $this->view->transfer = $transfer;
+        $this->view->form = $form;        
+        $this->view->current_page = 'confirm_transfer';
+    }
+
     public function allAction()
     {
         if ($this->request->isAjax()) {

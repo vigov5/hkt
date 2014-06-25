@@ -108,8 +108,8 @@ class Invoices extends BModel
     public static $status_value = [
         self::STATUS_SENT => 'SENT',
         self::STATUS_ACCEPT => 'ACCEPTED',
-        self::STATUS_REJECT => 'REJECTED',
         self::STATUS_CANCEL => 'CANCELED',
+        self::STATUS_REJECT => 'EXPERIED',
     ];
 
     const TYPE_SENT = 1;
