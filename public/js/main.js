@@ -332,6 +332,33 @@ $(function() {
         }
     });
 
+    $('#transfer-money-btn').click(function (e) {
+        e.preventDefault();
+        var form = $('#transfer-money-btn').closest('form');
+        var target_user_id = parseInt(form.find('#target_user_id').attr('value'));
+        var target_user = form.find('#target_user').val();
+        var amount = parseInt(form.find('#amount').val());
+        var fee_bearer = parseInt(form.find('#fee_bearer').val());
+        if (target_user == "" || target_user_id == 0 || isNaN(target_user_id)) {
+            bootbox.alert('Recipient is invalid.');
+        } else if (isNaN(fee_bearer) || !(fee_bearer == 1 || fee_bearer == 2)) {
+            bootbox.alert('Transfer Bearer is invalid.');
+        } else if (amount <= 0 || isNaN(amount)) {
+            bootbox.alert('Amount value is invalid.');
+        } else if ((amount / 100) % 1 !== 0) {
+            bootbox.alert('Amount value must be multiple of 100.');
+        } else {
+            var message = "Do you really want to transfer " + amount + " VND to " + target_user + " ?";
+            var data = {
+                target_user_id: target_user_id,
+                target_user: target_user,
+                amount: amount,
+                fee_bearer: fee_bearer
+            }
+            createMoneyTransferConfirm(message, data);
+        }
+    });
+
 });
 
 function createDonateCoinConfirm(form, message, data) {
@@ -356,6 +383,40 @@ function createDonateCoinConfirm(form, message, data) {
                             alert('Donation fail :(');
                         });
                     }
+                }
+            },
+            danger: {
+                label: "Cancel",
+                className: "btn-danger",
+            }
+        }
+    });
+}
+
+function createMoneyTransferConfirm(message, data) {
+    bootbox.dialog({
+        message: message,
+        title: '<strong><span class="text-primary">Are you sure ?</span></strong>',
+        buttons: {
+            success: {
+                label: "OK",
+                className: "btn-success",
+                callback: function() {
+                    $.ajax({
+                        type: "POST",
+                        url: "/user/createtransfer",
+                        data: data
+                    }).success(function(message) {
+                        var response = JSON.parse(message);
+                        if(response.status) {
+                            bootbox.alert(response.message, function() {
+                                //reload();
+                            });
+                        }
+                    })
+                    .fail(function() {
+                        alert('Money transfer fail :(');
+                    });
                 }
             },
             danger: {

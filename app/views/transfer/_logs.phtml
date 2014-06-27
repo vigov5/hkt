@@ -1,0 +1,27 @@
+<?php
+/**
+ * @var Users $current_user
+ * @var MoneyTransfers[] $transfers
+ */
+?>
+<table class="table table-bordered">
+    <thead>
+    <th>ID</th>
+    <th>Recipient</th>
+    <th>Transfer Amount</th>
+    <th>Charged Amount</th>
+    <th>Status</th>
+    <th>Created at</th>
+    </thead>
+
+    <?php foreach ($transfers as $transfer): ?>
+        <tr>
+            <td><a href="<?= $this->url->get("transfer/view/$transfer->id") ?>"><?= $transfer->id ?></td>
+            <td><?= $transfer->toUser->getViewLink() ?></td>
+            <td><?= $transfer->transfer_amount ?> VND</td>
+            <td><?= $transfer->charged_amount ?> VND</td>
+            <td><?= $transfer->printStatus() ?> </td>
+            <td><?= $transfer->created_at ?> </td>
+        </tr>
+    <?php endforeach; ?>
+</table>

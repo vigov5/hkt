@@ -38,7 +38,7 @@ class WalletLogs extends BModel
      *
      * @var integer
      */
-    public $donation_id;
+    public $transaction_id;
 
     /**
      *
@@ -121,7 +121,7 @@ class WalletLogs extends BModel
             'action' => 'action',
             'type' => 'type',
             'invoice_id' => 'invoice_id',
-            'donation_id' => 'donation_id',
+            'transaction_id' => 'transaction_id',
             'created_at' => 'created_at'
         );
     }
@@ -134,7 +134,8 @@ class WalletLogs extends BModel
         parent::initialize();
         $this->belongsTo('user_id', 'Users', 'id', ['alias' => 'user']);
         $this->belongsTo('invoice_id', 'Invoices', 'id', ['alias' => 'invoice']);
-        $this->belongsTo('donation_id', 'CoinDonations', 'id', ['alias' => 'donation']);
+        $this->belongsTo('transaction_id', 'CoinDonations', 'id', ['alias' => 'donation']);
+        $this->belongsTo('transaction_id', 'MoneyTransfers', 'id', ['alias' => 'transfer']);
     }
 
     /**
@@ -142,11 +143,11 @@ class WalletLogs extends BModel
      * @param int $before
      * @param int $after
      * @param int $invoice_id
-     * @param int $donation_id
+     * @param int $transaction_id
      * @param int $action
      * @param int $type
      */
-    public static function createNew($user_id, $before, $after, $invoice_id, $donation_id, $action = self::ACTION_ACCEPT, $type = self::TYPE_MONEY)
+    public static function createNew($user_id, $before, $after, $invoice_id, $transaction_id, $action = self::ACTION_ACCEPT, $type = self::TYPE_MONEY)
     {
         $hcoin_log = new WalletLogs();
         $hcoin_log->create([
@@ -155,7 +156,7 @@ class WalletLogs extends BModel
             'after' => $after,
             'action' => $action,
             'invoice_id' => $invoice_id,
-            'donation_id' => $donation_id,
+            'transaction_id' => $transaction_id,
             'type' => $type,
         ]);
     }

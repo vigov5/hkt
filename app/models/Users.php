@@ -255,6 +255,8 @@ class Users extends BModel
         $this->hasMany('id', 'Invoices', 'from_user_id', ['alias' => 'sentInvoices']);
         $this->hasMany('id', 'CoinDonations', 'to_user_id', ['alias' => 'receivedDonations']);
         $this->hasMany('id', 'CoinDonations', 'from_user_id', ['alias' => 'sentDonations']);
+        $this->hasMany('id', 'MoneyTransfers', 'to_user_id', ['alias' => 'receivedTransfers']);
+        $this->hasMany('id', 'MoneyTransfers', 'from_user_id', ['alias' => 'sentTransfers']);
         $this->hasMany('id', 'Requests', 'to_user_id', ['alias' => 'receivedRequests']);
         $this->hasMany('id', 'Requests', 'from_user_id', ['alias' => 'sentRequests']);
         $this->hasMany('id', 'ItemUsers', 'user_id');
@@ -1037,5 +1039,78 @@ class Users extends BModel
             return true;
         }
         return false;
+    }
+
+    public function canTransferMoney($target_user, $amount, $fee_bearer) {
+        $error = 'OK';
+        $transfer = new MoneyTransfers();
+        if ($this->id == $target_user->id) {
+            $error = 'The recipient is invalid.';
+        } elseif ($amount < 0) {
+            $error = 'Amount is invalid.';
+        } elseif ($amount % 100 != 0) {
+            $error = 'Amount value must be multiple of 100.';
+        } elseif ($transfer->getChargedAmount($amount, $fee_bearer) > $this->wallet) {
+            $error = 'You do not have enough money.';
+        }
+
+        return $error;
+    }
+
+    public function createMoneyTransfer($target_user, $amount, $fee_bearer) {
+        $transfer = new MoneyTransfers();
+        $transfer->assign([
+            'from_user_id' => $this->id,
+            'to_user_id' => $target_user->id,
+            'transfer_amount' => $transfer->getTransferedAmount($amount, $fee_bearer),
+            'charged_amount' => $transfer->getChargedAmount($amount, $fee_bearer),
+            'status' => MoneyTransfers::STATUS_CREATE,
+            'fee_bearer' => $fee_bearer,
+            'nonce' => CryptoHelper::generateRandomString()
+        ]);
+        if (!$transfer->save()) {
+            return null;
+        }
+        return $transfer;
+    }
+
+    public function processMoneyTransfer($transfer, $new_status){
+        if ($new_status == MoneyTransfers::STATUS_TRANSFER) {
+            $sender_wallet_before = $this->wallet;
+            $recipient_wallet_before = $transfer->toUser->wallet;
+            if($this->minusWallet($transfer->charged_amount)) {
+                $transfer->toUser->increaseWallet($transfer->transfer_amount);
+                $transfer->status = $new_status;
+                if (!$transfer->save()) {
+                    return false;
+                }
+                $sender_wallet_after = $this->wallet;
+                $recipient_wallet_after = $transfer->toUser->wallet;
+                WalletLogs::createNew(
+                    $this->id,
+                    $sender_wallet_before,
+                    $sender_wallet_after,
+                    null, $transfer->id,
+                    WalletLogs::ACTION_SENT,
+                    WalletLogs::TYPE_MONEY
+                );
+                WalletLogs::createNew(
+                    $transfer->toUser->id,
+                    $recipient_wallet_before,
+                    $recipient_wallet_after,
+                    null, $transfer->id,
+                    WalletLogs::ACTION_RECEIVED,
+                    WalletLogs::TYPE_MONEY
+                );
+            }
+         } else if ($new_status == MoneyTransfers::STATUS_CANCEL) {
+            $transfer->status = $new_status;
+            if (!$transfer->save()) {
+                return false;
+            }
+         } else {
+            return false;
+         }
+         return true;
     }
 }
