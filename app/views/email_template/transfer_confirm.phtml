@@ -1,0 +1,23 @@
+<tbody>
+	<tr>
+		<td style="padding:40px 0  0 0;">
+			<p style="color:#000;font-size: 16px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:normal;">
+
+				<h2 style="font-size: 14px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">Money Transfer Confirmation</h2>
+
+				<p style="font-size: 13px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
+					At <?= $create_at ?>, You created a money transfer <?= $amount ?> VND (<?= $handler ?>)to <?= $recipient ?>. <br>
+					Please click below link to either confirm or cancel the request. This confirmation link will be expired in next <?= $expire_time ?> minutes.
+					<br>
+					<br>
+					<a style="background:#E86537;color:#fff;padding:10px" href="<?= $confirm_url ?>"><?= $confirm_url ?></a>
+					<br>
+					<br>
+					FRAMGIA HKT TEAM !
+					<br>
+			    </p>
+			</p>
+		</td>
+	</tr>
+</tbody>
+

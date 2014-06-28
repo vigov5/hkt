@@ -38,6 +38,12 @@ class WalletLogs extends BModel
      *
      * @var integer
      */
+    public $transaction_id;
+
+    /**
+     *
+     * @var integer
+     */
     public $action;
 
     /**
@@ -52,14 +58,14 @@ class WalletLogs extends BModel
      */
     public $created_at;
 
-    const TYPE_SENT = 1;
-    const TYPE_RECEIVED = 2;
-
     const ACTION_CANCEL = 0;
     const ACTION_CREATE = 1;
     const ACTION_ACCEPT = 2;
     const ACTION_REJECT = 3;
     const ACTION_REFUND = 4;
+
+    const ACTION_SENT = 5;
+    const ACTION_RECEIVED = 6;
 
 
     public static $action_value = [
@@ -68,6 +74,8 @@ class WalletLogs extends BModel
         self::ACTION_ACCEPT => 'ACCEPTED',
         self::ACTION_REJECT => 'REJECTED',
         self::ACTION_REFUND => 'REFUND',
+        self::ACTION_SENT => 'SENT',
+        self::ACTION_RECEIVED => 'RECEIVED',
     ];
 
     public function getActionValue()
@@ -84,10 +92,12 @@ class WalletLogs extends BModel
         $val = $this->getActionValue();
         switch ($this->action) {
             case self::ACTION_CREATE:
+            case self::ACTION_SENT:
                 return "<span class='label label-primary'>$val</span>";
             case self::ACTION_REFUND:
                 return "<span class='label label-info'>$val</span>";
             case self::ACTION_ACCEPT:
+            case self::ACTION_RECEIVED:
                 return "<span class='label label-success'>$val</span>";
             case self::ACTION_REJECT:
                 return "<span class='label label-danger'>$val</span>";
@@ -111,6 +121,7 @@ class WalletLogs extends BModel
             'action' => 'action',
             'type' => 'type',
             'invoice_id' => 'invoice_id',
+            'transaction_id' => 'transaction_id',
             'created_at' => 'created_at'
         );
     }
@@ -123,6 +134,8 @@ class WalletLogs extends BModel
         parent::initialize();
         $this->belongsTo('user_id', 'Users', 'id', ['alias' => 'user']);
         $this->belongsTo('invoice_id', 'Invoices', 'id', ['alias' => 'invoice']);
+        $this->belongsTo('transaction_id', 'CoinDonations', 'id', ['alias' => 'donation']);
+        $this->belongsTo('transaction_id', 'MoneyTransfers', 'id', ['alias' => 'transfer']);
     }
 
     /**
@@ -130,10 +143,11 @@ class WalletLogs extends BModel
      * @param int $before
      * @param int $after
      * @param int $invoice_id
+     * @param int $transaction_id
      * @param int $action
      * @param int $type
      */
-    public static function createNew($user_id, $before, $after, $invoice_id, $action = self::ACTION_ACCEPT, $type = self::TYPE_MONEY)
+    public static function createNew($user_id, $before, $after, $invoice_id, $transaction_id, $action = self::ACTION_ACCEPT, $type = self::TYPE_MONEY)
     {
         $hcoin_log = new WalletLogs();
         $hcoin_log->create([
@@ -142,6 +156,7 @@ class WalletLogs extends BModel
             'after' => $after,
             'action' => $action,
             'invoice_id' => $invoice_id,
+            'transaction_id' => $transaction_id,
             'type' => $type,
         ]);
     }

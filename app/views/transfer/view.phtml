@@ -1,0 +1,19 @@
+<?php use Phalcon\Tag;
+
+/**
+ * @var Users $current_user
+ */
+echo $this->getContent(); ?>
+
+<h2>Transfer <?= $transfer->id ?></h2>
+<?php if ($transfer->toUser->id == $current_user->id): ?>
+You received <?= $transfer->transfer_amount?> VND from <?= $transfer->fromUser->getViewLink() ?>.
+<?php else: ?>
+    <?php if ($transfer->status == MoneyTransfers::STATUS_TRANSFER): ?>
+You transferred to <?= $transfer->transfer_amount ?> VND <?= $transfer->toUser->getViewLink() ?> at <?= $transfer->created_at ?>.
+    <?php elseif ($transfer->status == MoneyTransfers::STATUS_CREATE): ?>
+You're trying to transfer <?= $transfer->transfer_amount ?> VND to <?= $transfer->toUser->getViewLink() ?> at <?= $transfer->created_at ?>.
+    <?php else: ?>
+You tried to transfer <?= $transfer->transfer_amount ?> VND to <?= $transfer->toUser->getViewLink() ?> at <?= $transfer->created_at ?>.
+    <?php endif; ?>
+<?php endif; ?>

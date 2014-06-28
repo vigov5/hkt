@@ -4,6 +4,7 @@ class UserController extends ControllerBase
 {
 
     const USERS_PER_PAGE = 100;
+    const LOGS_PER_PAGE = 50;
     public function initialize()
     {
         parent::initialize();
@@ -309,11 +310,6 @@ class UserController extends ControllerBase
         $this->forwardNotFound();
     }
 
-    public function donateAction()
-    {
-        $this->forwardUnderConstruction();
-    }
-
     public function likeAction()
     {
         if ($this->request->isAjax()) {
@@ -343,6 +339,233 @@ class UserController extends ControllerBase
             }
             echo json_encode($response);
             return;
+        }
+    }
+
+    public function donateAction($page = 1)
+    {
+        $form = new DonateCoinForm($this->current_user);
+        if ($this->request->isPost()) {
+            if (!$form->isValid($this->request->getPost())) {
+                foreach ($form->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
+            } else {
+                $target_user = Users::findFirstById($this->request->getPost('target_user_id', 'int'));
+                if (!$target_user || $target_user->id == $this->current_user->id) {
+                    $this->flash->error('Invalid User !');
+                    Phalcon\Tag::resetInput();
+                } else {
+                    $amount = $this->request->getPost('amount', 'int');
+                    if($this->current_user->makeHCoinDonation($target_user, $amount)) {
+                        $this->mail->send(
+                            $target_user->email,
+                            'HCoin Donation Received !',
+                            'donation',
+                            ['amount' => $amount, 'sender' => $this->current_user->display_name]
+                        );
+                        $this->flash->success('Donation Success !');
+                    } else {
+                        $this->flash->error('Error in processing Donation!');
+                    }
+                }
+            }
+        }
+
+        if ($page < 1) {
+            $page = 1;
+        }
+        $builder = $this->modelsManager->createBuilder()
+            ->from('WalletLogs')
+            ->where('transaction_id <> 0')
+            ->andWhere('user_id = ' . $this->current_user->id)
+            ->andWhere('type = ' . WalletLogs::TYPE_HCOIN)
+            ->orderBy('id desc');
+
+        $paginator = new Phalcon\Paginator\Adapter\QueryBuilder([
+            'builder' => $builder,
+            'limit' => self::LOGS_PER_PAGE,
+            'page' => $page
+        ]);
+        $page = $paginator->getPaginate();
+        $this->view->pagination = new Pagination($page, "/user/donate");
+        $this->view->logs = $page->items;
+        $this->view->form = $form;
+        $this->view->current_page = 'donate';
+    }
+
+    public function transferAction($page = 1)
+    {
+        $form = new TransferMoneyForm($this->current_user);
+        if ($this->request->isPost()) {
+            if (!$form->isValid($this->request->getPost())) {
+                foreach ($form->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
+            } else {
+                $target_user = Users::findFirstById($this->request->getPost('target_user_id', 'int'));
+                if (!$target_user || $target_user->id == $this->current_user->id) {
+                    $this->flash->error('Invalid User !');
+                    Phalcon\Tag::resetInput();
+                }
+            }
+        }
+
+        if ($page < 1) {
+            $page = 1;
+        }
+        $builder = $this->modelsManager->createBuilder()
+            ->from('MoneyTransfers')
+            ->andWhere('from_user_id = ' . $this->current_user->id)
+            ->orderBy('id desc');
+
+        $paginator = new Phalcon\Paginator\Adapter\QueryBuilder([
+            'builder' => $builder,
+            'limit' => self::LOGS_PER_PAGE,
+            'page' => $page
+        ]);
+        $page = $paginator->getPaginate();
+        $this->view->pagination = new Pagination($page, "/user/transfer");
+        $this->view->transfers = $page->items;
+        $this->view->fee_ratio = Setting::getTransferRate();
+        $this->view->form = $form;
+        $this->view->current_page = 'transfer';
+    }
+
+    public function createTransferAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $target_user_id = $this->request->getPost('target_user_id', 'int');
+            $target_user = Users::findFirstById($target_user_id);
+            $fee_bearer = $this->request->getPost('fee_bearer', 'int');
+            $amount = $this->request->getPost('amount', 'int');
+            if (!$target_user || !$amount || !$fee_bearer ||
+                !in_array($fee_bearer, [MoneyTransfers::SENDER_FEE, MoneyTransfers::RECIPIENT_FEE])) {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Can not create money transfer !',
+                ];
+            } else {
+                $error = $this->current_user->canTransferMoney($target_user, $amount, $fee_bearer);
+                if ($error != 'OK') {
+                    $response = [
+                        'status' => 'fail',
+                        'message' => $error,
+                    ];
+                } else {
+                    $transfer = $this->current_user->createMoneyTransfer($target_user, $amount, $fee_bearer);
+                    if ($transfer) {
+                        $auth = CryptoHelper::calculateHMAC($transfer->nonce, $transfer->getEncodeData($transfer->nonce));
+                        $handler = '';
+                        if ($transfer->fee_bearer == MoneyTransfers::SENDER_FEE) {
+                            $handler = 'You pay the transfer fee';
+                        } elseif ($transfer->fee_bearer == MoneyTransfers::RECIPIENT_FEE) {
+                            $handler = 'Recipient pay the transfer fee';
+                        }
+
+                        $confirm_url = 'http://' . $_SERVER['SERVER_NAME'] . "/user/confirmtransfer/{$transfer->id}/{$auth}";
+                        $this->mail->send(
+                            $this->current_user->email,
+                            '[HKT] Money Transfer Confirmation',
+                            'transfer_confirm',
+                            [
+                                'recipient' => $target_user->display_name,
+                                'amount' => $transfer->transfer_amount,
+                                'handler' => $handler,
+                                'created_at' => $transfer->created_at,
+                                'confirm_url' => $confirm_url,
+                                'expire_time' => MoneyTransfers::EXPIRE_TIME / 60
+                            ]
+                        );
+
+                        $response = [
+                            'status' => 'success',
+                            'message' => "Transfer has been created ! Please check your email ({$this->current_user->email}) to confirm the transfer."
+                        ];
+                    } else {
+                        $response = [
+                            'status' => 'fail',
+                            'message' => 'Unknown error. Cannot create money transfer !'
+                        ];
+                    }
+                }
+            }
+            echo json_encode($response);
+        }
+        return ;
+    }
+
+    public function confirmTransferAction($id = null, $auth = null){
+        $valid_transfer = true;
+        $confirm_done = false;
+        if (!$id || !$auth) {
+            $this->forwardNotFound();
+        }
+        $form = new ConfirmTransferMoneyForm();
+        $transfer = MoneyTransfers::findFirstById($id);
+        if ($transfer) {
+            $transfer->updateStatus();
+            if ($transfer->isProcessing() && $transfer->from_user_id == $this->current_user->id &&
+                $transfer->isValidConfirmation($auth) && !$transfer->isTransferExpired()) {
+                $valid_transfer = true;
+            } else {
+                $valid_transfer = false;
+            }
+        } else{
+            $valid_transfer = false;
+        }
+
+        if ($this->request->isPost()) {
+            if (!$form->isValid($this->request->getPost())) {
+                foreach ($form->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
+            } else {
+                $data = $this->request->getPost('data');
+                if (gettype($data) == 'array') {
+                    if (array_key_exists('process', $data)) {
+                        $this->current_user->processMoneyTransfer($transfer, MoneyTransfers::STATUS_TRANSFER);
+                        $confirm_done = true;
+                        $this->flash->success('Transfer is processed successfully !');
+                    } elseif (array_key_exists('cancel', $data)) {
+                        $this->current_user->processMoneyTransfer($transfer, MoneyTransfers::STATUS_CANCEL);
+                        $confirm_done = true;
+                        $this->flash->success('Transfer in canceled successfully !');
+                    } else {
+                        $this->flash->error('Error in processing request');
+                    }
+                } else {
+                    $this->flash->error('Error in processing request');
+                }
+            }
+        }
+
+        $this->view->auth = $auth;
+        $this->view->valid_transfer = $valid_transfer;
+        $this->view->confirm_done = $confirm_done;
+        $this->view->transfer = $transfer;
+        $this->view->form = $form;
+        $this->view->current_page = 'confirmtransfer';
+    }
+
+    public function allAction()
+    {
+        if ($this->request->isAjax()) {
+            $all_users = Users::find(['columns' => 'id, username, display_name']);
+
+            $usernames = [];
+            foreach ($all_users as $user) {
+                if ($user->id != $this->current_user->id) {
+                    $usernames[] = [
+                        'user_id' => $user->id,
+                        'full_name' => sprintf("%s (%s)", $user->display_name, $user->username)
+                    ];
+                }
+            }
+            $this->view->disable();
+            echo json_encode($usernames);
+            return ;
         }
         $this->forwardNotFound();
     }

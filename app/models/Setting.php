@@ -28,6 +28,12 @@ class Setting extends BModel
      *
      * @var integer
      */
+    public $transfer_rate;
+
+    /**
+     *
+     * @var integer
+     */
     public $updated_by;
 
     /**
@@ -51,6 +57,7 @@ class Setting extends BModel
             'maintain' => 'maintain',
             'hcoin_rate' => 'hcoin_rate',
             'charge_rate' => 'charge_rate',
+            'transfer_rate' => 'transfer_rate',
             'updated_by' => 'updated_by',
             'created_at' => 'created_at',
             'updated_at' => 'updated_at'
@@ -80,6 +87,12 @@ class Setting extends BModel
     {
         $setting = self::getSetting();
         return $setting->charge_rate;
+    }
+
+    public static function getTransferRate()
+    {
+        $setting = self::getSetting();
+        return $setting->transfer_rate;
     }
 
     public static function isMaintained()

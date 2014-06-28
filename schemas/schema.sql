@@ -329,6 +329,7 @@ CREATE TABLE `wallet_logs` (
   `before` int(11) DEFAULT NULL,
   `after` int(11) DEFAULT NULL,
   `invoice_id` int(11) DEFAULT NULL,
+  `transaction_id` int(11) DEFAULT NULL,
   `action` int(11) DEFAULT '0',
   `type` int(11) DEFAULT '0',
   `created_at` datetime DEFAULT NULL,
@@ -383,6 +384,32 @@ CREATE TABLE `kpis` (
   UNIQUE KEY `day_UNIQUE` (`day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+DROP TABLE IF EXISTS `coin_donations`;
+CREATE TABLE `coin_donations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_user_id` int(11) NOT NULL,
+  `to_user_id` int(11) DEFAULT NULL,
+  `hcoin_amount` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `money_transfers`;
+CREATE TABLE `money_transfers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_user_id` int(11) NOT NULL,
+  `to_user_id` int(11) NOT NULL,
+  `transfer_amount` int(11) DEFAULT NULL,
+  `charged_amount` int(11) DEFAULT NULL,
+  `fee_bearer` tinyint(4) NOT NULL COMMENT '1: SENDER, 2: RECIPIENT',
+  `status` tinyint(4) NOT NULL COMMENT '1: CREATED, 2: TRANSFERED, 3: CANCELED, 4: EXPIRED',
+  `nonce` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+alter table setting add column transfer_rate int(11) default 1 after charge_rate;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

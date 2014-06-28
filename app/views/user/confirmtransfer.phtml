@@ -1,0 +1,43 @@
+<?php
+use Phalcon\Tag;
+echo $this->getContent();
+/**
+ * @var MoneyTransfers $transfer
+ * @var ConfirmTransferMoneyForm $form
+ * @var int $valid_transfer
+ */
+?>
+<?php if ($valid_transfer): ?>
+<h1><span class="text-warning">Money Transfer Confirmation</span></h1>
+<table class="table table-bordered">
+    <thead>
+    <th>ID</th>
+    <th>Recipient</th>
+    <th>Transfer Amount</th>
+    <th>Charged Amount</th>
+    <th>Status</th>
+    <th>Created at</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td><?= $transfer->id ?></td>
+            <td><?= $transfer->toUser->getViewLink() ?></td>
+            <td><?= $transfer->transfer_amount ?> VND</td>
+            <td><?= $transfer->charged_amount ?> VND</td>
+            <td><?= $transfer->printStatus() ?> </td>
+            <td><?= $transfer->created_at ?> </td>
+        </tr>
+    </tbody>
+</table>
+<?php if (!$confirm_done): ?>
+Are you sure to process this transfer ?
+<?= Tag::form(["user/confirmtransfer/{$transfer->id}/{$auth}", 'method' => 'post', 'class' => 'form-confirm-transfer']) ?>
+<?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
+<input class="btn btn-primary" name="data[process]" id="confirm-transfer-btn" type="submit" value="Process"></input>
+<input class="btn btn-danger" name="data[cancel]" id="confirm-transfer-btn" type="submit" value="Cancel"></input>
+</form>
+<?php endif; ?>
+<?php else: ?>
+<h1><span class="text-danger">Money Transfer Confirmation Error !</span></h1>
+    <h3>Either your transfer id and authentication token is invalid or transfer is expired.</h3>
+<?php endif; ?>

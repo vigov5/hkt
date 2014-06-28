@@ -1,0 +1,66 @@
+<?php use Phalcon\Tag;
+
+/**
+ * @var Users $current_user
+ */
+echo $this->getContent(); ?>
+<h2>Transfer Money</h2>
+<?= Tag::form(['user/transfer', 'method' => 'post', 'class' => 'form-transfer']) ?>
+<label><?= $form->label('target_user') ?></label>
+<input type="text" id="target_user" name="target_user" placeholder="Type user get donation" autocomplete="off">
+<?= $form->render('target_user_id') ?>
+<br>
+<label><?= $form->label('amount') ?></label>
+<?= $form->render('amount') ?>
+<span>(Current: <?= $current_user->wallet ?> VND )</span>
+<br>
+<label><?= $form->label('fee_bearer') ?></label>
+<?= $form->render('fee_bearer') ?>
+<br>
+<span class="label label-danger">Note:</span> Transfer fee is <strong><span class="fee-ratio"><?= $fee_ratio ?></span>%</strong> of transfer amount.
+<br>
+<br>
+<?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
+<button class="btn btn-primary" id="transfer-money-btn" type="submit">Transfer</button>
+</form>
+<br>
+<script>
+var json_data;
+$.get('/user/all', function(data){
+    json_data = data;
+}, 'json');
+
+$("#target_user").typeahead({
+    source: function (query, process) {
+        users = [];
+        user_data = {};
+
+        $.each(json_data, function (i, user) {
+            user_data[user.full_name] = user;
+            users.push(user.full_name);
+        });
+        $("#target_user_id").val('');
+        process(users);
+    },
+
+    sorter: function (items) {
+        return items.sort();
+    },
+
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+
+    updater: function (item) {
+        $("#target_user_id").val(user_data[item].user_id);
+        return item;
+    }
+});
+</script>
+
+<h2>Transfer Logs</h2>
+<?= $this->partial('transfer/_logs') ?>
+
+<?= $pagination->generatePagination() ?>

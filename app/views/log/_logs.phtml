@@ -8,6 +8,7 @@
     <th>Before</th>
     <th>After</th>
     <th>Invoice</th>
+    <th>Donation/Transfer</th>
     <th>Action</th>
     <th>Date</th>
 
@@ -16,6 +17,11 @@
             <td><?= $log->before ?></td>
             <td><?= $log->after ?> <span class="<?= $log->before < $log->after ? 'text-success' : 'text-warning' ?>">(<?= $log->after - $log->before ?>)</span></td>
             <td><a href="<?= $this->url->get("invoice/view/$log->invoice_id") ?>"><?= $log->invoice_id ?></a></td>
+            <?php if ($log->transaction_id && $log->type == WalletLogs::TYPE_MONEY): ?>
+            <td><a href="<?= $this->url->get("transfer/view/$log->transaction_id") ?>"><?= $log->transaction_id ?></a></td>
+            <?php else: ?>
+            <td><a href="<?= $this->url->get("donation/view/$log->transaction_id") ?>"><?= $log->transaction_id ?></a></td>
+            <?php endif; ?>
             <td><?= $log->printAction() ?></td>
             <td><?= $log->created_at ?></td>
         </tr>
