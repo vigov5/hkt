@@ -16,6 +16,7 @@ class ControllerBase extends BController
             $this->getCurrentUser();
         }
         $this->view->current_page = '';
+        $this->view->user_announcements = null;
         if (!$this->current_user) {
             $this->view->login_form = new LoginForm();
         }

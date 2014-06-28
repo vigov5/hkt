@@ -1,0 +1,40 @@
+<?php
+/**
+ * @var Announcements[] $announcements
+ *
+ */
+?>
+<h2 class="text-primary">Announcements List</h2>
+
+<a href="announcement/create" class="btn btn-primary btn-sm" role="button">Create new Announcement</a>
+<br/>
+<hr/>
+
+<table class="table table-bordered">
+    <th>Id</th>
+    <th>Title</th>
+    <th>Start At</th>
+    <th>End At</th>
+    <th>Show</th>
+    <th>Show time</th>
+    <th>Created By</th>
+    <th>Created At</th>
+    <th>Updated At</th>
+
+    <?php foreach ($announcements as $announcement): ?>
+        <tr>
+            <td class="<?= $announcement->isBeingDisplay() ? 'success' : '' ?>"><a href="/announcement/update/<?= $announcement->id ?>"><?= $announcement->id ?></a></td>
+            <td><?= $announcement->title ?></td>
+            <td><?= $announcement->start_at ?></td>
+            <td><?= $announcement->end_at ?></td>
+            <td><?= $announcement->type ? '◯' : '☓' ?></td>
+            <td><?= $announcement->show_time ?></td>
+            <td><?= $announcement->createdBy->getViewLink() ?></td>
+            <td><?= $announcement->created_at ?></td>
+            <td><?= $announcement->updated_at ?></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+
+<?= $pagination->generatePagination() ?>
+

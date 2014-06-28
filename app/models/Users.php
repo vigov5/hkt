@@ -1006,6 +1006,12 @@ class Users extends BModel
         return array_column($users, 'email');
     }
 
+    /**
+     * Create HCoin donation
+     * @param Users $target_user
+     * @param int $amount
+     * @return bool
+     */
     public function makeHCoinDonation($target_user, $amount){
         $sender_hcoin_before = $this->hcoin;
         $recipient_hcoin_before = $target_user->hcoin;
@@ -1041,6 +1047,12 @@ class Users extends BModel
         return false;
     }
 
+    /**
+     * @param Users $target_user
+     * @param int $amount
+     * @param int $fee_bearer
+     * @return string
+     */
     public function canTransferMoney($target_user, $amount, $fee_bearer) {
         $error = 'OK';
         $transfer = new MoneyTransfers();
@@ -1057,6 +1069,12 @@ class Users extends BModel
         return $error;
     }
 
+    /**
+     * @param Users $target_user
+     * @param int $amount
+     * @param int $fee_bearer
+     * @return MoneyTransfers|null
+     */
     public function createMoneyTransfer($target_user, $amount, $fee_bearer) {
         $transfer = new MoneyTransfers();
         $transfer->assign([
@@ -1074,6 +1092,11 @@ class Users extends BModel
         return $transfer;
     }
 
+    /**
+     * @param MoneyTransfers $transfer
+     * @param int $new_status
+     * @return bool
+     */
     public function processMoneyTransfer($transfer, $new_status){
         if ($new_status == MoneyTransfers::STATUS_TRANSFER) {
             $sender_wallet_before = $this->wallet;
@@ -1112,5 +1135,21 @@ class Users extends BModel
             return false;
          }
          return true;
+    }
+
+    /**
+     * @return UserAnnouncements[]
+     */
+    public function getActiveUserAnnouncements()
+    {
+        $results = [];
+        $announcements = Announcements::getActiveAnnouncements();
+        foreach ($announcements as $announcement) {
+            $user_announcement = UserAnnouncements::findFirstOrCreateNew($this->id, $announcement->id);
+            if ($user_announcement && $user_announcement->read_time < $announcement->show_time) {
+                $results[] = $user_announcement;
+            }
+        }
+        return array_reverse($results);
     }
 }

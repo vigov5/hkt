@@ -28,9 +28,6 @@ class FaqController extends ControllerBase
      */
     public function createAction()
     {
-        if (!$this->current_user) {
-            $this->response->redirect();
-        }
         $faq = new Faqs();
         $errors = [];
         if ($this->request->isPost()) {

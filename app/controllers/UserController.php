@@ -96,7 +96,7 @@ class UserController extends ControllerBase
                         ]
                     );
 
-                    return $this->response->redirect('item/onsale');
+                    return $this->response->redirect('shop/open');
                 }
             }
         } catch (Exception $e) {
@@ -570,5 +570,28 @@ class UserController extends ControllerBase
         $this->forwardNotFound();
     }
 
+    public function readAnnouncementAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $user_announcement_id = $this->request->getPost('user_announcement_id', 'int');
+            $user_announcement = UserAnnouncements::findFirst($user_announcement_id);
+            if ($user_announcement && $user_announcement->user_id == $this->current_user->id) {
+                $user_announcement->increaseReadTime();
+                $response = [
+                    'status' => 'success',
+                ];
+            } else {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Invalid User Announcement Id'
+                ];
+            }
+
+            echo json_encode($response);
+            return;
+        }
+        $this->forwardNotFound();
+    }
 }
 

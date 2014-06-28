@@ -3,7 +3,7 @@
 class ShopController extends ControllerBase
 {
 
-    const SHOPS_PER_PAGE = 6;
+    const SHOPS_PER_PAGE = 10;
 
     public function initialize()
     {
@@ -32,7 +32,7 @@ class ShopController extends ControllerBase
                 'page' => $page,
             ]
         );
-
+        $this->view->user_announcements = $this->current_user->getActiveUserAnnouncements();
         $page = $paginator->getPaginate();
         $this->view->pagination = new Pagination($page, '/shop/open');
         $this->view->shops = $page->items;

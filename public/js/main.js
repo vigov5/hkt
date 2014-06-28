@@ -312,7 +312,7 @@ $(function() {
             });
         }
     },null,true);
-    
+
     $('#donate-coin-btn').click(function (e) {
         e.preventDefault();
         var form = $('#donate-coin-btn').closest('form');
@@ -358,7 +358,6 @@ $(function() {
             createMoneyTransferConfirm(message, data);
         }
     });
-
 });
 
 function createDonateCoinConfirm(form, message, data) {
@@ -387,7 +386,7 @@ function createDonateCoinConfirm(form, message, data) {
             },
             danger: {
                 label: "Cancel",
-                className: "btn-danger",
+                className: "btn-danger"
             }
         }
     });
@@ -421,7 +420,7 @@ function createMoneyTransferConfirm(message, data) {
             },
             danger: {
                 label: "Cancel",
-                className: "btn-danger",
+                className: "btn-danger"
             }
         }
     });
@@ -567,9 +566,29 @@ function createItemBuyConfirm(form, message, data) {
             },
             danger: {
                 label: "Cancel",
-                className: "btn-danger",
+                className: "btn-danger"
             }
         }
+    });
+}
+
+function createAnnouncement(announcement)
+{
+    var text = '<h2 class="text-danger">HKT Announcement</h2><br />';
+    text += '<strong><h4 class="text-primary">' + announcement.title + '</h4></strong><br/>' + announcement.content;
+    bootbox.alert(text, function() {
+        console.log("OK");
+        $.ajax({
+            type: "POST",
+            url: "/user/readannouncement",
+            data: {
+                user_announcement_id: announcement.user_announcement_id
+            }
+        }).success(function(message) {
+        })
+        .fail(function() {
+            alert('Reuqest sent Fail !!!');
+        });
     });
 }
 

@@ -60,7 +60,12 @@ class Acl extends Component
         ],
         'admin' => [
             'index' => Users::ROLE_ADMIN,
-        ]
+        ],
+        'announcement' => [
+            'index' => Users::ROLE_ADMIN,
+            'create' => Users::ROLE_ADMIN,
+            'update' => Users::ROLE_ADMIN,
+        ],
 
     ];
 

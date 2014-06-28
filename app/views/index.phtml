@@ -29,4 +29,18 @@
     </body>
     <?php $this->partial('layouts/footer') ?>
 </html>
-
+<?php if ($user_announcements): ?>
+<script>
+    $(function() {
+        <?php foreach ($user_announcements as $user_announcement): ?>
+            var announcement = {
+                user_announcement_id: <?= $user_announcement->id ?>,
+                announcement_id: <?= $user_announcement->announcement->id ?>,
+                title: '<?= $user_announcement->announcement->title ?>',
+                content: '<?= $user_announcement->announcement->content ?>'
+            }
+            createAnnouncement(announcement);
+        <?php endforeach; ?>
+    });
+</script>
+<?php endif; ?>

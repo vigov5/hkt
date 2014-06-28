@@ -1,0 +1,13 @@
+<div class="item-form center-block">
+<?php
+    echo $form->start($link);
+    echo $form->selectStatic('type',  Announcements::$type_value);
+    echo $form->numericField('show_time');
+    echo $form->textField('start_at');
+    echo $form->textField('end_at');
+    echo $form->textField('title');
+    echo $form->textArea('content', ['rows' => 10]);
+    echo $form->submitButton($button);
+    echo $form->end();
+?>
+</div>
