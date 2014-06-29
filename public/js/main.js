@@ -575,7 +575,7 @@ function createItemBuyConfirm(form, message, data) {
 function createAnnouncement(announcement)
 {
     var text = '<h2 class="text-danger">HKT Announcement</h2><br />';
-    text += '<strong><h4 class="text-primary">' + announcement.title + '</h4></strong><br/>' + announcement.content;
+    text += '<strong><h4 class="text-primary">' + decodeHTMLEntities(announcement.title) + '</h4></strong><br/>' + decodeHTMLEntities(announcement.content);
     bootbox.alert(text, function() {
         console.log("OK");
         $.ajax({
@@ -683,4 +683,8 @@ ImageSelector.prototype.removeAllSelected = function() {
 function reload()
 {
     location.reload();
+}
+
+function decodeHTMLEntities($text) {
+    return $("<div/>").html($text).text();
 }

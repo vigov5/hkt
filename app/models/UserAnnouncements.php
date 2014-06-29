@@ -95,8 +95,8 @@ class UserAnnouncements extends BModel
     {
         $data = [
             'user_announcement_id' => $this->id,
-            'title' => $this->announcement->title,
-            'content' => $this->announcement->content,
+            'title' => htmlspecialchars($this->announcement->title),
+            'content' => htmlspecialchars($this->announcement->content),
         ];
         return json_encode($data);
     }
