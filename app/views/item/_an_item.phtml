@@ -1,6 +1,6 @@
 <div class="thumbnail">
-    <div class="thumbnail-detail"><span class="item-name"><?= $item->name ?></span> (<span class='item-price'><?= $item->price ?></span>)
-        <a href="<?= $this->url->get("item/view/{$item->id}"); ?>" class="btn btn-info btn-sm" role="button">View</a>
+    <div class="thumbnail-detail">
+        <a href="<?= $this->url->get("item/view/{$item->id}"); ?>"><span class="item-name"><?= $item->name ?></span></a>
     </div>
     <?= $item->imageView() ?>
 </div>

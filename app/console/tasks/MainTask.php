@@ -29,7 +29,7 @@ class MainTask extends \Phalcon\CLI\Task
                 if (!isset($withdraw_users[$invoice->from_user_id])) {
                     $withdraw_users[] = $invoice->from_user_id;
                 }
-            } elseif ($invoice->item->isNormalItem()) {
+            } elseif ($invoice->item->isNormalItem() || $invoice->item->isTaxFreeItem()) {
                 $purchase += $invoice->price;
                 if (!isset($purchase_users[$invoice->from_user_id])) {
                     $purchase_users[] = $invoice->from_user_id;

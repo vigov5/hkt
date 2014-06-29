@@ -452,7 +452,7 @@ class Users extends BModel
         $invoice->price = $price;
         $invoice->real_price = $item_count * $item_user->getRealPrice();
         $wallet_before = $this->wallet;
-        if ($item_user->item->isNormalItem()) {
+        if ($item_user->item->isNormalItem() || $item_user->item->isTaxFreeItem()) {
             $this->minusWallet($price);
         }
         $wallet_after = $this->wallet;
@@ -486,7 +486,7 @@ class Users extends BModel
         $invoice->price = $price;
         $invoice->real_price = $item_count * $item_shop->getRealPrice();
         $wallet_before = $this->wallet;
-        if ($item_shop->item->isNormalItem()) {
+        if ($item_shop->item->isNormalItem() || $item_shop->item->isTaxFreeItem()) {
             $this->minusWallet($price);
         }
         $wallet_after = $this->wallet;
@@ -723,7 +723,7 @@ class Users extends BModel
      */
     public function canCreateBuyItemRequest($item)
     {
-        if (!$item->isAvailable() || !$item->isNormalItem()) {
+        if (!$item->isAvailable() || !($item->isNormalItem() || $item->isTaxFreeItem())) {
             return false;
         }
         $request = $this->getSentRequests("item_id = {$item->id} AND type = " . Requests::TYPE_USER_SELL_ITEM . ' AND (status = ' . Requests::STATUS_ACCEPT . ' OR status = ' . Requests::STATUS_SENT . ')');

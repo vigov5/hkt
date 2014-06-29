@@ -202,7 +202,7 @@ class Invoices extends BModel
             return false;
         }
 
-        if ($this->item->isNormalItem()) {
+        if ($this->item->isNormalItem() || $this->item->isTaxFreeItem()) {
             if ($this->price) {
                 $wallet_before = $this->fromUser->wallet;
                 $wallet_after = $this->fromUser->increaseWallet($this->price);
@@ -225,7 +225,7 @@ class Invoices extends BModel
             return false;
         }
 
-        if ($this->item->isNormalItem()) {
+        if ($this->item->isNormalItem() || $this->item->isTaxFreeItem()) {
             if ($this->real_price) {
                 if ($this->to_user_id) {
                     $to_user = $this->toUser;
@@ -277,7 +277,7 @@ class Invoices extends BModel
             return false;
         }
 
-        if ($this->item->isNormalItem()) {
+        if ($this->item->isNormalItem() || $this->item->isTaxFreeItem()) {
             if ($this->price) {
                 $wallet_before = $this->fromUser->wallet;
                 $wallet_after = $this->fromUser->increaseWallet($this->price);

@@ -600,6 +600,7 @@ function createItemLayout(item_object) {
     var html = '<div class="row">' +
         '<div class="col-lg-6"><img src="' + img + '" class=" img-thumbnail img-responsive img-confirm-small"></div>' +
         '<div class="col-lg-6"><div class="row">Name: <strong><span class="text-danger">' + item_object.name + '</span></strong></div>' +
+        '<div class="row">Item Type: <strong><span class="text-danger">' + item_object.item_type + '</span></strong></div>' +
         '<div class="row">Seller: <strong><span class="text-danger">' + item_object.seller + '</span></strong></div>' +
         '<div class="row">Amount: <strong><span class="text-danger">' + item_object.amount + '</span></strong></div>'+
         '<div class="row">Price: <strong><span class="text-danger">' + item_object.price  * item_object.amount + '</span></strong></div></div>' +
@@ -628,6 +629,7 @@ function createShopItemLayout(item_object, sets) {
     var html = '<div class="row">' +
         '<div class="col-lg-6"><img src="' + img + '" class=" img-thumbnail img-responsive img-confirm-small"></div>' +
         '<div class="col-lg-6"><div class="row">Name: <strong><span class="text-danger">' + item_object.name + '</span></strong></div>' +
+        '<div class="row">Item Type: <strong><span class="text-danger">' + item_object.item_type + '</span></strong></div>' +
         '<div class="row">Seller: <strong><span class="text-danger">' + item_object.seller + '</span></strong></div>' +
         sets_html +
         '<div class="row">Amount: <strong><span class="text-danger">' + item_object.amount + '</span></strong></div>'+

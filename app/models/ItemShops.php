@@ -205,6 +205,16 @@ class ItemShops extends BModel
         return $this->item->price;
     }
 
+    public function printSalePrice()
+    {
+        $price = $this->getSalePrice();
+        $text = $price;
+        if ($this->item->isTaxFreeItem()) {
+            $text .= ' ☆';
+        }
+        return $text;
+    }
+
     public function beForced($status = self::STATUS_NORMAL)
     {
         if ($this->status != $status) {
@@ -229,6 +239,7 @@ class ItemShops extends BModel
             'item_id' => $this->item_id,
             'item_shop_id' => $this->id,
             'name' => $this->item->name,
+            'item_type' => $this->item->getTypeValue(),
             'img' => $this->item->getImageLink(),
             'seller' => $this->shop->name,
             'price' => $this->getSalePrice(),

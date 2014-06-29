@@ -206,6 +206,7 @@ class ItemUsers extends BModel
             'item_id' => $this->item_id,
             'item_user_id' => $this->id,
             'name' => $this->item->name,
+            'item_type' => $this->item->getTypeValue(),
             'img' => $this->item->getImageLink(),
             'seller' => $this->user->getUserDisplayName(),
             'price' => $this->item->getSalePrice($this->user_id),

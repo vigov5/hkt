@@ -19,16 +19,25 @@ echo $this->getContent(); ?>
             </tr>
             <tr>
                 <th class="success"><?= $item->getAttributeLabel('type') ?></th>
-                <td><?= $item->getTypeValue() ?></td>
+                <td>
+                    <?= $item->getTypeValue() ?>
+                    <br><span class="text-info"><?= $item->getItemTypeDescription() ?></span>
+                </td>
             </tr>
             <tr>
                 <th class="success"><?= $item->getAttributeLabel('status') ?></th>
                 <td><?= $item->getStatusValue() ?></td>
             </tr>
             <tr>
-                <th class="success">Seller</th>
+                <th class="success">Sellers</th>
                 <td><?php foreach($item->saleUsers as $seller) {
                         echo $seller->getViewLink() . "<br/>";
+                    } ?></td>
+            </tr>
+            <tr>
+                <th class="success">Shops</th>
+                <td><?php foreach($item->saleShops as $shop) {
+                        echo $shop->getViewLink() . "<br/>";
                     } ?></td>
             </tr>
             <tr>
