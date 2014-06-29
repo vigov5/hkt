@@ -5,23 +5,35 @@
  */
 echo $this->getContent(); ?>
 <h2>Transfer Money</h2>
-<?= Tag::form(['user/transfer', 'method' => 'post', 'class' => 'form-transfer']) ?>
-<label><?= $form->label('target_user') ?></label>
-<input type="text" id="target_user" name="target_user" placeholder="Type user get donation" autocomplete="off">
-<?= $form->render('target_user_id') ?>
-<br>
-<label><?= $form->label('amount') ?></label>
-<?= $form->render('amount') ?>
-<span>(Current: <?= $current_user->wallet ?> VND )</span>
-<br>
-<label><?= $form->label('fee_bearer') ?></label>
-<?= $form->render('fee_bearer') ?>
-<br>
-<span class="label label-danger">Note:</span> Transfer fee is <strong><span class="fee-ratio"><?= $fee_ratio ?></span>%</strong> of transfer amount.
-<br>
-<br>
+<?= Tag::form(['user/transfer', 'method' => 'post', 'class' => 'form-transfer form-horizontal', 'role' => 'form']) ?>
+<div class="form-group">
+    <label class="col-sm-2 control-label"><?= $form->label('target_user') ?></label>
+    <div class="col-sm-10 col-lg-4">
+        <?= $form->render('target_user', ['class' => 'form-control']) ?>
+        <?= $form->render('target_user_id', ['class' => 'form-control']) ?>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label"><?= $form->label('amount') ?></label>
+    <div class="col-sm-10 col-lg-4">
+        <?= $form->render('amount', ['class' => 'form-control']) ?>
+        <span>(Current: <?= $current_user->wallet ?> VND )</span>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label"><?= $form->label('fee_bearer') ?></label>
+    <div class="col-sm-10 col-lg-4">
+        <?= $form->render('fee_bearer', ['class' => 'form-control']) ?>
+        <span class="label label-danger">Note:</span> Transfer fee is <strong><span class="fee-ratio"><?= $fee_ratio ?></span>%</strong> of transfer amount.
+    </div>
+</div>
+
 <?= $form->render('csrf', ['value' => $this->security->getToken()]) ?>
-<button class="btn btn-primary" id="transfer-money-btn" type="submit">Transfer</button>
+<div class="form-group">
+    <div class="col-sm-10 col-lg-4 col-sm-offset-2">
+        <button class="btn btn-primary btn-sm" id="transfer-money-btn" type="submit">Transfer</button>
+    </div>
+</div>
 </form>
 <br>
 <script>

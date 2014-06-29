@@ -345,8 +345,8 @@ $(function() {
             bootbox.alert('Transfer Bearer is invalid.');
         } else if (amount <= 0 || isNaN(amount)) {
             bootbox.alert('Amount value is invalid.');
-        } else if ((amount / 100) % 1 !== 0) {
-            bootbox.alert('Amount value must be multiple of 100.');
+        } else if ((amount / 1000) % 1 !== 0) {
+            bootbox.alert('Amount value must be multiple of 1000.');
         } else {
             var message = "Do you really want to transfer " + amount + " VND to " + target_user + " ?";
             var data = {
@@ -409,7 +409,7 @@ function createMoneyTransferConfirm(message, data) {
                         var response = JSON.parse(message);
                         if(response.status) {
                             bootbox.alert(response.message, function() {
-                                //reload();
+                                reload();
                             });
                         }
                     })

@@ -464,7 +464,7 @@ class UserController extends ControllerBase
                             $handler = 'Recipient pay the transfer fee';
                         }
 
-                        $confirm_url = 'http://' . $_SERVER['SERVER_NAME'] . "/user/confirmtransfer/{$transfer->id}/{$auth}";
+                        $confirm_url = "{$this->config->application->baseUri}user/confirmtransfer/{$transfer->id}/{$auth}";
                         $this->mail->send(
                             $this->current_user->email,
                             '[HKT] Money Transfer Confirmation',

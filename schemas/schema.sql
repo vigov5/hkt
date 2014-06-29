@@ -222,6 +222,7 @@ CREATE TABLE `setting` (
   `maintain` int(11) DEFAULT '0',
   `hcoin_rate` int(11) DEFAULT '1',
   `charge_rate` int(11) DEFAULT '5',
+  `transfer_rate` int(11) DEFAULT '1',
   `updated_by` int(11) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL
