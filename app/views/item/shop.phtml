@@ -30,7 +30,7 @@ echo $this->getContent();
          */
         ?>
             <tr class="<?= $item_shop->isOnSale() ? 'success' : '' ?>">
-                <td><?= $item_shop->item->name ?></td>
+                <td><?= $item_shop->item->getViewLink() ?></td>
                 <td><?= $item_shop->item->getTypeValue() ?></td>
                 <td><?= $item_shop->getSalePrice() ?></td>
                 <td><?= $item_shop->printStatus() ?></td>

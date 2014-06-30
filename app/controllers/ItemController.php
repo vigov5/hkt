@@ -230,7 +230,7 @@ class ItemController extends ControllerBase
     public function shopAction($shop_id)
     {
         $shop = Shops::findFirst($shop_id);
-        if (!$shop || !$shop->checkOwnerOrStaff($this->current_user)) {
+        if (!$shop || !($shop->checkOwnerOrStaff($this->current_user) || $this->current_user->isRoleOver(Users::ROLE_ADMIN))) {
             return $this->forward('index/notFound');
         }
 

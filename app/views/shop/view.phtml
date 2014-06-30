@@ -9,7 +9,7 @@
 echo $this->getContent();
 
 $can_edit_shop = $current_user->canEditShop($shop);
-$action = $shop->checkOwnerOrStaff($current_user);
+$is_owner_or_staff = $shop->checkOwnerOrStaff($current_user);
 ?>
 
 <h2 class="text-primary">
@@ -62,10 +62,12 @@ $action = $shop->checkOwnerOrStaff($current_user);
                         <?php if ($current_user->canCreateShopStaffRequest($shop)): ?>
                             <button class='btn btn-primary btn-action shop-sell-request' id="shop-sell-request-<?= $shop->id ?>" data-shop-id='<?= $shop->id ?>'>Sent Request to be a staff of this shop</button>
                         <?php endif; ?>
-                        <?php if ($shop->checkOwnerOrStaff($current_user)): ?>
-                            <a href="<?= $this->url->get("item/create/{$shop->id}")?>" class="btn btn-primary btn-action"> Create Item </a>
+                        <?php if ($current_user->isRoleOver(Users::ROLE_ADMIN) || $is_owner_or_staff): ?>
                             <a href="<?= $this->url->get("item/shop/{$shop->id}")?>" class="btn btn-primary btn-action"> View list Items </a>
                             <a href="<?= $this->url->get("shop/invoices/{$shop->id}")?>" class="btn btn-primary btn-action"> View All Invoices </a>
+                        <?php endif ?>
+                        <?php if ($is_owner_or_staff): ?>
+                            <a href="<?= $this->url->get("item/create/{$shop->id}")?>" class="btn btn-primary btn-action"> Create Item </a>
                             <a href="<?= $this->url->get("shop/changestatus/{$shop->id}/" . Shops::STATUS_OPEN)?>" class="btn btn-success btn-action"> Set Open </a>
                             <a href="<?= $this->url->get("shop/changestatus/{$shop->id}/" . Shops::STATUS_NORMAL)?>" class="btn btn-info btn-action"> Set Normal </a>
                             <a href="<?= $this->url->get("shop/changestatus/{$shop->id}/" . Shops::STATUS_CLOSE)?>" class="btn btn-danger btn-action"> Set Close </a>
@@ -144,14 +146,14 @@ $action = $shop->checkOwnerOrStaff($current_user);
         <div class="panel panel-warning">
             <div class="panel-heading">
                 Received Invoices from <?= $place_name ?>
-                <?php if (!empty($action)): ?>
+                <?php if (!empty($is_owner_or_staff)): ?>
                     <div class="btn-group-xs pull-right">
                         <button class="btn btn-primary btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_ACCEPT ?>">Accept All</button>
                         <button class="btn btn-danger btn-xs btn-invoice-status-all" data-invoice-status="<?= Invoices::STATUS_REJECT ?>">Reject All</button>
                     </div>
                 <?php endif; ?>
             </div>
-            <?= $this->partial('invoice/_received_list', ['invoices' => $invoices_filter[$place], 'action' => $action, 'has_set' => true, 'short' => true, 'index' => true]); ?>
+            <?= $this->partial('invoice/_received_list', ['invoices' => $invoices_filter[$place], 'action' => $is_owner_or_staff, 'has_set' => true, 'short' => true, 'index' => true]); ?>
         </div>
     <?php endif; ?>
 <?php endforeach; ?>
