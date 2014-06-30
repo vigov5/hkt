@@ -42,10 +42,10 @@ class TransferMoneyForm extends Form
         $this->add($amount);
 
         $fee_bearer = new Select("fee_bearer", array(
-            MoneyTransfers::SENDER_FEE => 'The <strong>sender</strong> handles the transfer fee.',
-            MoneyTransfers::RECIPIENT_FEE => 'The <strong>recipient</strong> handles the transfer fee.',
+            MoneyTransfers::SENDER_FEE => 'Sender',
+            MoneyTransfers::RECIPIENT_FEE => 'Recipient',
         ));
-        $fee_bearer->setLabel("Transfer Bearer");
+        $fee_bearer->setLabel("Transfer fee payer");
         $fee_bearer->addValidators([
             new PresenceOf([
                 'message' => 'Please select who handles the transfer fee.'

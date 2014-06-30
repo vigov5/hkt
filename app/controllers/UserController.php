@@ -459,9 +459,9 @@ class UserController extends ControllerBase
                         $auth = CryptoHelper::calculateHMAC($transfer->nonce, $transfer->getEncodeData($transfer->nonce));
                         $handler = '';
                         if ($transfer->fee_bearer == MoneyTransfers::SENDER_FEE) {
-                            $handler = 'You pay the transfer fee';
+                            $handler = 'sender';
                         } elseif ($transfer->fee_bearer == MoneyTransfers::RECIPIENT_FEE) {
-                            $handler = 'Recipient pay the transfer fee';
+                            $handler = 'recipient';
                         }
 
                         $confirm_url = "{$this->config->application->baseUri}user/confirmtransfer/{$transfer->id}/{$auth}";

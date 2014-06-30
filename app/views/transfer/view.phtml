@@ -10,7 +10,7 @@ echo $this->getContent(); ?>
 You received <?= $transfer->transfer_amount?> VND from <?= $transfer->fromUser->getViewLink() ?>.
 <?php else: ?>
     <?php if ($transfer->status == MoneyTransfers::STATUS_TRANSFER): ?>
-You transferred to <?= $transfer->transfer_amount ?> VND <?= $transfer->toUser->getViewLink() ?> at <?= $transfer->created_at ?>.
+You transferred <?= $transfer->transfer_amount ?> VND to <?= $transfer->toUser->getViewLink() ?> at <?= $transfer->created_at ?>.
     <?php elseif ($transfer->status == MoneyTransfers::STATUS_CREATE): ?>
 You're trying to transfer <?= $transfer->transfer_amount ?> VND to <?= $transfer->toUser->getViewLink() ?> at <?= $transfer->created_at ?>.
     <?php else: ?>
