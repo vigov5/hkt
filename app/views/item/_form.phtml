@@ -13,6 +13,9 @@
         $types = Items::$item_types;
     } else {
         $types = Items::$item_types_restricted;
+        if ($form->model->type == Items::TYPE_TAX_FREE) {
+            $types[Items::TYPE_TAX_FREE] = Items::$item_types[Items::TYPE_TAX_FREE];
+        }
     }
     echo $form->selectStatic('type',  $types);
 ?>

@@ -23,12 +23,25 @@
     <div class="col-sm-6 col-lg-3">
         Total success invoices amount: <span class="text-primary"><?= $total_success_invoices_amount ?></span>
     </div>
+    <div class="col-sm-6 col-lg-3">
+        Total unaccepted invoices amount: <span class="text-primary"><?= $total_unaccepted_invoices_amount ?></span>
+    </div>
 </div>
 <br>
 <br>
 
 <h3>Administrator Status</h3>
 <hr>
+<h4>Current Admins Funds (<?= ($deposit_total - $withdraw_total) ?>)</h4>
+<div class="row">
+    <?php foreach ($current_wallet as $user_id => $wallet): ?>
+        <?php $user = Users::findFirst($user_id) ?>
+        <div class="col-sm-6 col-lg-3">
+            <?= $user->getViewLink() ?>: <span class="text-primary"><?= $wallet ?></span>
+        </div>
+    <?php endforeach; ?>
+</div>
+
 <h4>Deposit (<?= $deposit_total ?>) </h4>
 <div class="row">
     <?php foreach ($deposits as $deposit): ?>
@@ -48,3 +61,11 @@
         </div>
     <?php endforeach; ?>
 </div>
+
+<h3>HKT SALES</h3>
+<hr/>
+<span>(Current Admins Funds - Total users wallet - Total unaccepted invoices amount - Total users hcoin)</span><br>
+<h4><?= $deposit_total - $withdraw_total . ' - ' . $total_wallet . ' - ' . $total_unaccepted_invoices_amount . ' - ' . $total_hcoin . ' = ' ?>
+<span class="text-danger"><strong><?= $deposit_total - $withdraw_total - $total_wallet - $total_unaccepted_invoices_amount - $total_hcoin ?></strong></span></h4>
+
+<hr>

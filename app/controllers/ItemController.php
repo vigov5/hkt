@@ -143,7 +143,14 @@ class ItemController extends ControllerBase
         }
         $this->setDefault($item);
         if ($this->request->isPost()) {
+            $type_before = $item->type;
             $item->load($_POST);
+            $type_after = $item->type;
+            // Only admin can change item type to TAX_FREE
+            if ($type_after != $type_before && $type_after == Items::TYPE_TAX_FREE && !$this->current_user->isRoleOver(Users::ROLE_ADMIN)) {
+                $this->flash->error('Something went wrong. Cannot update item!');
+                return $this->forward('item/view', ['id' => $item->id]);
+            }
             if (isset($_FILES['img_upload'])) {
                 $file = $_FILES['img_upload'];
                 $path = Config::getFullImageUploadDir() . $file['name'];

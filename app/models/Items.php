@@ -124,7 +124,7 @@ class Items extends BModel
     const TYPE_WITHDRAW = 2;
     const TYPE_NORMAL = 3;
     const TYPE_SET = 4;
-    const TYPE_DUTY_FREE = 5;
+    const TYPE_TAX_FREE = 5;
 
     /**
      * @var array $item_type
@@ -134,7 +134,7 @@ class Items extends BModel
         self::TYPE_SET => 'Set',
         self::TYPE_DEPOSIT => 'Deposit',
         self::TYPE_WITHDRAW => 'Withdraw',
-        self::TYPE_DUTY_FREE => 'Tax Free ☆',
+        self::TYPE_TAX_FREE => 'Tax Free ☆',
     ];
 
     public static $item_types_restricted = [
@@ -270,7 +270,7 @@ class Items extends BModel
      */
     public function isTaxFreeItem()
     {
-        return $this->type == self::TYPE_DUTY_FREE;
+        return $this->type == self::TYPE_TAX_FREE;
     }
 
     /**
@@ -356,7 +356,7 @@ class Items extends BModel
                 return 'Your wallet account will be decreased after purchase this kind of item';
             case self::TYPE_NORMAL:
                 return 'Transactions with this kind of item will be charged a fee. You will receive HCoin when buying these items';
-            case self::TYPE_DUTY_FREE:
+            case self::TYPE_TAX_FREE:
                 return 'Framgia Hyakkaten does not charge any fee with this kind of item. All money you pay will be transfered to the seller, and you will not receive any HCoin !';
         }
         return '';
