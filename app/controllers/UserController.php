@@ -345,33 +345,6 @@ class UserController extends ControllerBase
     public function donateAction($page = 1)
     {
         $form = new DonateCoinForm($this->current_user);
-        if ($this->request->isPost()) {
-            if (!$form->isValid($this->request->getPost())) {
-                foreach ($form->getMessages() as $message) {
-                    $this->flash->error($message);
-                }
-            } else {
-                $target_user = Users::findFirstById($this->request->getPost('target_user_id', 'int'));
-                if (!$target_user || $target_user->id == $this->current_user->id) {
-                    $this->flash->error('Invalid User !');
-                    Phalcon\Tag::resetInput();
-                } else {
-                    $amount = $this->request->getPost('amount', 'int');
-                    if($this->current_user->makeHCoinDonation($target_user, $amount)) {
-                        $this->mail->send(
-                            $target_user->email,
-                            'HCoin Donation Received !',
-                            'donation',
-                            ['amount' => $amount, 'sender' => $this->current_user->display_name]
-                        );
-                        $this->flash->success('Donation Success !');
-                    } else {
-                        $this->flash->error('Error in processing Donation!');
-                    }
-                }
-            }
-        }
-
         if ($page < 1) {
             $page = 1;
         }
@@ -392,6 +365,40 @@ class UserController extends ControllerBase
         $this->view->logs = $page->items;
         $this->view->form = $form;
         $this->view->current_page = 'donate';
+    }
+
+    public function processdonationAction(){
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $target_user = Users::findFirstById($this->request->getPost('target_user_id', 'int'));
+            if (!$target_user || $target_user->id == $this->current_user->id) {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Invalid User !',
+                ];
+            } else {
+                $amount = $this->request->getPost('amount', 'int');
+                if ($amount && $this->current_user->makeHCoinDonation($target_user, $amount)) {
+                    $this->mail->send(
+                        $target_user->email,
+                        'HCoin Donation Received !',
+                        'donation',
+                        ['amount' => $amount, 'sender' => $this->current_user->display_name]
+                    );
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Donation Success !',
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'fail',
+                        'message' => 'You do not have enough HCoin or error occurred in processing donation !',
+                    ];
+                }
+            }
+            echo json_encode($response);
+        }
+        return ;
     }
 
     public function transferAction($page = 1)

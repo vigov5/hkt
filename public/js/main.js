@@ -328,7 +328,7 @@ $(function() {
                 target_user: target_user,
                 amount: amount
             }
-            createDonateCoinConfirm(form, message, data);
+            createDonateCoinConfirm(message, data);
         }
     });
 
@@ -360,7 +360,7 @@ $(function() {
     });
 });
 
-function createDonateCoinConfirm(form, message, data) {
+function createDonateCoinConfirm(message, data) {
     bootbox.dialog({
         message: message,
         title: '<strong><span class="text-primary">Are you sure ?</span></strong>',
@@ -369,19 +369,21 @@ function createDonateCoinConfirm(form, message, data) {
                 label: "OK",
                 className: "btn-success",
                 callback: function() {
-                    if (form != null) {
-                        form.submit();
-                    } else {
-                        $.ajax({
-                            type: "POST",
-                            url: "/user/donate",
-                            data: data
-                        }).success(function(message) {
-                        })
-                        .fail(function() {
-                            alert('Donation fail :(');
-                        });
-                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "/user/processdonation",
+                        data: data
+                    }).success(function(message) {
+                        var response = JSON.parse(message);
+                        if(response.status) {
+                            bootbox.alert(response.message, function() {
+                                reload();
+                            });
+                        }
+                    })
+                    .fail(function() {
+                        alert('Donation fail :(');
+                    });
                 }
             },
             danger: {
