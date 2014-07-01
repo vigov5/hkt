@@ -174,4 +174,14 @@ class MoneyTransfers extends BModel
             $this->save();
         }
     }
+
+    public function getHandlerText(){
+        $handler = '';
+        if ($this->fee_bearer == MoneyTransfers::SENDER_FEE) {
+            $handler = 'sender';
+        } elseif ($this->fee_bearer == MoneyTransfers::RECIPIENT_FEE) {
+            $handler = 'recipient';
+        }
+        return $handler;
+    }
 }

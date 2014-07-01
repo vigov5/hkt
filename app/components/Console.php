@@ -16,4 +16,20 @@ class Console
     {
         self::run('shop', 'open', $shop_id);
     }
+
+    public static function sendDonationReceivedNotification($data)
+    {
+        $encoded_data = base64_encode(serialize($data));
+        self::run('transaction', 'notifydonation', $encoded_data);
+    }
+
+    public static function sendConfirmTransferNotification($transfer_id)
+    {
+        self::run('transaction', 'confirmtransfer', $transfer_id);
+    }
+
+    public static function sendTransferReceivedNotification($transfer_id)
+    {
+        self::run('transaction', 'notifytransfer', $transfer_id);
+    }
 }
