@@ -367,7 +367,7 @@ class UserController extends ControllerBase
         $this->view->current_page = 'donate';
     }
 
-    public function processdonationAction(){
+    public function processDonationAction(){
         if ($this->request->isAjax()) {
             $this->view->disable();
             $target_user = Users::findFirstById($this->request->getPost('target_user_id', 'int'));
@@ -379,12 +379,11 @@ class UserController extends ControllerBase
             } else {
                 $amount = $this->request->getPost('amount', 'int');
                 if ($amount && $this->current_user->makeHCoinDonation($target_user, $amount)) {
-                    $this->mail->send(
-                        $target_user->email,
-                        'HCoin Donation Received !',
-                        'donation',
-                        ['amount' => $amount, 'sender' => $this->current_user->display_name]
-                    );
+                    Console::sendDonationReceivedNotification([
+                        'sender' => $this->current_user->display_name,
+                        'recipient' => $target_user->email,
+                        'amount' => $amount,
+                    ]);
                     $response = [
                         'status' => 'success',
                         'message' => 'Donation Success !',
@@ -463,29 +462,7 @@ class UserController extends ControllerBase
                 } else {
                     $transfer = $this->current_user->createMoneyTransfer($target_user, $amount, $fee_bearer);
                     if ($transfer) {
-                        $auth = CryptoHelper::calculateHMAC($transfer->nonce, $transfer->getEncodeData($transfer->nonce));
-                        $handler = '';
-                        if ($transfer->fee_bearer == MoneyTransfers::SENDER_FEE) {
-                            $handler = 'sender';
-                        } elseif ($transfer->fee_bearer == MoneyTransfers::RECIPIENT_FEE) {
-                            $handler = 'recipient';
-                        }
-
-                        $confirm_url = "{$this->config->application->baseUri}user/confirmtransfer/{$transfer->id}/{$auth}";
-                        $this->mail->send(
-                            $this->current_user->email,
-                            '[HKT] Money Transfer Confirmation',
-                            'transfer_confirm',
-                            [
-                                'recipient' => $target_user->display_name,
-                                'amount' => $transfer->transfer_amount,
-                                'handler' => $handler,
-                                'created_at' => $transfer->created_at,
-                                'confirm_url' => $confirm_url,
-                                'expire_time' => MoneyTransfers::EXPIRE_TIME / 60
-                            ]
-                        );
-
+                        Console::sendConfirmTransferNotification($transfer->id);
                         $response = [
                             'status' => 'success',
                             'message' => "Transfer has been created ! Please check your email ({$this->current_user->email}) to confirm the transfer."
@@ -534,6 +511,7 @@ class UserController extends ControllerBase
                     if (array_key_exists('process', $data)) {
                         $this->current_user->processMoneyTransfer($transfer, MoneyTransfers::STATUS_TRANSFER);
                         $confirm_done = true;
+                        Console::sendTransferReceivedNotification($transfer->id);
                         $this->flash->success('Transfer is processed successfully !');
                     } elseif (array_key_exists('cancel', $data)) {
                         $this->current_user->processMoneyTransfer($transfer, MoneyTransfers::STATUS_CANCEL);

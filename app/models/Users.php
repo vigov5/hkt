@@ -1060,8 +1060,8 @@ class Users extends BModel
             $error = 'The recipient is invalid.';
         } elseif ($amount < 0) {
             $error = 'Amount is invalid.';
-        } elseif ($amount % 100 != 0) {
-            $error = 'Amount value must be multiple of 100.';
+        } elseif ($amount % 1000 != 0) {
+            $error = 'Amount value must be multiple of 1000.';
         } elseif ($transfer->getChargedAmount($amount, $fee_bearer) > $this->wallet) {
             $error = 'You do not have enough money.';
         }
