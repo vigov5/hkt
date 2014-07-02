@@ -104,10 +104,8 @@ class MainTask extends \Phalcon\CLI\Task
     public function updateTransferAction()
     {
         $before = DateHelper::minute_before(5);
-        $transfers = MoneyTransfers::find([
-            "created_at > '$before'",
-            'status' => MoneyTransfers::STATUS_CREATE
-        ]);
+        $status = MoneyTransfers::STATUS_CREATE;
+        $transfers = MoneyTransfers::find(["created_at > '$before' AND status = $status"]);
         foreach ($transfers as $transfer) {
             $transfer->updateStatus();
         }
