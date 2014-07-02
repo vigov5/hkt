@@ -8,7 +8,7 @@ class TransactionTask extends \Phalcon\CLI\Task
         $mail = new Mail();
         $mail->send(
             $data['recipient'],
-            'HCoin Donation Received !',
+            '[HKT] HCoin Donation Received !',
             'donation',
             ['amount' => $data['amount'], 'sender' => $data['sender']]
         );
@@ -22,7 +22,7 @@ class TransactionTask extends \Phalcon\CLI\Task
             $confirm_url = "{$this->config->application->baseUri}user/confirmtransfer/{$transfer->id}/{$auth}";
             $mail = new Mail();
             $mail->send(
-                $transfer->fromUser->email,
+                $transfer->fromUser->getNotificationEmail(),
                 '[HKT] Money Transfer Confirmation',
                 'transfer_confirm',
                 [
@@ -43,7 +43,7 @@ class TransactionTask extends \Phalcon\CLI\Task
         if ($transfer) {
             $mail = new Mail();
             $mail->send(
-                $transfer->toUser->email,
+                $transfer->toUser->getNotificationEmail(),
                 '[HKT] Money Transfer Received',
                 'transfer_notice',
                 [

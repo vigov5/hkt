@@ -10,7 +10,7 @@ class ShopTask extends \Phalcon\CLI\Task
             $favorites = Favorites::getSubscribers($shop);
             $emails = [];
             foreach ($favorites as $favorite) {
-                $emails[] = $favorite->user->email;
+                $emails[] = $favorite->user->getNotificationEmail();
             }
             $mail = new Mail();
             $mail->send($emails, "[HKT] $shop->name Notification", 'shop_open', ['shop' => $shop, 'datetime' => $datetime]);

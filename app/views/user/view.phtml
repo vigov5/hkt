@@ -31,6 +31,15 @@ echo $this->getContent(); ?>
                 <td><?= $user->email ?></td>
             </tr>
             <tr>
+                <th class="success"><?= $user->getAttributeLabel('notification_email') ?></th>
+                <td>
+                    <span class="user-notification-email"><?= $user->getNotificationEmail() ?></span>
+                    <?php if ($user->id === $current_user->id): ?>
+                    <button class="btn btn-primary btn-xs btn-user-notification-email" data-user-id="<?= $user->id ?>">Change Notification Email</button>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
                 <th class="success"><?= $user->getAttributeLabel('role') ?></th>
                 <td><?= $user->getRoleValue() ?></td>
             </tr>
