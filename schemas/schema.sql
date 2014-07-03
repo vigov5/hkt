@@ -300,7 +300,7 @@ CREATE TABLE `users` (
   `username` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `notification_email` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `notification_email` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `display_name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `wallet` int(11) DEFAULT '0',
   `role` tinyint(4) DEFAULT NULL COMMENT '0: UNAUTHORIZED - Can not login, 1: USER - Can login and buy items, 2: MODERATOR - Can buy, can create and sell items , 3: ADMIN - Can accept requests, authorize users, change role of user ..., 4: SUPER ADMIN - Most powerful user',

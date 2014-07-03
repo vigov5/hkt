@@ -24,7 +24,7 @@ class ItemController extends ControllerBase
         $item_users = ItemUsers::getOnSaleItems($type);
         $this->view->item_users = $item_users;
         $this->view->form = new BuyForm();
-        $this->setPrevUrl("item/special/$type");
+        $this->setPrevUrl("item/special/$type/");
     }
 
     public function onsaleAction()
