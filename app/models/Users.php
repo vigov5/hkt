@@ -36,6 +36,12 @@ class Users extends BModel
      *
      * @var string
      */
+    public $notification_email;
+
+    /**
+     *
+     * @var string
+     */
     public $display_name;
 
     /**
@@ -278,6 +284,7 @@ class Users extends BModel
             'username' => 'username',
             'password' => 'password',
             'email' => 'email',
+            'notification_email' => 'notification_email',
             'display_name' => 'display_name',
             'wallet' => 'wallet',
             'hcoin' => 'hcoin',
@@ -912,6 +919,16 @@ class Users extends BModel
     }
 
     /**
+     * Change user's notification email
+     * @param string $notification_email
+     */
+    public function changeNotificationEmail($notification_email)
+    {
+        $this->notification_email = $notification_email;
+        $this->save();
+    }
+
+    /**
      * Change user's place
      * @param int $place
      */
@@ -1002,8 +1019,12 @@ class Users extends BModel
      */
     public static function getAdminEmails()
     {
-        $users = Users::find('role >= ' . Users::ROLE_ADMIN)->toArray();
-        return array_column($users, 'email');
+        $admin_emails = [];
+        $users = Users::find('role >= ' . Users::ROLE_ADMIN);
+        foreach ($users as $user) {
+            $admin_emails[] = $user->getNotificationEmail();
+        }
+        return $admin_emails;
     }
 
     /**
@@ -1151,5 +1172,10 @@ class Users extends BModel
             }
         }
         return array_reverse($results);
+    }
+
+    public function getNotificationEmail()
+    {
+        return ($this->notification_email ? $this->notification_email : $this->email);
     }
 }

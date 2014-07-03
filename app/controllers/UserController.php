@@ -1,4 +1,6 @@
 <?php
+use Phalcon\Validation\Validator\Email;
+use Phalcon\Validation\Validator\PresenceOf;
 
 class UserController extends ControllerBase
 {
@@ -278,6 +280,50 @@ class UserController extends ControllerBase
         $this->forwardNotFound();
     }
 
+    public function changeNotificationEmailAction()
+    {
+        if ($this->request->isAjax()) {
+            $this->view->disable();
+            $user_id = $this->request->getPost('user_id', 'int');
+            $notification_email = $this->request->getPost('notification_email', 'striptags');
+            if ($user_id != $this->current_user->id) {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Invalid User',
+                ];
+            } else {
+                $validation = new Phalcon\Validation();
+                $validation->add('email', new PresenceOf(array(
+                    'message' => 'The e-mail is required.'
+                )));
+                $validation->add('email', new Email(array(
+                    'message' => 'The e-mail is not valid.'
+                )));
+                $messages = $validation->validate(['email' => $notification_email]);
+                if(count($messages)) {
+                    $errors = [];
+                    foreach ($messages as $message) {
+                        $errors[] = $message;
+                    }
+                    $response = [
+                        'status' => 'fail',
+                        'message' => implode('<br>', $errors),
+                    ];
+                } else {
+                    $this->current_user->changeNotificationEmail($notification_email);
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Notification email changed!',
+                        'notification_email' => $this->current_user->getNotificationEmail(),
+                    ];
+                }
+            }
+            echo json_encode($response);
+            return ;
+        }
+        $this->forwardNotFound();
+    }
+
     public function changePlaceAction()
     {
         if ($this->request->isAjax()) {
@@ -381,7 +427,7 @@ class UserController extends ControllerBase
                 if ($amount && $this->current_user->makeHCoinDonation($target_user, $amount)) {
                     Console::sendDonationReceivedNotification([
                         'sender' => $this->current_user->display_name,
-                        'recipient' => $target_user->email,
+                        'recipient' => $target_user->getNotificationEmail(),
                         'amount' => $amount,
                     ]);
                     $response = [
@@ -463,9 +509,10 @@ class UserController extends ControllerBase
                     $transfer = $this->current_user->createMoneyTransfer($target_user, $amount, $fee_bearer);
                     if ($transfer) {
                         Console::sendConfirmTransferNotification($transfer->id);
+                        $email = $this->current_user->getNotificationEmail();
                         $response = [
                             'status' => 'success',
-                            'message' => "Transfer has been created ! Please check your email ({$this->current_user->email}) to confirm the transfer."
+                            'message' => "Transfer has been created ! Please check your email ({$email}) to confirm the transfer."
                         ];
                     } else {
                         $response = [

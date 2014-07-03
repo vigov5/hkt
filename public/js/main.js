@@ -228,6 +228,34 @@ $(function() {
         });
     });
 
+    $('.btn-user-notification-email').click(function() {
+        var user_id = $(this).attr('data-user-id');
+        var message = "Default notification email is your registered email.<br>Input your new notification email here !";
+        bootbox.prompt(message, function(result) {
+            if (result === null || result.length == 0) {
+
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/user/changenotificationemail",
+                    data: {
+                        user_id: user_id,
+                        notification_email: result
+                    }
+                }).success(function(message) {
+                    var response = JSON.parse(message);
+                    if(response.status == 'success') {
+                        changeNotificationEmail(response.notification_email);
+                    }
+                    bootbox.alert(response.message);
+                })
+                .fail(function() {
+                    alert('Request sent Fail !!!');
+                });
+            }
+        });
+    });
+
     $('.btn-change-user-place').click(function() {
         var place_name = $(this).html();
         var place = $(this).attr('data-user-place');
@@ -441,6 +469,11 @@ function changeUserPlace(place)
 function changeDisplayName(name)
 {
     $('.user-display-name').html(name);
+}
+
+function changeNotificationEmail(email)
+{
+    $('.user-notification-email').html(email);
 }
 
 function changeInvoiceData(invoice_id, data)
