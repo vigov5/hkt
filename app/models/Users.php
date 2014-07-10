@@ -1122,7 +1122,7 @@ class Users extends BModel
         if ($new_status == MoneyTransfers::STATUS_TRANSFER) {
             $sender_wallet_before = $this->wallet;
             $recipient_wallet_before = $transfer->toUser->wallet;
-            if($this->minusWallet($transfer->charged_amount)) {
+            if($this->minusWallet($transfer->charged_amount) !== false) {
                 $transfer->toUser->increaseWallet($transfer->transfer_amount);
                 $transfer->status = $new_status;
                 if (!$transfer->save()) {
